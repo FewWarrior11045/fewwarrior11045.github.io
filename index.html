@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI 랭킹 노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F6; --card:#FFFFFF; --ink:#191F28; --sub:#6B7684; --faint:#B0B8C1;
+  --line:#EEF0F3; --blue:#3182F6; --blue-soft:#E8F3FF; --press:#F4F6F8; --star:#FFC342;
+  --bar-bg:rgba(242,244,246,.86);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#101013; --card:#1E1E24; --ink:#F2F4F6; --sub:#9EA6B2; --faint:#5C6370;
+    --line:#2A2A31; --blue:#4D94FF; --blue-soft:#1F2D45; --press:#25252C; --bar-bg:rgba(16,16,19,.86);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101013; --card:#1E1E24; --ink:#F2F4F6; --sub:#9EA6B2; --faint:#5C6370;
+  --line:#2A2A31; --blue:#4D94FF; --blue-soft:#1F2D45; --press:#25252C; --bar-bg:rgba(16,16,19,.86);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans KR",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  line-height:1.5; -webkit-font-smoothing:antialiased; letter-spacing:-0.01em;
+}
+button{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--blue); outline-offset:2px}
+.wrap{max-width:640px; margin:0 auto; padding:0 16px 56px}
+
+/* 상단 바 */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:10; background:var(--bar-bg);
+  backdrop-filter:saturate(1.4) blur(14px); -webkit-backdrop-filter:saturate(1.4) blur(14px);
+}
+.topbar .in{max-width:640px; margin:0 auto; height:56px; padding:0 16px; display:flex; align-items:center; gap:10px}
+.logo{display:flex; align-items:center; gap:8px; font-weight:800; font-size:1.05rem; letter-spacing:-0.03em; text-decoration:none; color:var(--ink)}
+.logo i{width:28px; height:28px; border-radius:9px; background:var(--blue); display:grid; place-items:center; color:#fff; font-style:normal; font-size:.9rem}
+.back{border:0; background:transparent; width:40px; height:40px; margin-left:-10px; border-radius:12px; cursor:pointer; display:grid; place-items:center}
+.back:active{background:var(--press)}
+.topbar .ttl{font-weight:700; opacity:0; transition:opacity .2s}
+.topbar .ttl.show{opacity:1}
+
+/* 홈 */
+.hero{padding:18px 6px 6px}
+.hero h1{font-size:1.75rem; line-height:1.3; font-weight:800; margin:0 0 6px; letter-spacing:-0.035em}
+.hero p{margin:0; color:var(--sub)}
+.search{display:flex; align-items:center; gap:10px; background:var(--card); border-radius:16px; padding:0 16px; margin-top:20px}
+.search svg{flex:none; color:var(--faint)}
+.search input{flex:1; min-width:0; border:0; outline:0; background:transparent; color:var(--ink); font:inherit; font-size:1rem; padding:14px 0}
+.search input::placeholder{color:var(--faint)}
+.search input::-webkit-search-cancel-button{display:none}
+.search:focus-within{box-shadow:0 0 0 2px var(--blue)}
+.clear{border:0; background:var(--faint); color:var(--card); width:20px; height:20px; border-radius:50%; font-size:.7rem; cursor:pointer; display:none}
+.search.has-text .clear{display:block}
+.cats{display:flex; gap:8px; overflow-x:auto; padding:12px 2px 14px; scrollbar-width:none; transition:opacity .2s}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none; border:0; background:var(--card); color:var(--sub); border-radius:999px; padding:9px 16px; font-weight:600; font-size:.95rem; cursor:pointer}
+.cat[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.panel{background:var(--card); border-radius:22px; margin-bottom:12px}
+
+/* 1위 카드 */
+.champ{display:block; width:100%; border:0; text-align:left; cursor:pointer; padding:22px 20px 20px; background:var(--blue); color:#fff; border-radius:22px; margin-bottom:12px; position:relative; overflow:hidden}
+.champ:active{filter:brightness(.95)}
+.champ .tag{font-size:.85rem; font-weight:700; opacity:.85}
+.champ .row{display:flex; align-items:center; gap:14px; margin-top:12px}
+.champ .icon{width:56px; height:56px; border-radius:18px; font-size:1.5rem; background:#fff !important}
+.champ .nm{font-size:1.35rem; font-weight:800; letter-spacing:-0.03em}
+.champ .ds{opacity:.85; font-size:.92rem}
+.champ .big{margin-left:auto; text-align:right}
+.champ .big b{font-size:2rem; font-weight:800; line-height:1; font-variant-numeric:tabular-nums}
+.champ .big small{display:block; opacity:.75; font-size:.8rem; margin-top:4px}
+.champ::after{content:"1"; position:absolute; right:-6px; top:-34px; font-size:9rem; font-weight:800; opacity:.08; line-height:1}
+
+.list-head{display:flex; align-items:center; justify-content:space-between; padding:18px 20px 4px}
+.list-head h2{font-size:1.05rem; font-weight:700; margin:0}
+.ghost{border:0; background:var(--blue-soft); color:var(--blue); font-weight:600; font-size:.85rem; padding:7px 12px; border-radius:10px; cursor:pointer; display:inline-flex; align-items:center; gap:6px}
+.tip{display:flex; align-items:center; gap:10px; width:calc(100% - 40px); margin:8px 20px 6px; padding:12px 14px; border:0; border-radius:14px; background:var(--bg); color:var(--sub); font-size:.88rem; text-align:left; cursor:pointer}
+.tip:active{background:var(--press)}
+.tip span:nth-child(2){flex:1}
+.tip::after{content:""; width:7px; height:7px; border-top:2px solid var(--faint); border-right:2px solid var(--faint); transform:rotate(45deg); flex:none}
+ol.list{list-style:none; margin:0; padding:0 0 8px}
+.row-btn{
+  all:unset; box-sizing:border-box; width:100%; cursor:pointer;
+  display:grid; grid-template-columns:1.4rem 2.75rem 1fr auto 1rem; gap:12px; align-items:center; padding:12px 20px;
+}
+.row-btn:active{background:var(--press)}
+.row-btn:focus-visible{outline:3px solid var(--blue); outline-offset:-3px; border-radius:12px}
+.rank{font-weight:800; font-size:1rem; text-align:center; color:var(--sub)}
+.icon{width:2.75rem; height:2.75rem; border-radius:14px; display:grid; place-items:center; font-weight:800; font-size:1.1rem}
+.name{font-weight:700; font-size:1.02rem}
+.desc{font-size:.88rem; color:var(--sub); display:block}
+.catname{color:var(--blue); font-weight:600}
+.score{text-align:right; line-height:1.25}
+.score b{font-size:1.1rem; font-weight:800; font-variant-numeric:tabular-nums}
+.chev{color:var(--faint)}
+.stars{position:relative; display:inline-block; font-size:.8rem; letter-spacing:1px; color:var(--line)}
+.stars i{position:absolute; inset:0 auto 0 0; overflow:hidden; white-space:nowrap; color:var(--star); font-style:normal}
+.empty{padding:32px 20px; text-align:center; color:var(--sub)}
+footer{margin-top:24px; text-align:center; font-size:.82rem; color:var(--faint)}
+
+/* 기준 바텀시트 */
+.sheet-bg{position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:30; display:none}
+.sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:31; background:var(--card); border-radius:24px 24px 0 0;
+  max-width:640px; margin:0 auto; padding:10px 22px calc(22px + env(safe-area-inset-bottom,0px));
+  transform:translateY(105%); visibility:hidden;
+}
+.sheet.open{transform:none; visibility:visible}
+.sheet-bg.open{display:block}
+.grip{width:40px; height:4px; border-radius:2px; background:var(--line); margin:0 auto 16px}
+.sheet h3{margin:0 0 4px; font-size:1.2rem; font-weight:800}
+.sheet p{margin:0 0 18px; color:var(--sub); font-size:.9rem}
+.wrow{display:grid; grid-template-columns:7em 1fr 2.2em; align-items:center; gap:12px; margin:0 0 16px}
+.wrow input{width:100%; accent-color:var(--blue)}
+.wrow output{text-align:right; color:var(--blue); font-weight:700; font-variant-numeric:tabular-nums}
+.cta{display:block; width:100%; border:0; border-radius:16px; background:var(--blue); color:#fff; font-weight:700; font-size:1.02rem; padding:16px; text-align:center; text-decoration:none; cursor:pointer}
+.cta:active{filter:brightness(.93)}
+
+/* 상세 */
+.d-hero{padding:20px 6px 18px; display:flex; gap:16px; align-items:center}
+.d-hero .icon{width:68px; height:68px; border-radius:22px; font-size:1.8rem; flex:none}
+.d-hero .cat-l{color:var(--blue); font-weight:700; font-size:.88rem}
+.d-hero h1{margin:0; font-size:1.7rem; font-weight:800; letter-spacing:-0.035em; line-height:1.25}
+.d-hero p{margin:2px 0 0; color:var(--sub)}
+.sec{padding:22px 20px}
+.sec h2{font-size:1.05rem; font-weight:700; margin:0 0 14px}
+.scorebox{display:flex; align-items:flex-end; gap:12px; margin-bottom:18px}
+.scorebox b{font-size:2.6rem; font-weight:800; line-height:1; letter-spacing:-0.03em; font-variant-numeric:tabular-nums}
+.scorebox .of{color:var(--sub); padding-bottom:4px}
+.scorebox .stars{font-size:1.1rem; margin-bottom:6px}
+.scorebox .pos{margin-left:auto; background:var(--blue-soft); color:var(--blue); font-weight:700; font-size:.85rem; padding:6px 10px; border-radius:10px; margin-bottom:4px}
+.bar{display:grid; grid-template-columns:7em 1fr 2em; gap:12px; align-items:center; font-size:.92rem; margin:10px 0; color:var(--sub)}
+.bar span:last-child{text-align:right; color:var(--ink); font-weight:700}
+.track{height:8px; background:var(--blue-soft); border-radius:4px; overflow:hidden}
+.fill{height:100%; background:var(--blue); border-radius:4px}
+.pc{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.pc ul{list-style:none; margin:0; padding:0}
+.pc li{position:relative; padding-left:26px; margin:0 0 10px; font-size:.95rem}
+.pc li::before{position:absolute; left:0; top:1px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; font-size:.7rem; font-weight:800}
+.pros li::before{content:"✓"; background:var(--blue-soft); color:var(--blue)}
+.cons li::before{content:"!"; background:var(--press); color:var(--sub)}
+.pc h3{font-size:.9rem; color:var(--sub); font-weight:600; margin:0 0 10px}
+.who{margin:0; padding:14px 16px; background:var(--bg); border-radius:14px}
+.review{white-space:pre-line; margin:0; line-height:1.75}
+.review.none{color:var(--faint)}
+.meta{margin-top:14px; font-size:.82rem; color:var(--faint)}
+.dock{position:fixed; left:0; right:0; bottom:0; z-index:9; padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); background:linear-gradient(transparent,var(--bg) 30%)}
+.dock .cta{max-width:608px; margin:0 auto}
+#detail{padding-bottom:90px}
+@media (max-width:420px){
+  .row-btn{grid-template-columns:1.1rem 2.5rem 1fr auto .8rem; gap:10px; padding:12px 16px}
+  .icon{width:2.5rem; height:2.5rem}
+  .pc{grid-template-columns:1fr}
+  .wrow,.bar{grid-template-columns:6em 1fr 2em}
+  .hero h1{font-size:1.55rem}
+}
+@media (prefers-reduced-motion:no-preference){
+  .fill{transition:width .4s ease}
+  .sheet{transition:transform .28s cubic-bezier(.2,.8,.2,1), visibility .28s}
+  .view{animation:in .22s ease}
+  @keyframes in{from{opacity:0; transform:translateY(6px)}}
+}
+.acts{display:flex; gap:8px; padding:0 6px 16px}
+.act{flex:1; display:flex; align-items:center; justify-content:center; gap:6px; border:0; background:var(--card); border-radius:14px; padding:12px; font-weight:600; font-size:.95rem; cursor:pointer}
+.act:active{background:var(--press)}
+.act svg{flex:none}
+.act.on{color:#F04452}
+.act.on svg path{fill:#F04452}
+.cat.fav{display:inline-flex; align-items:center; gap:4px}
+.cat.fav[aria-pressed="true"]{background:#F04452; color:#fff}
+.toast{position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom,0px)); transform:translate(-50%,10px); z-index:40;
+  background:rgba(25,31,40,.92); color:#fff; padding:12px 18px; border-radius:14px; font-size:.92rem; font-weight:500;
+  opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; white-space:nowrap}
+.toast.show{opacity:1; transform:translate(-50%,0)}
+.mini-heart{color:#F04452; font-size:.8rem; margin-left:4px}
+/* 퀴즈 */
+.quiz-entry{display:flex; align-items:center; gap:14px; width:100%; border:0; text-align:left; cursor:pointer; background:var(--card); border-radius:20px; padding:16px 18px; margin-top:12px}
+.quiz-entry:active{background:var(--press)}
+.quiz-entry .qe-ic{width:44px; height:44px; border-radius:14px; background:var(--blue-soft); display:grid; place-items:center; font-size:1.4rem; flex:none}
+.quiz-entry b{display:block; font-size:1rem}
+.quiz-entry small{color:var(--sub); font-size:.86rem}
+.quiz-entry .chev{margin-left:auto}
+.q-wrap{padding:16px 6px 40px}
+.q-prog{height:6px; background:var(--card); border-radius:3px; overflow:hidden; margin-bottom:28px}
+.q-prog div{height:100%; background:var(--blue); border-radius:3px; transition:width .3s ease}
+.q-step{color:var(--blue); font-weight:700; font-size:.9rem}
+.q-title{font-size:1.6rem; font-weight:800; letter-spacing:-0.035em; line-height:1.35; margin:4px 0 24px}
+.q-opts{display:grid; gap:10px}
+.q-opts.two{grid-template-columns:1fr 1fr}
+.q-opt{display:flex; align-items:center; gap:12px; border:0; background:var(--card); border-radius:18px; padding:18px 16px; text-align:left; cursor:pointer; font-weight:600; font-size:1rem}
+.q-opt:active{background:var(--blue-soft); color:var(--blue)}
+.q-opt .em{font-size:1.4rem}
+.q-prev{border:0; background:transparent; color:var(--sub); font-weight:600; margin-top:20px; padding:8px 4px; cursor:pointer}
+.res-top{text-align:center; padding:12px 0 22px}
+.res-top .lbl{color:var(--sub); font-weight:600}
+.res-top .icon{width:84px; height:84px; border-radius:26px; font-size:2.2rem; margin:18px auto 14px}
+.res-top h1{margin:0; font-size:2rem; font-weight:800; letter-spacing:-0.04em}
+.res-top p{margin:4px 0 0; color:var(--sub)}
+.why{list-style:none; margin:0; padding:0}
+.why li{position:relative; padding-left:28px; margin:0 0 12px}
+.why li::before{content:"✓"; position:absolute; left:0; top:1px; width:20px; height:20px; border-radius:50%; background:var(--blue-soft); color:var(--blue); display:grid; place-items:center; font-size:.72rem; font-weight:800}
+.res-btns{display:grid; gap:10px; margin-top:4px}
+.sub-btn{display:block; width:100%; border:0; border-radius:16px; background:var(--card); font-weight:700; font-size:1rem; padding:15px; cursor:pointer}
+.sub-btn:active{background:var(--press)}
+.res-btns .two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media (max-width:420px){ .q-title{font-size:1.4rem} }
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="in">
+    <button class="back" id="back" aria-label="뒤로 가기" hidden>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <a class="logo" id="logo" href="#/"><i>★</i>AI 랭킹 노트</a>
+    <span class="ttl" id="ttl" hidden></span>
+  </div>
+</div>
+
+<main class="wrap">
+  <!-- 홈 -->
+  <section id="home" class="view">
+    <div class="hero">
+      <h1>어떤 AI를 써볼까요?</h1>
+      <p>직접 써보고 내 기준으로 점수를 매긴 AI 순위예요.</p>
+    </div>
+
+    <div class="search" id="searchBox">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="AI 이름이나 하고 싶은 일 검색" aria-label="AI 검색" autocomplete="off">
+      <button class="clear" id="clear" aria-label="검색어 지우기">✕</button>
+    </div>
+
+    <button class="quiz-entry" id="quizEntry">
+      <span class="qe-ic" aria-hidden="true">🎯</span>
+      <span><b>나에게 맞는 AI 찾기</b><small>질문 4개에 답하면 딱 맞는 AI를 추천해요</small></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+
+    <nav class="cats" id="cats" aria-label="카테고리"></nav>
+
+    <div id="champ"></div>
+
+    <section class="panel">
+      <div class="list-head">
+        <h2 id="listTitle">순위</h2>
+        <button class="ghost" id="openSheet" aria-label="채점 기준 바꾸기"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>기준 바꾸기</button>
+      </div>
+      <button class="tip" id="tip"><span class="tip-ic" aria-hidden="true">💡</span><span>나에게 중요한 기준을 고르면 순위가 바뀌어요</span></button>
+      <ol class="list" id="list"></ol>
+    </section>
+
+    <footer>점수와 후기는 직접 써본 경험을 바탕으로 합니다.</footer>
+  </section>
+
+  <!-- 상세 -->
+  <section id="detail" class="view" hidden></section>
+
+  <!-- 퀴즈 -->
+  <section id="quiz" class="view" hidden></section>
+</main>
+
+<div class="dock" id="dock" hidden><a class="cta" id="dockLink" target="_blank" rel="noopener">공식 사이트 가기</a></div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="grip"></div>
+  <h3 id="sheetTitle">내 채점 기준</h3>
+  <p>중요한 기준일수록 높이세요. 0이면 점수에서 빠져요.</p>
+  <div id="weights"></div>
+  <button class="cta" id="closeSheet">적용하기</button>
+</div>
+
+<script>
+/* ===== 여기만 고치면 사이트 내용이 바뀝니다 ===== */
+
+// 채점 기준
+const CRITERIA = [
+  { key: "quality", label: "결과물 품질" },
+  { key: "free",    label: "무료로 쓸 만함" },
+  { key: "korean",  label: "한국어" },
+  { key: "easy",    label: "쉬운 정도" },
+];
+
+// 카테고리
+const CATEGORIES = [
+  { id: "chat",  label: "챗봇" },
+  { id: "image", label: "그림" },
+  { id: "video", label: "영상" },
+  { id: "audio", label: "오디오 편집" },
+  { id: "music", label: "음악" },
+  { id: "code",  label: "코딩" },
+  { id: "slide", label: "발표자료" },
+  { id: "study", label: "공부" },
+  { id: "trans", label: "번역" },
+];
+
+/* AI 목록
+   id      : 주소에 쓰이는 영어 이름 (예: 사이트주소/#/ai/chatgpt)
+   s       : 점수 1~5 (0.5 단위 가능) — 지금은 전부 예시!
+   pros    : 장점, cons: 단점, who: 이런 사람에게 추천
+   review  : 직접 써본 후기 (줄바꿈은 \n). 비워두면 "후기 준비 중"으로 보여요
+   updated : 마지막으로 확인한 날짜                                          */
+const TOOLS = [
+  { id:"chatgpt", cat:"chat", name:"ChatGPT", desc:"뭐든 물어보기 좋은 범용 챗봇", url:"https://chatgpt.com",
+    s:{quality:4.5, free:4, korean:4.5, easy:5},
+    pros:["질문, 글쓰기, 번역 등 거의 모든 용도에 쓸 수 있음","이미지 만들기도 같이 됨"], cons:["무료는 많이 쓰면 한도에 걸림"],
+    who:"AI를 처음 써보는 사람", review:"", updated:"2026-10" },
+  { id:"claude", cat:"chat", name:"Claude", desc:"긴 글 읽기와 글쓰기에 강한 챗봇", url:"https://claude.ai",
+    s:{quality:4.5, free:3.5, korean:4.5, easy:4.5},
+    pros:["긴 PDF나 문서 요약이 강함","한국어 문장이 자연스러움"], cons:["무료는 긴 대화에서 한도가 빨리 참"],
+    who:"보고서, 독후감, 긴 글을 자주 쓰는 사람", review:"", updated:"2026-10" },
+  { id:"gemini", cat:"chat", name:"Gemini", desc:"구글 서비스와 연결되는 챗봇", url:"https://gemini.google.com",
+    s:{quality:4, free:4.5, korean:4, easy:4.5},
+    pros:["구글 계정만 있으면 바로 사용","유튜브, 지메일 등과 연결"], cons:["답변 스타일이 들쭉날쭉할 때가 있음"],
+    who:"구글 서비스를 많이 쓰는 사람", review:"", updated:"2026-10" },
+  { id:"perplexity", cat:"chat", name:"Perplexity", desc:"출처를 달아주는 검색형 챗봇", url:"https://www.perplexity.ai",
+    s:{quality:4, free:4, korean:3.5, easy:4.5},
+    pros:["답변마다 출처 링크를 보여줌","최신 정보 찾기에 좋음"], cons:["긴 글쓰기는 다른 챗봇보다 약함"],
+    who:"과제 자료 조사가 필요한 사람", review:"", updated:"2026-10" },
+
+  { id:"midjourney", cat:"image", name:"Midjourney", desc:"예술적인 느낌의 그림", url:"https://www.midjourney.com",
+    s:{quality:5, free:1, korean:2.5, easy:3},
+    pros:["그림 퀄리티가 최상급","분위기 있는 예술 작품에 강함"], cons:["무료로 쓰기 어려움","영어로 쓰는 게 결과가 좋음"],
+    who:"퀄리티 높은 그림이 꼭 필요한 사람", review:"", updated:"2026-10" },
+  { id:"ideogram", cat:"image", name:"Ideogram", desc:"그림 속 글자를 잘 써줌", url:"https://ideogram.ai",
+    s:{quality:4, free:3.5, korean:3, easy:4},
+    pros:["포스터처럼 글자가 들어간 그림에 강함","사용법이 간단함"], cons:["한글 글자는 아직 어색할 때가 있음"],
+    who:"포스터, 썸네일을 만드는 사람", review:"", updated:"2026-10" },
+  { id:"firefly", cat:"image", name:"Adobe Firefly", desc:"포토샵과 이어서 쓰기 좋음", url:"https://firefly.adobe.com",
+    s:{quality:4, free:3, korean:3.5, easy:4},
+    pros:["포토샵, 어도비 익스프레스와 연결","사진 일부만 바꾸기가 편함"], cons:["무료 크레딧이 적은 편"],
+    who:"어도비 프로그램을 쓰는 사람", review:"", updated:"2026-10" },
+  { id:"stable-diffusion", cat:"image", name:"Stable Diffusion", desc:"내 컴퓨터에서 자유롭게 설정", url:"https://stability.ai",
+    s:{quality:4, free:5, korean:2, easy:1.5},
+    pros:["내 컴퓨터에 설치하면 무료로 무제한","설정을 자유롭게 바꿀 수 있음"], cons:["설치가 어렵고 좋은 그래픽카드가 필요함"],
+    who:"컴퓨터를 잘 다루고 직접 만져보고 싶은 사람", review:"", updated:"2026-10" },
+
+  { id:"runway", cat:"video", name:"Runway", desc:"영상 생성과 편집 기능이 많음", url:"https://runwayml.com",
+    s:{quality:4.5, free:2.5, korean:2.5, easy:3.5},
+    pros:["영상 생성 외에도 편집 도구가 많음"], cons:["무료로 만들 수 있는 양이 적음"],
+    who:"영상 편집까지 한 곳에서 하고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"kling", cat:"video", name:"Kling", desc:"사실적인 움직임의 짧은 영상", url:"https://klingai.com",
+    s:{quality:4.5, free:3, korean:2.5, easy:3.5},
+    pros:["사람과 물체의 움직임이 자연스러움"], cons:["영상 하나 만드는 데 시간이 걸림"],
+    who:"짧고 사실적인 영상이 필요한 사람", review:"", updated:"2026-10" },
+  { id:"pika", cat:"video", name:"Pika", desc:"재밌는 효과 영상을 빠르게", url:"https://pika.art",
+    s:{quality:3.5, free:3, korean:2.5, easy:4.5},
+    pros:["재밌는 효과를 쉽게 넣을 수 있음"], cons:["긴 영상이나 정교한 장면은 약함"],
+    who:"SNS용 짧은 재미 영상을 만드는 사람", review:"", updated:"2026-10" },
+
+  { id:"adobe-podcast", cat:"audio", name:"Adobe Podcast", desc:"녹음한 목소리 잡음 제거", url:"https://podcast.adobe.com",
+    s:{quality:4.5, free:4, korean:3.5, easy:5},
+    pros:["파일만 올리면 잡음이 깔끔하게 사라짐"], cons:["세밀한 편집 기능은 적음"],
+    who:"폰으로 녹음한 목소리를 깨끗하게 만들고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"elevenlabs", cat:"audio", name:"ElevenLabs", desc:"자연스러운 AI 목소리 만들기", url:"https://elevenlabs.io",
+    s:{quality:5, free:3, korean:4, easy:4},
+    pros:["사람 같은 자연스러운 목소리","한국어 목소리도 지원"], cons:["무료로 만들 수 있는 글자 수가 적음"],
+    who:"영상 내레이션이 필요한 사람", review:"", updated:"2026-10" },
+  { id:"descript", cat:"audio", name:"Descript", desc:"글자 고치듯 오디오 편집", url:"https://www.descript.com",
+    s:{quality:4, free:3, korean:2.5, easy:4},
+    pros:["받아쓴 글자를 지우면 오디오도 같이 잘림"], cons:["한국어 받아쓰기 정확도가 아쉬움"],
+    who:"팟캐스트나 인터뷰를 편집하는 사람", review:"", updated:"2026-10" },
+
+  { id:"suno", cat:"music", name:"Suno", desc:"가사 넣으면 노래 완성", url:"https://suno.com",
+    s:{quality:4.5, free:3.5, korean:4, easy:5},
+    pros:["가사와 장르만 쓰면 노래 완성","한국어 가사도 잘 부름"], cons:["무료로 만든 곡은 사용 범위에 제한이 있을 수 있음"],
+    who:"재미로 나만의 노래를 만들고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"udio", cat:"music", name:"Udio", desc:"음질 좋은 노래 생성", url:"https://www.udio.com",
+    s:{quality:4.5, free:3, korean:3.5, easy:4},
+    pros:["음질과 악기 표현이 좋음"], cons:["원하는 곡을 얻으려면 여러 번 시도해야 함"],
+    who:"음악 퀄리티를 중요하게 보는 사람", review:"", updated:"2026-10" },
+
+  { id:"cursor", cat:"code", name:"Cursor", desc:"AI가 들어간 코드 편집기", url:"https://cursor.com",
+    s:{quality:4.5, free:3, korean:3.5, easy:3.5},
+    pros:["코드를 쓰면서 바로 AI에게 물어볼 수 있음"], cons:["프로그램 설치가 필요함"],
+    who:"코딩을 배우는 중이거나 프로젝트를 하는 사람", review:"", updated:"2026-10" },
+  { id:"claude-code", cat:"code", name:"Claude Code", desc:"명령어로 코딩을 맡기는 도구", url:"https://claude.com/product/claude-code",
+    s:{quality:5, free:2, korean:4, easy:3},
+    pros:["큰 작업도 알아서 여러 파일을 고쳐줌"], cons:["유료 요금제가 필요함","터미널 사용에 익숙해야 함"],
+    who:"본격적으로 프로그램을 만드는 사람", review:"", updated:"2026-10" },
+  { id:"replit", cat:"code", name:"Replit", desc:"브라우저에서 바로 만들고 실행", url:"https://replit.com",
+    s:{quality:4, free:3.5, korean:3, easy:4.5},
+    pros:["설치 없이 브라우저에서 바로 코딩","만든 걸 바로 공유 가능"], cons:["큰 프로젝트는 무료로 한계가 있음"],
+    who:"설치 없이 코딩을 시작하고 싶은 사람", review:"", updated:"2026-10" },
+
+  { id:"gamma", cat:"slide", name:"Gamma", desc:"주제만 쓰면 발표자료 초안", url:"https://gamma.app",
+    s:{quality:4, free:3.5, korean:4, easy:5},
+    pros:["주제만 쓰면 몇 분 만에 발표자료 완성"], cons:["디자인이 비슷비슷해 보일 수 있음"],
+    who:"수행평가 발표자료를 빨리 만들어야 하는 사람", review:"", updated:"2026-10" },
+  { id:"canva", cat:"slide", name:"Canva", desc:"디자인 템플릿 + AI 기능", url:"https://www.canva.com",
+    s:{quality:4, free:4, korean:4.5, easy:4.5},
+    pros:["예쁜 템플릿이 아주 많음","한국어 글꼴이 다양함"], cons:["AI 기능 일부는 유료"],
+    who:"디자인에 신경 쓰고 싶은 사람", review:"", updated:"2026-10" },
+  /* ---- 추가한 AI ---- */
+  { id:"copilot", cat:"chat", name:"Microsoft Copilot", desc:"윈도우와 오피스에 들어간 챗봇", url:"https://copilot.microsoft.com",
+    s:{quality:4, free:4.5, korean:4, easy:4.5},
+    pros:["윈도우, 엣지에서 바로 사용","검색 결과를 함께 보여줌"], cons:["대화가 길어지면 맥락을 놓칠 때가 있음"],
+    who:"윈도우 컴퓨터를 주로 쓰는 사람", review:"", updated:"2026-10" },
+  { id:"wrtn", cat:"chat", name:"뤼튼", desc:"한국에서 만든 AI 챗봇", url:"https://wrtn.ai",
+    s:{quality:3.5, free:4.5, korean:5, easy:5},
+    pros:["한국어 화면이라 처음 쓰기 쉬움","다양한 AI 기능을 한 곳에 모아둠"], cons:["복잡한 질문은 다른 챗봇보다 약할 수 있음"],
+    who:"영어 화면이 부담스러운 사람", review:"", updated:"2026-10" },
+  { id:"deepseek", cat:"chat", name:"DeepSeek", desc:"수학과 논리 문제에 강한 챗봇", url:"https://www.deepseek.com",
+    s:{quality:4, free:4.5, korean:3.5, easy:4},
+    pros:["수학, 코딩 풀이 과정을 자세히 보여줌"], cons:["개인정보 처리 방식에 대한 우려가 있음"],
+    who:"수학 문제 풀이 과정이 궁금한 사람", review:"", updated:"2026-10" },
+  { id:"leonardo", cat:"image", name:"Leonardo AI", desc:"게임 캐릭터, 일러스트에 강함", url:"https://leonardo.ai",
+    s:{quality:4, free:3.5, korean:2.5, easy:3.5},
+    pros:["캐릭터, 게임 그림 스타일이 다양함","매일 무료 크레딧이 들어옴"], cons:["기능이 많아서 처음엔 헷갈림"],
+    who:"게임 캐릭터나 일러스트를 만드는 사람", review:"", updated:"2026-10" },
+  { id:"krea", cat:"image", name:"Krea", desc:"그리는 대로 실시간으로 그림 생성", url:"https://www.krea.ai",
+    s:{quality:4, free:3, korean:2.5, easy:4},
+    pros:["낙서하면 바로 그림으로 바뀌는 실시간 기능"], cons:["무료로 쓸 수 있는 양이 적음"],
+    who:"직접 그려보며 아이디어를 내고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"recraft", cat:"image", name:"Recraft", desc:"아이콘, 로고, 벡터 그림 전문", url:"https://www.recraft.ai",
+    s:{quality:4, free:3.5, korean:2.5, easy:4},
+    pros:["크기를 키워도 안 깨지는 벡터 그림 생성","통일된 스타일로 여러 장 만들기"], cons:["사진처럼 사실적인 그림은 약함"],
+    who:"로고나 아이콘을 만드는 사람", review:"", updated:"2026-10" },
+  { id:"luma", cat:"video", name:"Luma Dream Machine", desc:"사진 한 장으로 영상 만들기", url:"https://lumalabs.ai",
+    s:{quality:4, free:3, korean:2.5, easy:4.5},
+    pros:["사진을 올리면 자연스럽게 움직이는 영상으로"], cons:["무료로 만들 수 있는 개수가 적음"],
+    who:"사진을 영상으로 바꿔보고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"hailuo", cat:"video", name:"Hailuo", desc:"표정과 동작이 생생한 영상", url:"https://hailuoai.video",
+    s:{quality:4, free:3.5, korean:2.5, easy:4},
+    pros:["사람 표정과 몸짓 표현이 좋음"], cons:["영상 생성 대기 시간이 길 때가 있음"],
+    who:"캐릭터가 나오는 짧은 영상을 만드는 사람", review:"", updated:"2026-10" },
+  { id:"vrew", cat:"video", name:"Vrew", desc:"자막을 자동으로 달아주는 영상 편집", url:"https://vrew.ai",
+    s:{quality:4, free:4, korean:5, easy:4.5},
+    pros:["한국어 자막 인식이 정확함","한국에서 만들어서 사용법이 쉬움"], cons:["화려한 효과 편집은 부족함"],
+    who:"유튜브 영상에 자막을 넣는 사람", review:"", updated:"2026-10" },
+  { id:"capcut", cat:"video", name:"CapCut", desc:"AI 기능이 많은 무료 영상 편집", url:"https://www.capcut.com",
+    s:{quality:4, free:4, korean:4.5, easy:4.5},
+    pros:["자동 자막, 배경 제거 등 AI 기능이 많음","휴대폰 앱으로도 편집 가능"], cons:["일부 효과와 기능은 유료"],
+    who:"쇼츠, 릴스 영상을 편집하는 사람", review:"", updated:"2026-10" },
+  { id:"clovanote", cat:"audio", name:"클로바노트", desc:"녹음하면 글로 받아써줌", url:"https://clovanote.naver.com",
+    s:{quality:4.5, free:4, korean:5, easy:5},
+    pros:["한국어 받아쓰기가 아주 정확함","말한 사람을 구분해서 정리"], cons:["오디오 자체를 편집하는 기능은 없음"],
+    who:"수업이나 회의 녹음을 정리하는 사람", review:"", updated:"2026-10" },
+  { id:"moises", cat:"audio", name:"Moises", desc:"노래에서 목소리와 악기 분리", url:"https://moises.ai",
+    s:{quality:4.5, free:3, korean:3, easy:4.5},
+    pros:["노래에서 보컬, 드럼, 베이스를 따로 분리","연습용으로 속도와 키 조절"], cons:["무료는 분리할 수 있는 곡 수가 적음"],
+    who:"악기 연습이나 커버곡을 하는 사람", review:"", updated:"2026-10" },
+  { id:"soundraw", cat:"music", name:"Soundraw", desc:"영상 배경음악 만들기", url:"https://soundraw.io",
+    s:{quality:3.5, free:2.5, korean:3, easy:4.5},
+    pros:["분위기와 길이만 고르면 배경음악 완성"], cons:["노래(가사) 생성은 안 됨","다운로드는 유료"],
+    who:"영상에 넣을 배경음악이 필요한 사람", review:"", updated:"2026-10" },
+  { id:"aiva", cat:"music", name:"AIVA", desc:"클래식, 영화 음악 작곡", url:"https://www.aiva.ai",
+    s:{quality:4, free:3, korean:2.5, easy:3.5},
+    pros:["오케스트라, 피아노 곡 작곡에 강함","악보로 내보내기 가능"], cons:["사용법을 익히는 데 시간이 걸림"],
+    who:"작곡이나 음악 공부를 하는 사람", review:"", updated:"2026-10" },
+  { id:"github-copilot", cat:"code", name:"GitHub Copilot", desc:"코드 자동완성의 원조", url:"https://github.com/features/copilot",
+    s:{quality:4.5, free:3.5, korean:3.5, easy:4},
+    pros:["VS Code 등 여러 편집기에서 사용 가능","학생 인증하면 혜택이 있음"], cons:["설정이 처음엔 조금 번거로움"],
+    who:"VS Code로 코딩을 하는 사람", review:"", updated:"2026-10" },
+  { id:"lovable", cat:"code", name:"Lovable", desc:"말로 설명하면 웹사이트 완성", url:"https://lovable.dev",
+    s:{quality:4, free:3, korean:3.5, easy:5},
+    pros:["코딩을 몰라도 대화로 웹사이트 제작"], cons:["무료로 수정할 수 있는 횟수가 적음"],
+    who:"코딩 없이 내 사이트를 만들고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"bolt", cat:"code", name:"Bolt", desc:"브라우저에서 앱을 바로 만들어줌", url:"https://bolt.new",
+    s:{quality:4, free:3, korean:3, easy:4.5},
+    pros:["설치 없이 브라우저에서 앱 제작과 실행"], cons:["큰 프로젝트는 무료 한도가 금방 참"],
+    who:"아이디어를 빨리 앱으로 만들어보고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"miricanvas", cat:"slide", name:"미리캔버스", desc:"한국형 디자인 템플릿 + AI", url:"https://www.miricanvas.com",
+    s:{quality:4, free:4, korean:5, easy:4.5},
+    pros:["한국 학생, 직장인용 템플릿이 많음","한글 글꼴이 다양함"], cons:["AI 기능은 다른 서비스보다 단순함"],
+    who:"수행평가 발표자료를 예쁘게 만들고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"napkin", cat:"slide", name:"Napkin AI", desc:"글을 넣으면 도표로 바꿔줌", url:"https://www.napkin.ai",
+    s:{quality:4, free:4, korean:3.5, easy:4.5},
+    pros:["글만 넣으면 그림 도표를 자동 생성"], cons:["발표자료 전체를 만들어주지는 않음"],
+    who:"발표자료에 넣을 도표가 필요한 사람", review:"", updated:"2026-10" },
+  { id:"notebooklm", cat:"study", name:"NotebookLM", desc:"내 자료로 공부 도우미 만들기", url:"https://notebooklm.google.com",
+    s:{quality:4.5, free:4.5, korean:4, easy:4.5},
+    pros:["올린 자료만 바탕으로 답해서 정확함","자료를 팟캐스트처럼 대화로 들려줌"], cons:["자료를 직접 모아서 올려야 함"],
+    who:"교과서, 프린트로 시험 공부하는 사람", review:"", updated:"2026-10" },
+  { id:"qanda", cat:"study", name:"콴다", desc:"문제 사진 찍으면 풀이 검색", url:"https://qanda.ai",
+    s:{quality:4, free:4, korean:5, easy:5},
+    pros:["사진 한 장으로 수학 풀이 검색","한국 교과 과정에 맞춰져 있음"], cons:["풀이만 보면 실력이 안 늘 수 있음"],
+    who:"막힌 수학 문제 풀이가 궁금한 학생", review:"", updated:"2026-10" },
+  { id:"speak", cat:"study", name:"스픽", desc:"AI와 영어로 말하기 연습", url:"https://www.speak.com",
+    s:{quality:4, free:2.5, korean:5, easy:4.5},
+    pros:["AI와 실제 대화하듯 영어 말하기 연습","발음을 바로 교정해줌"], cons:["대부분 기능이 유료"],
+    who:"영어 회화를 연습하고 싶은 사람", review:"", updated:"2026-10" },
+  { id:"quizlet", cat:"study", name:"Quizlet", desc:"단어장과 퀴즈 자동 생성", url:"https://quizlet.com",
+    s:{quality:4, free:3.5, korean:4, easy:4.5},
+    pros:["노트를 넣으면 단어 카드와 퀴즈 생성"], cons:["AI 기능 일부는 유료"],
+    who:"영단어, 암기 과목을 공부하는 사람", review:"", updated:"2026-10" },
+  { id:"deepl", cat:"trans", name:"DeepL", desc:"자연스러운 번역", url:"https://www.deepl.com",
+    s:{quality:4.5, free:4, korean:4.5, easy:5},
+    pros:["문장이 자연스럽게 번역됨","문서 파일 통째로 번역 가능"], cons:["무료는 한 번에 번역할 글자 수 제한"],
+    who:"영어 지문이나 자료를 번역하는 사람", review:"", updated:"2026-10" },
+  { id:"papago", cat:"trans", name:"파파고", desc:"한국어에 강한 네이버 번역", url:"https://papago.naver.com",
+    s:{quality:4, free:5, korean:5, easy:5},
+    pros:["한국어 말투와 존댓말 번역이 좋음","사진 속 글자 번역 가능"], cons:["전문 용어 번역은 아쉬울 때가 있음"],
+    who:"일상 번역이 필요한 사람", review:"", updated:"2026-10" },
+  { id:"google-translate", cat:"trans", name:"Google 번역", desc:"가장 많은 언어 지원", url:"https://translate.google.com",
+    s:{quality:3.5, free:5, korean:4, easy:5},
+    pros:["지원하는 언어가 아주 많음","카메라로 실시간 번역"], cons:["긴 문장은 어색하게 번역될 때가 있음"],
+    who:"여러 나라 언어를 번역해야 하는 사람", review:"", updated:"2026-10" },
+];
+
+/* ===== 아래는 동작 코드 ===== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+let current = store.get("cat", CATEGORIES[0].id);
+const favs = new Set(store.get("favs", []));
+if (current !== "fav" && !CATEGORIES.some(c => c.id === current)) current = CATEGORIES[0].id;
+const weights = Object.assign(Object.fromEntries(CRITERIA.map(c => [c.key, 2])), store.get("weights", {}));
+let query = "";
+let cameFromHome = false;
+
+const catLabel = id => (CATEGORIES.find(c => c.id === id) || {}).label || "";
+function total(t){
+  let sum = 0, w = 0;
+  for (const c of CRITERIA){ sum += (t.s[c.key] || 0) * weights[c.key]; w += weights[c.key]; }
+  return w ? sum / w : 0;
+}
+function ranked(cat){ return TOOLS.filter(t => t.cat === cat).map(t => ({...t, total: total(t)})).sort((a,b) => b.total - a.total); }
+
+// 이름으로 아이콘 색 정하기
+const HUES = [214, 262, 160, 24, 340, 190, 45, 290];
+function iconStyle(name){
+  let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const hue = HUES[h % HUES.length];
+  return `background:hsl(${hue} 90% 94%);color:hsl(${hue} 70% 42%)`;
+}
+const icon = (t, cls="icon") => `<span class="${cls}" style="${iconStyle(t.name)}" aria-hidden="true">${esc(t.name.charAt(0))}</span>`;
+const stars = v => `<span class="stars" aria-label="5점 만점에 ${v.toFixed(1)}점">★★★★★<i style="width:${(v/5*100).toFixed(1)}%">★★★★★</i></span>`;
+const chev = `<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>`;
+
+const heartSvg = `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.4 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.6 0 5.6 3.5 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>`;
+const shareSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>`;
+let toastTimer;
+function toast(msg){
+  const el = $("toast"); el.textContent = msg; el.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+}
+
+/* ---------- 홈 ---------- */
+function renderCats(){
+  $("cats").innerHTML = `<button class="cat fav" aria-pressed="${current === "fav"}" data-cat="fav">♥ 찜 ${favs.size || ""}</button>` +
+    CATEGORIES.map(c =>
+    `<button class="cat" aria-pressed="${c.id === current}" data-cat="${c.id}">${esc(c.label)}</button>`).join("");
+  $("cats").querySelectorAll(".cat").forEach(b => b.onclick = () => {
+    current = b.dataset.cat; store.set("cat", current);
+    query = ""; $("q").value = ""; $("searchBox").classList.remove("has-text");
+    renderCats(); renderList();
+  });
+}
+
+function row(t, rank, searching){
+  return `<li><button class="row-btn" data-id="${t.id}">
+    <span class="rank">${rank ?? ""}</span>${icon(t)}
+    <span><span class="name">${esc(t.name)}</span>${favs.has(t.id) ? `<span class="mini-heart" aria-label="찜함">♥</span>` : ""}
+      <span class="desc">${searching ? `<span class="catname">${esc(catLabel(t.cat))}</span> · ` : ""}${esc(t.desc)}</span></span>
+    <span class="score"><b>${t.total.toFixed(1)}</b><br>${stars(t.total)}</span>${chev}
+  </button></li>`;
+}
+
+function renderList(){
+  const q = query.trim().toLowerCase();
+  const searching = q !== "";
+  $("cats").style.opacity = searching ? .45 : 1;
+  let items;
+  if (searching){
+    items = TOOLS.filter(t => [t.name, t.desc, catLabel(t.cat), t.who, ...(t.pros||[])].join(" ").toLowerCase().includes(q))
+      .map(t => ({...t, total: total(t)})).sort((a,b) => b.total - a.total);
+    $("champ").innerHTML = "";
+    $("listTitle").textContent = `"${query.trim()}" 검색 결과`;
+  } else if (current === "fav"){
+    items = TOOLS.filter(t => favs.has(t.id)).map(t => ({...t, total: total(t)})).sort((a,b) => b.total - a.total);
+    $("champ").innerHTML = "";
+    $("listTitle").textContent = "찜한 AI";
+  } else {
+    items = ranked(current);
+    $("listTitle").textContent = `${catLabel(current)} AI 순위`;
+    const top = items[0];
+    $("champ").innerHTML = top ? `<button class="champ" data-id="${top.id}">
+      <span class="tag">${esc(catLabel(current))} 1위</span>
+      <span class="row">${icon(top)}<span><span class="nm">${esc(top.name)}</span><br><span class="ds">${esc(top.desc)}</span></span>
+      <span class="big"><b>${top.total.toFixed(1)}</b><small>5점 만점</small></span></span></button>` : "";
+  }
+  $("list").innerHTML = items.length
+    ? items.map((t, i) => row(t, (searching || current === "fav") ? null : i + 1, searching || current === "fav")).join("")
+    : `<li class="empty">${searching ? "찾는 AI가 없어요. 다른 단어로 검색해 보세요." : current === "fav" ? "아직 찜한 AI가 없어요.<br>AI 페이지에서 ♡ 찜하기를 눌러 보세요." : "이 카테고리에 아직 AI가 없어요."}</li>`;
+  $("home").querySelectorAll(".row-btn, .champ").forEach(b => b.onclick = () => { cameFromHome = true; location.hash = "#/ai/" + b.dataset.id; });
+}
+
+/* ---------- 채점 기준 시트 ---------- */
+function renderWeights(){
+  $("weights").innerHTML = CRITERIA.map(c => `
+    <label class="wrow"><span>${esc(c.label)}</span>
+      <input type="range" min="0" max="3" step="1" value="${weights[c.key]}" data-k="${c.key}">
+      <output>×${weights[c.key]}</output></label>`).join("");
+  $("weights").querySelectorAll("input").forEach(i => i.oninput = () => {
+    weights[i.dataset.k] = +i.value; i.nextElementSibling.textContent = "×" + i.value;
+    store.set("weights", weights); renderList();
+  });
+}
+function sheet(open){
+  $("sheet").classList.toggle("open", open); $("sheetBg").classList.toggle("open", open);
+  if (open) $("sheet").querySelector("input").focus(); else $("openSheet").focus();
+}
+$("openSheet").onclick = $("tip").onclick = () => sheet(true);
+$("closeSheet").onclick = $("sheetBg").onclick = () => sheet(false);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("sheet").classList.contains("open")) sheet(false); });
+
+/* ---------- 상세 ---------- */
+function renderDetail(t){
+  const list = ranked(t.cat);
+  const me = list.find(x => x.id === t.id);
+  const pos = list.indexOf(me) + 1;
+  const others = list.filter(x => x.id !== t.id);
+  const bars = CRITERIA.map(c => { const v = t.s[c.key] || 0;
+    return `<div class="bar"><span>${esc(c.label)}</span><div class="track"><div class="fill" style="width:${v/5*100}%"></div></div><span>${v}</span></div>`; }).join("");
+  const li = a => (a || []).map(x => `<li>${esc(x)}</li>`).join("") || `<li>아직 정리 중이에요</li>`;
+
+  $("detail").innerHTML = `
+    <div class="d-hero">${icon(t)}<div>
+      <div class="cat-l">${esc(catLabel(t.cat))}</div>
+      <h1 id="dName">${esc(t.name)}</h1><p>${esc(t.desc)}</p></div></div>
+    <div class="acts">
+      <button class="act ${favs.has(t.id) ? "on" : ""}" id="favBtn" aria-pressed="${favs.has(t.id)}">${heartSvg}<span>${favs.has(t.id) ? "찜했어요" : "찜하기"}</span></button>
+      <button class="act" id="shareBtn">${shareSvg}<span>공유하기</span></button>
+    </div>
+
+    <section class="panel sec">
+      <h2>내 점수</h2>
+      <div class="scorebox"><b>${me.total.toFixed(1)}</b><span class="of">/ 5</span>${stars(me.total)}
+        <span class="pos">${esc(catLabel(t.cat))} ${pos}위</span></div>
+      ${bars}
+    </section>
+
+    <section class="panel sec">
+      <div class="pc">
+        <div class="pros"><h3>좋은 점</h3><ul>${li(t.pros)}</ul></div>
+        <div class="cons"><h3>아쉬운 점</h3><ul>${li(t.cons)}</ul></div>
+      </div>
+    </section>
+
+    ${t.who ? `<section class="panel sec"><h2>이런 사람에게 추천해요</h2><p class="who">${esc(t.who)}</p></section>` : ""}
+
+    <section class="panel sec">
+      <h2>직접 써본 후기</h2>
+      <p class="review ${t.review ? "" : "none"}">${t.review ? esc(t.review) : "후기를 준비하고 있어요."}</p>
+      ${t.updated ? `<div class="meta">${esc(t.updated)} 기준</div>` : ""}
+    </section>
+
+    ${others.length ? `<section class="panel">
+      <div class="list-head"><h2>다른 ${esc(catLabel(t.cat))} AI</h2></div>
+      <ol class="list">${others.map(o => row(o, list.indexOf(o) + 1, false)).join("")}</ol></section>` : ""}
+  `;
+  $("detail").querySelectorAll("[data-id]").forEach(b => b.onclick = () => { cameFromHome = true; location.hash = "#/ai/" + b.dataset.id; });
+  $("favBtn").onclick = () => {
+    const on = !favs.has(t.id);
+    on ? favs.add(t.id) : favs.delete(t.id);
+    store.set("favs", [...favs]);
+    const b = $("favBtn"); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on);
+    b.querySelector("span").textContent = on ? "찜했어요" : "찜하기";
+    toast(on ? "찜 목록에 담았어요" : "찜 목록에서 뺐어요");
+    renderCats();
+  };
+  $("shareBtn").onclick = () => share(t);
+  $("dockLink").href = t.url;
+  $("dockLink").textContent = `${t.name} 사이트 가기`;
+  $("ttl").textContent = t.name;
+  document.title = `${t.name} 후기와 점수 · AI 랭킹 노트`;
+}
+
+function share(t){ return shareLink(location.href, `${t.name} 후기와 점수`, `${t.name}: ${t.desc} (AI 랭킹 노트)`); }
+async function shareLink(url, title, text){
+  const data = { title, text, url };
+  if (navigator.share){
+    try { await navigator.share(data); return; }
+    catch(e){ if (e.name === "AbortError") return; }
+  }
+  try { await navigator.clipboard.writeText(url); toast("링크를 복사했어요"); }
+  catch(e){
+    const ta = document.createElement("textarea"); ta.value = url; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand("copy"); } catch(_){}
+    ta.remove();
+    toast(ok ? "링크를 복사했어요" : "주소창의 링크를 복사해 공유해 주세요");
+  }
+}
+
+/* ---------- AI 추천 퀴즈 ----------
+   질문을 바꾸고 싶으면 QUIZ만 고치면 돼요.
+   set: 답을 고르면 바뀌는 값 (cat = 카테고리, w = 채점 기준 가중치)   */
+const QUIZ = [
+  { q:"무엇을 하고 싶어요?", grid:true, opts:[
+    { em:"💬", t:"질문하고 대화하기", set:{cat:"chat"} },
+    { em:"🎨", t:"그림 만들기", set:{cat:"image"} },
+    { em:"🎬", t:"영상 만들기·편집", set:{cat:"video"} },
+    { em:"🎙️", t:"녹음·목소리 다루기", set:{cat:"audio"} },
+    { em:"🎵", t:"노래 만들기", set:{cat:"music"} },
+    { em:"💻", t:"코딩·웹사이트", set:{cat:"code"} },
+    { em:"📊", t:"발표자료 만들기", set:{cat:"slide"} },
+    { em:"📚", t:"공부하기", set:{cat:"study"} },
+    { em:"🌏", t:"번역하기", set:{cat:"trans"} },
+  ]},
+  { q:"돈은 얼마나 쓸 수 있어요?", opts:[
+    { em:"🙅", t:"무료로만 쓸래요", set:{w:{free:3}} },
+    { em:"🤏", t:"조금은 괜찮아요", set:{w:{free:1.5}} },
+    { em:"💎", t:"상관없어요, 제일 좋은 걸로", set:{w:{free:0, quality:3}} },
+  ]},
+  { q:"영어로 된 사이트도 괜찮아요?", opts:[
+    { em:"🇰🇷", t:"한국어가 편해요", set:{w:{korean:3}} },
+    { em:"👌", t:"영어도 괜찮아요", set:{w:{korean:0.5}} },
+  ]},
+  { q:"AI를 얼마나 써봤어요?", opts:[
+    { em:"🐣", t:"거의 처음이에요", set:{w:{easy:3}} },
+    { em:"🙂", t:"몇 번 써봤어요", set:{w:{easy:1.5}} },
+    { em:"😎", t:"자주 써요", set:{w:{easy:0.5}} },
+  ]},
+];
+const WHY = {
+  quality:"결과물 품질이 좋아요",
+  free:"무료로도 충분히 쓸 수 있어요",
+  korean:"한국어로 쓰기 편해요",
+  easy:"처음 써도 어렵지 않아요",
+};
+let qStep = 0, qAns = [];
+
+function quizResult(){
+  let cat = "chat"; const w = { quality:2, free:1, korean:1, easy:1 };
+  qAns.forEach(a => { if (a.set.cat) cat = a.set.cat; Object.assign(w, a.set.w || {}); });
+  const score = t => { let s = 0, sw = 0; for (const k in w){ s += (t.s[k] || 0) * w[k]; sw += w[k]; } return sw ? s / sw : 0; };
+  const list = TOOLS.filter(t => t.cat === cat).map(t => ({...t, fit: score(t)})).sort((a,b) => b.fit - a.fit);
+  return { list, w };
+}
+
+function renderQuiz(){
+  const el = $("quiz");
+  if (qStep < QUIZ.length){
+    const Q = QUIZ[qStep];
+    el.innerHTML = `<div class="q-wrap">
+      <div class="q-prog"><div style="width:${qStep / QUIZ.length * 100}%"></div></div>
+      <div class="q-step">${qStep + 1} / ${QUIZ.length}</div>
+      <h1 class="q-title">${esc(Q.q)}</h1>
+      <div class="q-opts ${Q.grid ? "two" : ""}">${Q.opts.map((o, i) =>
+        `<button class="q-opt" data-i="${i}"><span class="em" aria-hidden="true">${o.em}</span>${esc(o.t)}</button>`).join("")}</div>
+      ${qStep > 0 ? `<button class="q-prev" id="qPrev">← 이전 질문</button>` : ""}
+    </div>`;
+    el.querySelectorAll(".q-opt").forEach(b => b.onclick = () => {
+      qAns[qStep] = Q.opts[+b.dataset.i]; qStep++; renderQuiz(); window.scrollTo(0, 0);
+    });
+    if ($("qPrev")) $("qPrev").onclick = () => { qStep--; renderQuiz(); };
+    const first = el.querySelector(".q-opt"); if (first) first.focus({ preventScroll:true });
+    return;
+  }
+  const { list, w } = quizResult();
+  const best = list[0];
+  if (!best){ el.innerHTML = `<div class="empty">이 분야에 아직 AI가 없어요.</div>`; return; }
+  const reasons = Object.keys(w).filter(k => w[k] >= 1.5 && (best.s[k] || 0) >= 4)
+    .sort((a,b) => w[b] - w[a]).map(k => WHY[k]);
+  if (!reasons.length) reasons.push("고른 조건에서 가장 점수가 높아요");
+  el.innerHTML = `<div class="q-wrap">
+    <div class="q-prog"><div style="width:100%"></div></div>
+    <div class="res-top">
+      <div class="lbl">나에게 딱 맞는 AI는</div>
+      ${icon(best)}
+      <h1>${esc(best.name)}</h1><p>${esc(best.desc)}</p>
+    </div>
+    <section class="panel sec"><h2>추천하는 이유</h2>
+      <ul class="why">${reasons.map(r => `<li>${esc(r)}</li>`).join("")}${best.who ? `<li>${esc(best.who)}에게 잘 맞아요</li>` : ""}</ul>
+    </section>
+    ${list.length > 1 ? `<section class="panel"><div class="list-head"><h2>이것도 잘 맞아요</h2></div>
+      <ol class="list">${list.slice(1, 3).map(o => row({...o, total: total(o)}, null, false)).join("")}</ol></section>` : ""}
+    <div class="res-btns">
+      <button class="cta" id="qGo">${esc(best.name)} 자세히 보기</button>
+      <div class="two"><button class="sub-btn" id="qShare">결과 공유하기</button><button class="sub-btn" id="qAgain">다시 하기</button></div>
+    </div>
+  </div>`;
+  el.querySelectorAll(".row-btn").forEach(b => b.onclick = () => { cameFromHome = true; location.hash = "#/ai/" + b.dataset.id; });
+  $("qGo").onclick = () => { cameFromHome = true; location.hash = "#/ai/" + best.id; };
+  $("qAgain").onclick = () => { qStep = 0; qAns = []; renderQuiz(); window.scrollTo(0, 0); };
+  $("qShare").onclick = () => shareLink(location.href.split("#")[0] + "#/quiz",
+    "AI 추천 퀴즈", `AI 추천 퀴즈 결과, 나에게 딱 맞는 AI는 ${best.name}! 너도 해봐`);
+}
+
+/* ---------- 화면 전환 ---------- */
+function route(){
+  const h = location.hash;
+  const m = h.match(/^#\/ai\/([\w-]+)/);
+  const t = m && TOOLS.find(x => x.id === m[1]);
+  const view = t ? "detail" : h.startsWith("#/quiz") ? "quiz" : "home";
+  ["home","detail","quiz"].forEach(id => $(id).hidden = id !== view);
+  $("dock").hidden = view !== "detail";
+  $("back").hidden = view === "home"; $("logo").hidden = view !== "home";
+  $("ttl").hidden = view === "home"; $("ttl").classList.toggle("show", view === "quiz");
+  if (view === "detail") renderDetail(t);
+  else if (view === "quiz"){ $("ttl").textContent = "AI 추천 퀴즈"; document.title = "나에게 맞는 AI 찾기 · AI 랭킹 노트"; qStep = 0; qAns = []; renderQuiz(); }
+  else { document.title = "AI 랭킹 노트"; renderList(); }
+  const v = $(view);
+  v.classList.remove("view"); void v.offsetWidth; v.classList.add("view");
+  window.scrollTo(0, 0);
+}
+$("quizEntry").onclick = () => { cameFromHome = true; location.hash = "#/quiz"; };
+$("back").onclick = () => { if (cameFromHome) history.back(); else location.hash = "#/"; };
+window.addEventListener("hashchange", route);
+window.addEventListener("scroll", () => {
+  const n = $("dName"); if (!n || $("detail").hidden) return;
+  $("ttl").classList.toggle("show", n.getBoundingClientRect().bottom < 60);
+}, { passive: true });
+
+$("q").oninput = () => { query = $("q").value; $("searchBox").classList.toggle("has-text", !!query); renderList(); };
+$("clear").onclick = () => { $("q").value = ""; $("q").oninput(); $("q").focus(); };
+
+renderCats(); renderWeights(); route();
+</script>
+</body>
+</html>
