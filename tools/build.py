@@ -67,6 +67,9 @@ def head(title, desc, path):
 
 SCRIPTS = '<script src="/assets/data.js"></script>\n<script src="/assets/bit.js"></script>\n<script src="/assets/app.js"></script>'
 TOAST = '<div class="toast" id="toast" role="status" aria-live="polite"></div>'
+EMAIL = 'aidogam.kr@gmail.com'
+FOOT = f'''<p class="foot">점수는 직접 써 본 경험과 공개된 정보를 바탕으로 매기며, 계속 고쳐 나가요.</p>
+    <p class="footlinks"><a href="/about/">소개</a><span>·</span><a href="/privacy/">개인정보 처리방침</a><span>·</span><a href="mailto:{EMAIL}">문의</a></p>'''
 
 def entry(t, rank):
     return f'''<li><a class="entry" href="/ai/{t['id']}/">
@@ -103,7 +106,7 @@ home = head("AI 도감 | 학생이 직접 써보고 매긴 AI 순위", home_desc
       </div>
       <ul class="list" id="list">{''.join(entry(t, i+1) for i, t in enumerate(ranked('chat')))}</ul>
     </div>
-    <p class="foot">점수와 후기는 직접 써본 경험을 바탕으로 합니다.</p>
+    {FOOT}
     {allnav()}
   </section>
   <section id="dex" hidden></section>
@@ -177,7 +180,7 @@ for t in TOOLS:
     <div class="board-head"><h2>{e(cl)} 타입 다른 AI</h2></div>
     <ul class="list" id="others">{others}</ul>
   </div>
-  <p class="foot">점수와 후기는 직접 써본 경험을 바탕으로 합니다.</p>
+  {FOOT}
 </div>
 {TOAST}
 {SCRIPTS}
@@ -186,6 +189,91 @@ for t in TOOLS:
 '''
     os.makedirs(f"{OUT}/ai/{t['id']}", exist_ok=True)
     open(f"{OUT}/ai/{t['id']}/index.html", 'w', encoding='utf-8').write(page)
+
+
+# ---------- 소개 · 개인정보 처리방침 ----------
+CRIT_DESC = {
+  'quality': '— 결과물이 얼마나 쓸 만한지. 글이면 정확하고 자연스러운지, 그림·영상이면 완성도가 높은지 봐요.',
+  'free': '— 돈을 안 내도 어디까지 쓸 수 있는지. 무료 사용량이 넉넉할수록 점수가 높아요.',
+  'korean': '— 한국어로 물어보고 한국어 결과를 받을 때 얼마나 자연스러운지 봐요.',
+  'easy': '— 처음 써 보는 학생도 헤매지 않고 바로 쓸 수 있는지 봐요.',
+}
+def info_page(path, title, desc, body):
+    return head(title, desc, path) + f"""
+<body data-page="info">
+<div class="wrap">
+  <div class="dtop"><a class="back" href="/">◀ 도감으로</a></div>
+  <article class="card px doc">{body}</article>
+  {FOOT}
+</div>
+<script src="/assets/bit.js"></script>
+<script>fillBits();</script>
+</body>
+</html>
+"""
+about = f"""
+    <div class="doc-hero"><span class="bit" data-bit="wave" data-size="92" data-still="3"></span>
+      <div><p class="crumb" style="color:var(--sub)">ABOUT</p><h1>AI 도감 소개</h1></div></div>
+    <h2>어떤 곳인가요?</h2>
+    <p>AI 도감은 챗봇, 그림, 영상, 음악, 발표자료 같은 분야별로 AI를 모아 두고, 한눈에 비교해서 나에게 맞는 걸 고를 수 있게 만든 사이트예요.</p>
+    <h2>왜 만들었나요?</h2>
+    <p>요즘은 학교에서도 AI를 적극적으로 써 보라고 권해요. 그런데 막상 쓰려고 하면 AI 종류가 너무 많아서 무엇부터 써야 할지 막막했어요. 게다가 글쓰기, 그림, 발표자료, 코딩처럼 하는 일이 다양한데, AI 하나로 모든 작업을 전문적으로 해내기는 어렵더라고요.</p>
+    <p>그래서 하고 싶은 일에 맞춰 AI를 입맛대로 찾아 주는 곳이 필요하다고 생각했고, 그게 AI 도감의 시작이에요.</p>
+    <h2>누가 만드나요?</h2>
+    <p>AI를 직접 써 보는 고등학생이 만들고 운영해요. 학생 입장에서 실제로 필요한 기준으로 점수를 매기고, 직접 써 본 AI부터 후기를 채워 나가고 있어요. 아직 충분히 써 보지 못한 AI는 공개된 정보를 참고한 잠정 점수이고, 써 보면서 계속 고쳐요.</p>
+    <h2>점수는 어떻게 매기나요?</h2>
+    <p>AI마다 아래 네 가지를 5점 만점으로 채점하고, 총점은 네 점수의 평균이에요. 홈 화면의 <b>기준 바꾸기</b>로 나에게 중요한 기준의 비중을 높이면 순위가 바뀌어요.</p>
+    <ul>{''.join(f'<li><b>{e(c["label"])}</b> {e(CRIT_DESC.get(c["key"], ""))}</li>' for c in CRIT)}</ul>
+    <h2>알아 두면 좋은 점</h2>
+    <ul>
+      <li>AI 서비스의 가격과 기능은 자주 바뀌어요. 결제하기 전에는 꼭 공식 사이트에서 확인해 주세요.</li>
+      <li>점수는 운영자의 경험과 판단이 담긴 의견이라, 같은 AI라도 쓰는 목적에 따라 느낌이 다를 수 있어요.</li>
+      <li>지금은 어떤 회사에서도 돈이나 협찬을 받지 않아요. 나중에 광고나 제휴가 생기면 이 페이지에 알릴게요.</li>
+    </ul>
+    <h2>마스코트 비트</h2>
+    <p>머리 위 별로 AI 점수를 콕콕 매기는 AI 도감지기, <b>비트</b>예요. 도감에서 써 본 AI를 다 모으면 비트가 깨어난대요.</p>
+    <h2 id="contact">문의</h2>
+    <p>링크가 깨졌거나, 추가했으면 하는 AI가 있거나, 제안하고 싶은 게 있으면 편하게 메일 주세요.</p>
+    <p><a class="act go mail" href="mailto:{EMAIL}">{EMAIL}</a></p>
+    <p class="updated">마지막 업데이트: {TODAY}</p>
+"""
+privacy = f"""
+    <h1>개인정보 처리방침</h1>
+    <p class="updated">시행일: 2026년 10월 10일</p>
+    <p>AI 도감(aidogam.kr, 이하 "사이트")은 방문자의 개인정보를 소중하게 생각해요. 사이트가 어떤 정보를 어떻게 다루는지 알려 드려요.</p>
+    <h2>1. 직접 받는 개인정보</h2>
+    <p>사이트는 회원가입이 없고, 이름이나 연락처 같은 개인정보를 입력받지 않아요.</p>
+    <h2>2. 방문 통계 (구글 애널리틱스)</h2>
+    <p>사이트를 더 좋게 만들기 위해 Google LLC의 <b>구글 애널리틱스</b>를 사용해요. 이 과정에서 쿠키를 통해 다음 정보가 자동으로 수집될 수 있어요.</p>
+    <ul>
+      <li>방문한 페이지와 방문 시간</li>
+      <li>기기 종류, 운영체제, 브라우저</li>
+      <li>대략적인 지역(국가·도시 수준)과 사이트에 들어온 경로</li>
+    </ul>
+    <p>이 정보는 누가 방문했는지 알아내는 데 쓰지 않고, 전체 방문 통계를 보는 데만 써요. 구글 애널리틱스의 데이터 보존 설정에 따라 일정 기간(최대 14개월)이 지나면 자동으로 삭제돼요. 구글이 정보를 처리하는 방식은 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">구글 개인정보처리방침</a>에서 볼 수 있어요.</p>
+    <h2>3. 내 기기에만 저장되는 정보</h2>
+    <p>찜한 AI, 써봤어요 기록, 내 채점 기준, 마지막으로 본 탭은 <b>방문자 브라우저 안에만</b> 저장돼요. 운영자나 다른 곳으로 전송되지 않고, 브라우저의 사이트 데이터를 지우면 함께 사라져요.</p>
+    <h2>4. 외부 서비스</h2>
+    <p>글꼴을 보여 주기 위해 Google Fonts를 불러오며, 이때 방문자의 접속 정보(IP 주소 등)가 구글에 전달될 수 있어요. 사이트는 GitHub Pages에서 운영돼요.</p>
+    <h2>5. 수집을 원하지 않을 때</h2>
+    <ul>
+      <li>브라우저 설정에서 쿠키를 차단할 수 있어요.</li>
+      <li>구글이 제공하는 <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">애널리틱스 차단 부가기능</a>을 설치할 수 있어요.</li>
+    </ul>
+    <p>쿠키를 차단해도 사이트는 그대로 이용할 수 있어요.</p>
+    <h2>6. 문의 메일</h2>
+    <p>문의 메일을 보내면 보낸 사람의 이메일 주소와 내용은 답장을 위해서만 쓰고, 다른 곳에 제공하지 않아요.</p>
+    <h2>7. 처리방침이 바뀔 때</h2>
+    <p>내용이 바뀌면 이 페이지에 시행일과 함께 알려 드려요. 나중에 광고를 달게 되면 광고 쿠키에 관한 내용을 추가할 예정이에요.</p>
+    <h2>8. 문의처</h2>
+    <p>개인정보에 관한 문의: <a href="mailto:{EMAIL}">{EMAIL}</a></p>
+"""
+for path, title, desc, body in [
+    ('/about/', 'AI 도감 소개 · 채점 기준 | AI 도감', '학생이 직접 써 보고 점수를 매기는 AI 도감 소개. 결과물 품질, 무료로 쓸 만함, 한국어, 쉬운 정도 네 가지 채점 기준과 문의 방법을 알려 드려요.', about),
+    ('/privacy/', '개인정보 처리방침 | AI 도감', 'AI 도감이 방문 통계(구글 애널리틱스)와 쿠키를 어떻게 다루는지 알려 드려요.', privacy),
+]:
+    os.makedirs(OUT + path, exist_ok=True)
+    open(OUT + path + 'index.html', 'w', encoding='utf-8').write(info_page(path, title, desc, body))
 
 # ---------- 404 ----------
 open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 수 없어요 | AI 도감", "AI 도감에서 찾는 페이지가 없어요.", "/404.html").replace('<link rel="canonical" href="https://aidogam.kr/404.html">', '<meta name="robots" content="noindex">') + '''
@@ -206,7 +294,7 @@ open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 �
 ''')
 
 # ---------- sitemap / robots ----------
-urls = ['/'] + [f"/ai/{t['id']}/" for t in TOOLS]
+urls = ['/', '/about/', '/privacy/'] + [f"/ai/{t['id']}/" for t in TOOLS]
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
      ''.join(f'  <url><loc>{SITE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n' for u in urls) + '</urlset>\n'
 open(f'{OUT}/sitemap.xml', 'w', encoding='utf-8').write(sm)
