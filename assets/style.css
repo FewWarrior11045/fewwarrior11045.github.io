@@ -287,6 +287,26 @@ a.entry{cursor:pointer}
 .badge-cell .bn{font-weight:700; font-size:.85rem; line-height:1.25}
 .badge-cell .bd{font-size:.7rem; color:var(--sub); line-height:1.35; word-break:keep-all}
 .badge-cell.locked .bn{color:var(--sub)}
-.toast.badge{display:flex; align-items:center; gap:8px; background:var(--gold); color:var(--ink); font-weight:700;
+
+/* ===== 업적 달성 알림 (오른쪽 위 슬라이드) ===== */
+.ach{position:fixed; top:calc(14px + env(safe-area-inset-top,0px)); right:12px; z-index:50; display:flex; align-items:center; gap:10px;
+  max-width:min(320px, calc(100% - 24px)); padding:10px 14px 10px 10px; background:#1E2A1B; color:#E3EDD2;
+  box-shadow:0 -4px 0 0 #000,0 4px 0 0 #000,-4px 0 0 0 #000,4px 0 0 0 #000, inset 0 0 0 3px #4E5D47;
+  transform:translateX(calc(100% + 30px)); transition:transform .45s cubic-bezier(.2,.9,.3,1.2)}
+.ach.in{transform:none}
+.ach .medal{flex:none}
+.ach small{display:block; color:var(--gold); font-weight:700; font-size:.78rem}
+.ach b{display:block; font-family:var(--title); font-weight:400; font-size:1.15rem; line-height:1.2}
+.ach em{display:block; font-style:normal; font-size:.75rem; color:#C9D8B2}
+@media (prefers-reduced-motion: reduce){ .ach{transition:none} }
+/* ===== 개발자 창 ===== */
+.dev{bottom:auto; top:50%; transform:translate(-50%,-50%); max-height:calc(100% - 40px); overflow:auto}
+.dev-head{display:flex; align-items:center; justify-content:space-between}
+.dev-head h2{margin:0}
+.dev-stat{font-size:.85rem; font-weight:700; background:var(--lcd-dk); padding:6px 10px; margin:0 0 12px}
+.dev-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.dev-btn{border:0; background:#FAFDF4; text-align:left; padding:10px; margin:3px;
   box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink)}
-.toast.badge .medal{flex:none}
+.dev-btn b{display:block; font-size:.9rem}
+.dev-btn small{display:block; font-size:.72rem; color:var(--sub); line-height:1.35}
+.dev-btn[data-act="all"]{background:#FFD1DD}

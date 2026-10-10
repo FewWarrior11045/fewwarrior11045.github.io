@@ -79,8 +79,6 @@ const favLabel = on => on ? `${heart(14, "#fff", true)}찜했어요` : `${heart(
 
 function toast(msg){
   const el = $("toast"); if (!el) return;
-  if (typeof badgeQueue !== "undefined" && badgeQueue.length) return;   // 배지 알림이 떠 있으면 양보
-  el.classList.remove("badge");
   el.textContent = msg; el.classList.add("show");
   clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 1600);
 }
@@ -124,22 +122,56 @@ function checkBadges(){
   store.set("badges", [...got]);
   fresh.forEach(id => badgeToast(BADGES.find(b => b.id === id)));
 }
+/* 효과음: 파일 없이 브라우저에서 직접 만든 "슥" 소리 */
+let audioCtx = null;
+function soundOn(){ return store.get("sound", 1) === 1; }
+function ensureAudio(){
+  if (audioCtx) return audioCtx;
+  try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch { audioCtx = null; }
+  return audioCtx;
+}
+document.addEventListener("pointerdown", () => { const c = ensureAudio(); if (c && c.state === "suspended") c.resume(); }, { once:true });
+function whoosh(dir){
+  if (!soundOn()) return;
+  const c = ensureAudio(); if (!c) return;
+  const t = c.currentTime, len = 0.32;
+  const buf = c.createBuffer(1, Math.floor(c.sampleRate * len), c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const src = c.createBufferSource(); src.buffer = buf;
+  const f = c.createBiquadFilter(); f.type = "bandpass"; f.Q.value = 1.4;
+  const [a, b] = dir === "in" ? [500, 3200] : [2600, 400];
+  f.frequency.setValueAtTime(a, t); f.frequency.exponentialRampToValueAtTime(b, t + len);
+  const g = c.createGain(); g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(dir === "in" ? 0.22 : 0.12, t + 0.06);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+  src.connect(f); f.connect(g); g.connect(c.destination); src.start(t); src.stop(t + len);
+  if (dir === "in"){   // 반짝 하는 두 음
+    [[1318.5, 0.12], [1760, 0.22]].forEach(([hz, at]) => {
+      const o = c.createOscillator(); o.type = "square"; o.frequency.value = hz;
+      const og = c.createGain(); og.gain.setValueAtTime(0.0001, t + at);
+      og.gain.exponentialRampToValueAtTime(0.05, t + at + 0.02);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + at + 0.18);
+      o.connect(og); og.connect(c.destination); o.start(t + at); o.stop(t + at + 0.2);
+    });
+  }
+}
+/* 업적 달성 알림: 오른쪽 위에서 슥 나왔다가 슥 들어감 */
 const badgeQueue = [];
 function badgeToast(b){
   badgeQueue.push(b);
-  if (badgeQueue.length > 1) return;
-  const show = () => {
-    const cur = badgeQueue[0]; if (!cur) return;
-    const el = $("toast"); if (!el){ badgeQueue.length = 0; return; }
-    el.innerHTML = `${medal(cur, 24)}<span>배지 획득! <b>${esc(cur.name)}</b></span>`;
-    el.classList.add("show", "badge");
-    clearTimeout(toast.t);
-    toast.t = setTimeout(() => {
-      el.classList.remove("show", "badge"); badgeQueue.shift();
-      if (badgeQueue.length) setTimeout(show, 250);
-    }, 2400);
-  };
-  show();
+  if (badgeQueue.length === 1) showAch();
+}
+function showAch(){
+  const cur = badgeQueue[0]; if (!cur) return;
+  let el = $("ach");
+  if (!el){ el = document.createElement("div"); el.id = "ach"; el.className = "ach"; el.setAttribute("role", "status"); el.setAttribute("aria-live", "polite"); document.body.appendChild(el); }
+  el.innerHTML = `${medal(cur, 40)}<span><small>업적 달성!</small><b>${esc(cur.name)}</b><em>${esc(cur.desc)}</em></span>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); whoosh("in"); }));
+  setTimeout(() => {
+    el.classList.remove("in"); whoosh("out");
+    setTimeout(() => { badgeQueue.shift(); if (badgeQueue.length) showAch(); }, 600);
+  }, 3000);
 }
 
 /* 공유: 휴대폰은 공유 창, 안 되면 링크 복사 */
@@ -318,6 +350,51 @@ function initHome(){
     $("modal").classList.toggle("open", open); $("mbg").classList.toggle("open", open);
     if (open) $("modal").querySelector("button").focus(); else $("openW").focus();
   }
+  /* 개발자 창: 로고 "AI 도감"을 3초 안에 7번 누르면 열림 */
+  let taps = [];
+  document.querySelector(".logo").addEventListener("click", () => {
+    const now = Date.now(); taps = taps.filter(t => now - t < 3000); taps.push(now);
+    if (taps.length >= 7){ taps = []; openDev(); }
+  });
+  function openDev(){
+    let m = $("dev");
+    if (!m){
+      m = document.createElement("div"); m.id = "dev"; m.className = "modal px dev"; m.setAttribute("role", "dialog"); m.setAttribute("aria-modal", "true");
+      document.body.appendChild(m);
+    }
+    const row = (id, label, note) => `<button class="dev-btn" data-act="${id}"><b>${label}</b><small>${note}</small></button>`;
+    m.innerHTML = `
+      <div class="dev-head"><h2>🛠 개발자 창</h2><button class="tip-x" id="devX" aria-label="닫기">×</button></div>
+      <p>이 기기(브라우저)에 저장된 기록만 바뀌어요. 다른 사람한텐 영향 없어요.</p>
+      <div class="dev-stat">찜 ${favs.size} · 써봄 ${seen.size} · 배지 ${earnedBadges().size}/${BADGES.length} · 소리 ${soundOn() ? "켜짐" : "꺼짐"}</div>
+      <div class="dev-grid">
+        ${row("badges", "업적 초기화", "딴 배지 전부 지우기")}
+        ${row("favs", "찜 초기화", "찜한 AI 전부 지우기")}
+        ${row("seen", "써봤어요 초기화", "도감 기록 전부 지우기")}
+        ${row("weights", "기준 초기화", "채점 기준을 기본값으로")}
+        ${row("tips", "안내 다시 보기", "기준 바꾸기 말풍선 다시 띄우기")}
+        ${row("test", "업적 알림 테스트", "알림이랑 효과음 미리 보기")}
+        ${row("sound", "소리 켜기/끄기", "업적 효과음")}
+        ${row("all", "전체 초기화", "이 사이트 기록 전부 지우기")}
+      </div>`;
+    m.classList.add("open"); $("mbg").classList.add("open");
+    const close = () => { m.classList.remove("open"); $("mbg").classList.remove("open"); };
+    $("devX").onclick = close; $("mbg").onclick = () => { close(); modal(false); };
+    m.querySelectorAll(".dev-btn").forEach(btn => btn.onclick = () => {
+      const act = btn.dataset.act;
+      if (act === "test"){ close(); badgeToast(BADGES[Math.floor(Math.random() * BADGES.length)]); return; }
+      if (act === "sound"){ store.set("sound", soundOn() ? 0 : 1); openDev(); return; }
+      if (act === "all" && !confirm("이 사이트 기록을 전부 지울까요?")) return;
+      if (act === "badges" || act === "all"){ store.set("badges", []); store.set("quizDone", 0); store.set("customW", 0); }
+      if (act === "favs" || act === "all"){ favs.clear(); store.set("favs", []); }
+      if (act === "seen" || act === "all"){ seen.clear(); store.set("seen", []); }
+      if (act === "weights" || act === "all"){ CRITERIA.forEach(c => weights[c.key] = DEFAULT_W); store.set("weights", weights); }
+      if (act === "tips" || act === "all"){ store.set("tipW", 0); $("tipW").hidden = false; }
+      if (act === "all"){ store.set("type", "chat"); store.set("sound", 1); }
+      toast("초기화했어요"); route(); openDev();
+    });
+  }
+
   /* 기준 바꾸기 안내: X를 누르거나 기준 바꾸기를 한 번 열면 다시 안 보여요 */
   const hideTip = () => { $("tipW").hidden = true; store.set("tipW", 1); };
   if (!store.get("tipW", 0)) $("tipW").hidden = false;
