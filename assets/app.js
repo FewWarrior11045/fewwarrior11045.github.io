@@ -79,8 +79,67 @@ const favLabel = on => on ? `${heart(14, "#fff", true)}찜했어요` : `${heart(
 
 function toast(msg){
   const el = $("toast"); if (!el) return;
+  if (typeof badgeQueue !== "undefined" && badgeQueue.length) return;   // 배지 알림이 떠 있으면 양보
+  el.classList.remove("badge");
   el.textContent = msg; el.classList.add("show");
   clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 1600);
+}
+
+/* ================= 업적 배지 ================= */
+/* 배지마다 다른 픽셀 그림 (14×14) */
+const BADGE_PAL = {"K": "#1E2A1B", "W": "#FFFFFF", "G": "#6CC46A", "g": "#3A8A38", "Y": "#FFD43B", "y": "#E0A020", "L": "#FFF1A8", "N": "#B5793A", "n": "#E9BE8C", "B": "#3182F6", "b": "#8DB4F5", "R": "#F04452", "P": "#FF8CAA", "p": "#FFD1DD", "V": "#A07BEA", "v": "#D6C6F6", "S": "#C9D3DD", "C": "#56B6E8"};
+const BADGE_ART = {"first": ["..............", "..KKK....KKK..", ".KGGGK..KGGGK.", ".KGGGGKKGGGGK.", "..KGGGgKgGGK..", "...KKKKgKKK...", "......KgK.....", "......KgK.....", "..KKKKKKKKKK..", "..KnnnnnnnnK..", "..KNNNNNNNNK..", "...KNNNNNNK...", "...KNNNNNNK...", "....KKKKKK...."], "ten": ["..............", "..............", "..KKKKKKKKKK..", ".KnnnnnnnnnnK.", ".KNNNNNNNNNNK.", ".KNNNNNNNNNNK.", ".KKKKKYYKKKKK.", ".KYYYKyyKYYYK.", ".KNNNKYYKNNNK.", ".KNNNNKKNNNNK.", ".KNNNNNNNNNNK.", ".KnNNNNNNNNnK.", ".KKKKKKKKKKKK.", ".............."], "quarter": ["..............", "..............", "......KK......", "....KKVVKK....", "..KKVVVVVVKK..", "KKVVVVvvVVVVKK", "..KKVVVVVVKKY.", "....KKVVKK..Y.", "...KVVVVVVK.Y.", "...KVVVVVVK.Y.", "...KVVVVVVKYYY", "....KKKKKK.YYY", "..............", ".............."], "all": ["..............", "..............", "......W.......", "..............", ".KK...KK...KK.", ".KYK.KYYK.KYK.", ".KYYKYYYYKYYK.", ".KYYYYYYYYYYK.", ".KYRYYBBYYRYK.", ".KYYYYYYYYYYK.", ".KyyyyyyyyyyK.", "..KKKKKKKKKK..", "..............", ".............."], "fav1": ["..............", "..KKK....KKK..", ".KPPPK..KPPPK.", "KPWPPPKKPPPPPK", "KPPPPPPPPPPPPK", "KPPPPPPPPPPPPK", ".KPPPPPPPPPPK.", "..KPPPPPPPPK..", "...KPPPPPPK...", "....KPPPPK....", ".....KPPK.....", "......KK......", "..............", ".............."], "fav5": [".KK.KK.....W..", "KPPKPPK...WWW.", "KPPPPPK....W..", ".KPPPK........", "..KPK.........", "...K.KKK..KKK.", "....KRWRKKRRRK", "....KRRRRRRRRK", "....KRRRRRRRRK", ".....KRRRRRRK.", "......KRRRRK..", ".......KRRK...", "........KK....", ".............."], "typefull": ["..............", "..KKKKKKKKKK..", "KKKYYYYYYYYKKK", "KYKYLYYYYYYKYK", "KYKYLYYYYYYKYK", ".KKYYYYYYYYKK.", "...KYYYYYYK...", "....KYYYYK....", ".....KyyK.....", "......KK......", ".....KYYK.....", "....KKKKKK....", "....KNNNNK....", "....KKKKKK...."], "alltypes": ["..............", ".....KKKK.....", "...KKSSSSKK...", "..KSWWRRWWSK..", ".KSWWWRRWWWSK.", ".KSWWWRRWWWSK.", "KSWWWWKKWWWWSK", "KSWWWWKKWWWWSK", ".KSWWWBBWWWSK.", ".KSWWWBBWWWSK.", "..KSWWBBWWSK..", "...KKSSSSKK...", ".....KKKK.....", ".............."], "quiz": ["..............", ".....KKKK.....", "...KKRRRRKK...", "..KRRWWWWRRK..", ".KRWWRRRRWWRK.", ".KRWRRWWRRWRK.", "KRWRWWRRWWRWRK", "KRWRWWRRWWRWRK", ".KRWRRWWRRWRK.", ".KRWWRRRRWWRK.", "..KRRWWWWRRK..", "...KKRRRRKK...", ".....KKKK.....", ".............."], "custom": ["...K..........", "..KYK......W..", "KKYYYKK...WCW.", "KYYLYYK....W..", ".KYYYK........", "KYYKYYK.......", "KK...KKK......", "......KVK.....", ".......KVK....", "........KVK...", "..Y......KVK..", ".YLY......KVK.", "..Y........KVK", "............KV"]};
+const BADGES = [
+  { id:"first",    name:"첫 기록",     desc:"AI 1개를 써봤어요로 기록",       test:() => seen.size >= 1 },
+  { id:"ten",      name:"수집가",      desc:"AI 10개 기록",                   test:() => seen.size >= 10 },
+  { id:"quarter",  name:"도감 박사",   desc:"AI 25개 기록",                   test:() => seen.size >= 25 },
+  { id:"all",      name:"도감 완성",   desc:"AI 전부 기록",                   test:() => seen.size >= TOOLS.length },
+  { id:"fav1",     name:"마음에 쏙",   desc:"처음으로 찜하기",               test:() => favs.size >= 1 },
+  { id:"fav5",     name:"찜 부자",     desc:"AI 5개 찜하기",                  test:() => favs.size >= 5 },
+  { id:"typefull", name:"타입 마스터", desc:"한 타입의 AI를 전부 기록",       test:() => CATEGORIES.some(c => TOOLS.filter(t => t.cat === c.id).every(t => seen.has(t.id))) },
+  { id:"alltypes", name:"만능 탐험가", desc:"모든 타입에서 1개 이상 기록",    test:() => CATEGORIES.every(c => TOOLS.some(t => t.cat === c.id && seen.has(t.id))) },
+  { id:"quiz",     name:"퀴즈 도전",   desc:"추천 퀴즈를 끝까지 풀기",        test:() => !!store.get("quizDone", 0) },
+  { id:"custom",   name:"나만의 기준", desc:"기준 바꾸기로 기준을 바꿔 보기", test:() => !!store.get("customW", 0) },
+];
+function medal(b, size, locked){
+  const rows = BADGE_ART[b.id] || [];
+  const r = [];
+  rows.forEach((row, y) => [...row].forEach((ch, x) => {
+    if (ch === ".") return;
+    const c = !locked || ch === "K" ? BADGE_PAL[ch] : ("WLpnvbS".includes(ch) ? "#D3DCC8" : "#B8C2AE");
+    r.push(`<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`);
+  }));
+  return `<svg class="medal" width="${size}" height="${size}" viewBox="0 0 14 14" shape-rendering="crispEdges" aria-hidden="true">${r.join("")}</svg>`;
+}
+function earnedBadges(){ return new Set(store.get("badges", [])); }
+/* 새로 딴 배지가 있으면 저장하고 알림을 띄움 (한 번 딴 배지는 계속 유지) */
+function checkBadges(){
+  const saved = store.get("badges", null);
+  const now = BADGES.filter(b => b.test()).map(b => b.id);
+  if (saved === null){ store.set("badges", now); return; }   // 처음엔 조용히 기록만
+  const got = new Set(saved);
+  const fresh = now.filter(id => !got.has(id));
+  if (!fresh.length) return;
+  fresh.forEach(id => got.add(id));
+  store.set("badges", [...got]);
+  fresh.forEach(id => badgeToast(BADGES.find(b => b.id === id)));
+}
+const badgeQueue = [];
+function badgeToast(b){
+  badgeQueue.push(b);
+  if (badgeQueue.length > 1) return;
+  const show = () => {
+    const cur = badgeQueue[0]; if (!cur) return;
+    const el = $("toast"); if (!el){ badgeQueue.length = 0; return; }
+    el.innerHTML = `${medal(cur, 24)}<span>배지 획득! <b>${esc(cur.name)}</b></span>`;
+    el.classList.add("show", "badge");
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => {
+      el.classList.remove("show", "badge"); badgeQueue.shift();
+      if (badgeQueue.length) setTimeout(show, 250);
+    }, 2400);
+  };
+  show();
 }
 
 /* 공유: 휴대폰은 공유 창, 안 되면 링크 복사 */
@@ -154,6 +213,16 @@ function initHome(){
   }
 
   /* 내 도감 */
+  function badgeSection(){
+    const got = earnedBadges();
+    const n = BADGES.filter(b => got.has(b.id)).length;
+    return `<section class="dexsec badges"><h2 style="--tc:var(--gold)"><i></i>업적 배지<span class="n">${n}/${BADGES.length}</span></h2>
+      <div class="bgrid">${BADGES.map(b => {
+        const on = got.has(b.id);
+        return `<div class="badge-cell ${on ? "" : "locked"}" title="${esc(b.desc)}">${medal(b, 42, !on)}
+          <span class="bn">${esc(b.name)}</span><span class="bd">${esc(b.desc)}</span></div>`;
+      }).join("")}</div></section>`;
+  }
   function renderDex(){
     const bar = TOOLS.map((t, i) => `<i class="${i < seen.size ? "on" : ""}"></i>`).join("");
     const secs = CATEGORIES.map(c => {
@@ -173,7 +242,7 @@ function initHome(){
         <h1>내 도감</h1>
         <div class="count"><span>써본 AI</span><b>${seen.size} / ${TOOLS.length}</b></div>
         <div class="bigbar" aria-hidden="true">${bar}</div>
-      </div>${secs}`;
+      </div>${badgeSection()}${secs}`;
     $("dexBack").onclick = () => { location.hash = "#/"; };
     fillBits($("dex"));
   }
@@ -203,6 +272,7 @@ function initHome(){
       if ($("qPrev")) $("qPrev").onclick = () => { qStep--; renderQuiz(); };
       const first = el.querySelector(".qopt"); if (first) first.focus({ preventScroll:true });
     } else {
+      store.set("quizDone", 1); setTimeout(checkBadges, 900);
       const { list, w } = quizResult();
       const best = list[0] && list[0].t;
       if (!best){ el.innerHTML = `${top}<div class="qbox px"><p>이 분야에 아직 AI가 없어요.</p></div>`; }
@@ -239,7 +309,7 @@ function initHome(){
         <button class="step" data-k="${c.key}" data-d="1" aria-label="${esc(c.label)} 높이기" ${weights[c.key] >= 3 ? "disabled" : ""}>+</button></div>`).join("");
     $("wrows").querySelectorAll(".step").forEach(b => b.onclick = () => {
       const k = b.dataset.k; weights[k] = Math.min(3, Math.max(0, weights[k] + +b.dataset.d));
-      store.set("weights", weights); renderW(); renderList();
+      store.set("weights", weights); store.set("customW", 1); renderW(); renderList(); checkBadges();
       const again = $("wrows").querySelector(`.step[data-k="${k}"][data-d="${b.dataset.d}"]`);
       if (again && !again.disabled) again.focus();
     });
@@ -248,7 +318,11 @@ function initHome(){
     $("modal").classList.toggle("open", open); $("mbg").classList.toggle("open", open);
     if (open) $("modal").querySelector("button").focus(); else $("openW").focus();
   }
-  $("openW").onclick = () => { renderW(); modal(true); };
+  /* 기준 바꾸기 안내: X를 누르거나 기준 바꾸기를 한 번 열면 다시 안 보여요 */
+  const hideTip = () => { $("tipW").hidden = true; store.set("tipW", 1); };
+  if (!store.get("tipW", 0)) $("tipW").hidden = false;
+  $("tipX").onclick = hideTip;
+  $("openW").onclick = () => { hideTip(); renderW(); modal(true); };
   $("closeW").onclick = $("mbg").onclick = () => modal(false);
   $("resetW").onclick = () => { CRITERIA.forEach(c => weights[c.key] = DEFAULT_W); store.set("weights", weights); renderW(); renderList(); toast("기본 기준으로 돌아왔어요"); };
   document.addEventListener("keydown", e => { if (e.key === "Escape" && $("modal").classList.contains("open")) modal(false); });
@@ -300,6 +374,7 @@ function initDetail(id){
     store.set("favs", [...favs]);
     fav.setAttribute("aria-pressed", on); fav.innerHTML = favLabel(on);
     toast(on ? "찜 목록에 담았어요" : "찜을 취소했어요");
+    if (on) setTimeout(checkBadges, 1200);
   };
 
   const col = $("collect");
@@ -310,14 +385,34 @@ function initDetail(id){
     on ? seen.add(t.id) : seen.delete(t.id);
     store.set("seen", [...seen]); setCol(on);
     toast(on ? `도감에 기록했어요: ${t.name}` : "기록을 지웠어요");
+    if (on) setTimeout(checkBadges, 1200);
   };
 
   $("share").onclick = () => shareLink(location.origin + aiUrl(t), `${t.name} | AI 도감`, `${t.name}: ${t.desc} (AI 도감)`);
 }
 
+/* 저장된 찜·써봤어요·기준을 다시 읽어 옴 */
+function reloadState(){
+  favs.clear(); store.get("favs", []).forEach(x => favs.add(x));
+  seen.clear(); store.get("seen", []).forEach(x => seen.add(x));
+  Object.assign(weights, store.get("weights", {}));
+}
+
 /* 시작 */
 (function(){
   const page = document.body.dataset.page;
-  if (page === "home") initHome();
-  else if (page === "ai") initDetail(document.body.dataset.id);
+  const start = () => {
+    if (page === "home") initHome();
+    else if (page === "ai") initDetail(document.body.dataset.id);
+  };
+  start();
+  checkBadges();
+  // 뒤로 가기로 돌아왔을 때 브라우저가 예전 화면을 그대로 꺼내 보여 주는 경우가 있어서,
+  // 그때는 최신 찜·써봤어요 상태로 다시 그려요.
+  window.addEventListener("pageshow", e => {
+    if (!e.persisted) return;
+    reloadState();
+    if (page === "home") window.dispatchEvent(new HashChangeEvent("hashchange"));
+    else if (page === "ai") initDetail(document.body.dataset.id);
+  });
 })();

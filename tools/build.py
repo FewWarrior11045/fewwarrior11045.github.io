@@ -104,6 +104,11 @@ home = head("AI 도감 | 학생이 직접 써보고 매긴 AI 순위", home_desc
         <h2 id="title">챗봇 타입 순위</h2>
         <button class="tool-btn" id="openW">기준 바꾸기</button>
       </div>
+      <div class="tip" id="tipW" hidden>
+        <span class="bit" data-bit="base" data-size="40"></span>
+        <p class="tip-say"><b>기준 바꾸기</b>를 눌러 봐! 나한테 중요한 기준을 고르면 순위가 바뀌어.</p>
+        <button class="tip-x" id="tipX" aria-label="안내 닫기">×</button>
+      </div>
       <ul class="list" id="list">{''.join(entry(t, i+1) for i, t in enumerate(ranked('chat')))}</ul>
     </div>
     {FOOT}
