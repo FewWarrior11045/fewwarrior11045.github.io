@@ -22,7 +22,12 @@
 <meta property="og:url" content="https://aidogam.kr/">
 <meta property="og:locale" content="ko_KR">
 <meta name="theme-color" content="#262A5C">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E👾%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/assets/bit.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/bit-icon.png">
+<meta property="og:image" content="https://aidogam.kr/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -38,7 +43,7 @@
     <label class="search px"><span aria-hidden="true">▶</span>
       <input id="q" type="search" placeholder="AI 이름이나 하고 싶은 일 검색" autocomplete="off" aria-label="AI 검색">
     </label>
-    <button class="quest" id="openQuiz"><span class="em" aria-hidden="true">🎯</span>
+    <button class="quest" id="openQuiz"><span class="bit" data-bit="wave" data-size="68" data-still="3"></span>
       <span><b>나에게 맞는 AI 찾기</b><span class="s">질문 4개에 답하면 딱 맞는 AI를 골라 줘요</span></span><span class="arrow" aria-hidden="true">▶</span></button>
     <div class="types" id="types" role="toolbar" aria-label="타입"></div>
     <div class="board px">
@@ -84,7 +89,7 @@
     <span class="score">4.0</span></a></li></ul>
     </div>
     <p class="foot">점수와 후기는 직접 써본 경험을 바탕으로 합니다.</p>
-    <nav class="allnav" aria-label="전체 AI 목록"><h2>AI 도감 전체 목록</h2><dl><dt>챗봇</dt><dd><a href="/ai/chatgpt/">ChatGPT</a><a href="/ai/wrtn/">뤼튼</a><a href="/ai/claude/">Claude</a><a href="/ai/gemini/">Gemini</a><a href="/ai/copilot/">Microsoft Copilot</a><a href="/ai/perplexity/">Perplexity</a><a href="/ai/deepseek/">DeepSeek</a></dd><dt>그림</dt><dd><a href="/ai/ideogram/">Ideogram</a><a href="/ai/firefly/">Adobe Firefly</a><a href="/ai/recraft/">Recraft</a><a href="/ai/leonardo/">Leonardo AI</a><a href="/ai/krea/">Krea</a><a href="/ai/stable-diffusion/">Stable Diffusion</a><a href="/ai/midjourney/">Midjourney</a></dd><dt>영상</dt><dd><a href="/ai/vrew/">Vrew</a><a href="/ai/capcut/">CapCut</a><a href="/ai/luma/">Luma Dream Machine</a><a href="/ai/hailuo/">Hailuo</a><a href="/ai/kling/">Kling</a><a href="/ai/pika/">Pika</a><a href="/ai/runway/">Runway</a></dd><dt>오디오 편집</dt><dd><a href="/ai/clovanote/">클로바노트</a><a href="/ai/adobe-podcast/">Adobe Podcast</a><a href="/ai/elevenlabs/">ElevenLabs</a><a href="/ai/moises/">Moises</a><a href="/ai/descript/">Descript</a></dd><dt>음악</dt><dd><a href="/ai/suno/">Suno</a><a href="/ai/udio/">Udio</a><a href="/ai/soundraw/">Soundraw</a><a href="/ai/aiva/">AIVA</a></dd><dt>코딩</dt><dd><a href="/ai/github-copilot/">GitHub Copilot</a><a href="/ai/lovable/">Lovable</a><a href="/ai/replit/">Replit</a><a href="/ai/cursor/">Cursor</a><a href="/ai/bolt/">Bolt</a><a href="/ai/claude-code/">Claude Code</a></dd><dt>발표자료</dt><dd><a href="/ai/miricanvas/">미리캔버스</a><a href="/ai/canva/">Canva</a><a href="/ai/gamma/">Gamma</a><a href="/ai/napkin/">Napkin AI</a></dd><dt>공부</dt><dd><a href="/ai/qanda/">콴다</a><a href="/ai/notebooklm/">NotebookLM</a><a href="/ai/speak/">스픽</a><a href="/ai/quizlet/">Quizlet</a></dd><dt>번역</dt><dd><a href="/ai/papago/">파파고</a><a href="/ai/deepl/">DeepL</a><a href="/ai/google-translate/">Google 번역</a></dd></dl></nav>
+    <nav class="allnav" aria-label="전체 AI 목록"><h2>AI 도감 전체 목록</h2><dl><dt>챗봇</dt><dd><a href="/ai/chatgpt/">ChatGPT</a> <a href="/ai/wrtn/">뤼튼</a> <a href="/ai/claude/">Claude</a> <a href="/ai/gemini/">Gemini</a> <a href="/ai/copilot/">Microsoft Copilot</a> <a href="/ai/perplexity/">Perplexity</a> <a href="/ai/deepseek/">DeepSeek</a></dd><dt>그림</dt><dd><a href="/ai/ideogram/">Ideogram</a> <a href="/ai/firefly/">Adobe Firefly</a> <a href="/ai/recraft/">Recraft</a> <a href="/ai/leonardo/">Leonardo AI</a> <a href="/ai/krea/">Krea</a> <a href="/ai/stable-diffusion/">Stable Diffusion</a> <a href="/ai/midjourney/">Midjourney</a></dd><dt>영상</dt><dd><a href="/ai/vrew/">Vrew</a> <a href="/ai/capcut/">CapCut</a> <a href="/ai/luma/">Luma Dream Machine</a> <a href="/ai/hailuo/">Hailuo</a> <a href="/ai/kling/">Kling</a> <a href="/ai/pika/">Pika</a> <a href="/ai/runway/">Runway</a></dd><dt>오디오 편집</dt><dd><a href="/ai/clovanote/">클로바노트</a> <a href="/ai/adobe-podcast/">Adobe Podcast</a> <a href="/ai/elevenlabs/">ElevenLabs</a> <a href="/ai/moises/">Moises</a> <a href="/ai/descript/">Descript</a></dd><dt>음악</dt><dd><a href="/ai/suno/">Suno</a> <a href="/ai/udio/">Udio</a> <a href="/ai/soundraw/">Soundraw</a> <a href="/ai/aiva/">AIVA</a></dd><dt>코딩</dt><dd><a href="/ai/github-copilot/">GitHub Copilot</a> <a href="/ai/lovable/">Lovable</a> <a href="/ai/replit/">Replit</a> <a href="/ai/cursor/">Cursor</a> <a href="/ai/bolt/">Bolt</a> <a href="/ai/claude-code/">Claude Code</a></dd><dt>발표자료</dt><dd><a href="/ai/miricanvas/">미리캔버스</a> <a href="/ai/canva/">Canva</a> <a href="/ai/gamma/">Gamma</a> <a href="/ai/napkin/">Napkin AI</a></dd><dt>공부</dt><dd><a href="/ai/qanda/">콴다</a> <a href="/ai/notebooklm/">NotebookLM</a> <a href="/ai/speak/">스픽</a> <a href="/ai/quizlet/">Quizlet</a></dd><dt>번역</dt><dd><a href="/ai/papago/">파파고</a> <a href="/ai/deepl/">DeepL</a> <a href="/ai/google-translate/">Google 번역</a></dd></dl></nav>
   </section>
   <section id="dex" hidden></section>
   <section id="quiz" hidden></section>
@@ -101,6 +106,7 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="/assets/data.js"></script>
+<script src="/assets/bit.js"></script>
 <script src="/assets/app.js"></script>
 </body>
 </html>

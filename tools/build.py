@@ -53,14 +53,19 @@ def head(title, desc, path):
 <meta property="og:url" content="{url}">
 <meta property="og:locale" content="ko_KR">
 <meta name="theme-color" content="#262A5C">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E👾%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/assets/bit.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/bit-icon.png">
+<meta property="og:image" content="{SITE}/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
 </head>'''
 
-SCRIPTS = '<script src="/assets/data.js"></script>\n<script src="/assets/app.js"></script>'
+SCRIPTS = '<script src="/assets/data.js"></script>\n<script src="/assets/bit.js"></script>\n<script src="/assets/app.js"></script>'
 TOAST = '<div class="toast" id="toast" role="status" aria-live="polite"></div>'
 
 def entry(t, rank):
@@ -72,7 +77,7 @@ def entry(t, rank):
     <span class="score">{f1(total(t))}</span></a></li>'''
 
 def allnav():
-    rows = ''.join(f'<dt>{e(c["label"])}</dt><dd>' + ''.join(f'<a href="/ai/{t["id"]}/">{e(t["name"])}</a>' for t in ranked(c['id'])) + '</dd>' for c in CATS)
+    rows = ''.join(f'<dt>{e(c["label"])}</dt><dd>' + ' '.join(f'<a href="/ai/{t["id"]}/">{e(t["name"])}</a>' for t in ranked(c['id'])) + '</dd>' for c in CATS)
     return f'<nav class="allnav" aria-label="전체 AI 목록"><h2>AI 도감 전체 목록</h2><dl>{rows}</dl></nav>'
 
 # ---------- 홈 ----------
@@ -88,7 +93,7 @@ home = head("AI 도감 | 학생이 직접 써보고 매긴 AI 순위", home_desc
     <label class="search px"><span aria-hidden="true">▶</span>
       <input id="q" type="search" placeholder="AI 이름이나 하고 싶은 일 검색" autocomplete="off" aria-label="AI 검색">
     </label>
-    <button class="quest" id="openQuiz"><span class="em" aria-hidden="true">🎯</span>
+    <button class="quest" id="openQuiz"><span class="bit" data-bit="wave" data-size="68" data-still="3"></span>
       <span><b>나에게 맞는 AI 찾기</b><span class="s">질문 4개에 답하면 딱 맞는 AI를 골라 줘요</span></span><span class="arrow" aria-hidden="true">▶</span></button>
     <div class="types" id="types" role="toolbar" aria-label="타입"></div>
     <div class="board px">
@@ -186,12 +191,16 @@ for t in TOOLS:
 open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 수 없어요 | AI 도감", "AI 도감에서 찾는 페이지가 없어요.", "/404.html").replace('<link rel="canonical" href="https://aidogam.kr/404.html">', '<meta name="robots" content="noindex">') + '''
 <body data-page="404">
 <div class="wrap" style="text-align:center; padding-top:80px">
-  <div class="qbox px">
+  <div class="qbox px lost">
+    <span class="bit" data-bit="sleepy" data-size="150" data-still="2"></span>
     <p class="qstep" style="font-size:1.2rem; margin:0 0 10px">404</p>
     <h1 class="qtitle">앗, 이 페이지는 도감에 없어요</h1>
+    <p style="color:var(--sub); margin:-6px 0 16px">비트가 깜빡 졸았나 봐요. 도감으로 돌아가서 다시 찾아봐요!</p>
     <a class="act go" href="/" style="max-width:240px; margin:0 auto">도감으로 돌아가기</a>
   </div>
 </div>
+<script src="/assets/bit.js"></script>
+<script>fillBits();</script>
 </body>
 </html>
 ''')

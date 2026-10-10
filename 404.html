@@ -22,7 +22,12 @@
 <meta property="og:url" content="https://aidogam.kr/404.html">
 <meta property="og:locale" content="ko_KR">
 <meta name="theme-color" content="#262A5C">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E👾%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/assets/bit.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/bit-icon.png">
+<meta property="og:image" content="https://aidogam.kr/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -30,11 +35,15 @@
 </head>
 <body data-page="404">
 <div class="wrap" style="text-align:center; padding-top:80px">
-  <div class="qbox px">
+  <div class="qbox px lost">
+    <span class="bit" data-bit="sleepy" data-size="150" data-still="2"></span>
     <p class="qstep" style="font-size:1.2rem; margin:0 0 10px">404</p>
     <h1 class="qtitle">앗, 이 페이지는 도감에 없어요</h1>
+    <p style="color:var(--sub); margin:-6px 0 16px">비트가 깜빡 졸았나 봐요. 도감으로 돌아가서 다시 찾아봐요!</p>
     <a class="act go" href="/" style="max-width:240px; margin:0 auto">도감으로 돌아가기</a>
   </div>
 </div>
+<script src="/assets/bit.js"></script>
+<script>fillBits();</script>
 </body>
 </html>

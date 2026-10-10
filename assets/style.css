@@ -229,9 +229,24 @@ a.entry{cursor:pointer}
 .allnav h2{font-family:var(--title); font-weight:400; font-size:1.15rem; margin:0 0 8px}
 .allnav dl{margin:0; display:grid; gap:8px}
 .allnav dt{font-weight:700; color:var(--gold)}
-.allnav dd{margin:0; line-height:1.9}
-.allnav a{color:var(--lcd-dk); text-decoration:none; margin-right:10px; white-space:nowrap}
+.allnav dd{margin:0; display:flex; flex-wrap:wrap; gap:2px 14px; line-height:1.9; min-width:0}
+.allnav a{color:var(--lcd-dk); text-decoration:none; white-space:nowrap}
 .allnav a:hover{color:#fff; text-decoration:underline}
 .crumb{color:var(--lcd-dk); font-size:.85rem; margin:0 0 6px}
 .crumb a{color:var(--lcd-dk)}
 .sp{display:inline-block}
+
+/* ===== 마스코트 비트 ===== */
+.bit{display:inline-block; line-height:0; flex:none}
+.bitsvg{display:block}
+.quest .bit{margin:-10px -4px -8px -6px}
+.empty .bit{display:block; width:max-content; margin:0 auto 10px}
+.qwho{display:flex; align-items:center; gap:8px}
+.found .hello{display:flex; align-items:center; justify-content:center; gap:10px; margin:0 0 6px}
+.found .say{background:#FAFDF4; padding:6px 12px; font-family:var(--title); font-size:1.35rem; line-height:1.2; text-align:left; margin:4px}
+.found .say small{display:block; font-family:var(--kr); font-size:.75rem; color:var(--sub)}
+.keeper{display:flex; align-items:center; gap:12px; padding-bottom:10px; margin-bottom:10px; border-bottom:var(--px) dotted var(--ink)}
+.keeper b{display:block; font-family:var(--title); font-weight:400; font-size:1.15rem}
+.keeper small{display:block; color:var(--sub); font-size:.82rem}
+.lost{text-align:center; padding:26px 16px 20px}
+.lost .bit{margin:0 auto 6px}

@@ -149,7 +149,8 @@ function initHome(){
       rows = ranked(current).map((r, i) => entry(r.t, r.v, i + 1));
     }
     const emptyMsg = q ? "찾는 AI가 없어요. 다른 단어로 검색해 보세요." : current === "fav" ? "아직 찜한 AI가 없어요.<br>AI 페이지에서 찜하기를 눌러 보세요." : "이 타입에 아직 AI가 없어요.";
-    $("list").innerHTML = rows.length ? rows.join("") : `<li class="empty">${emptyMsg}</li>`;
+    $("list").innerHTML = rows.length ? rows.join("") : `<li class="empty"><span class="bit" data-bit="base" data-size="54"></span>${emptyMsg}</li>`;
+    fillBits($("list"));
   }
 
   /* 내 도감 */
@@ -168,11 +169,13 @@ function initHome(){
     $("dex").innerHTML = `
       <div class="dtop"><button class="back" id="dexBack">◀ 목록으로</button></div>
       <div class="dexhead px">
+        <div class="keeper"><span class="bit" data-bit="${seen.size === TOOLS.length ? "wave" : "sleepy"}" data-size="64"></span><span><b>No.000 비트</b><small>${seen.size === TOOLS.length ? "도감 완성! 비트가 깨어났어요" : "AI 도감지기 · 다 모으면 깨어날지도?"}</small></span></div>
         <h1>내 도감</h1>
         <div class="count"><span>써본 AI</span><b>${seen.size} / ${TOOLS.length}</b></div>
         <div class="bigbar" aria-hidden="true">${bar}</div>
       </div>${secs}`;
     $("dexBack").onclick = () => { location.hash = "#/"; };
+    fillBits($("dex"));
   }
 
   /* 퀴즈 */
@@ -189,7 +192,7 @@ function initHome(){
     if (qStep < QUIZ.length){
       const Q = QUIZ[qStep];
       el.innerHTML = `${top}<div class="qbox px">
-        <div class="qtop"><span class="qstep">Q${qStep + 1}/${QUIZ.length}</span>
+        <div class="qtop"><span class="qwho"><span class="bit" data-bit="base" data-size="34"></span><span class="qstep">Q${qStep + 1}/${QUIZ.length}</span></span>
           <span class="qprog" aria-hidden="true">${QUIZ.map((_, i) => `<i class="${i <= qStep ? "on" : ""}"></i>`).join("")}</span></div>
         <h1 class="qtitle">${esc(Q.q)}</h1>
         <div class="qopts ${Q.grid ? "two" : ""}">${Q.opts.map((o, i) =>
@@ -210,7 +213,7 @@ function initHome(){
         el.innerHTML = `${top}
         <article class="card px found">
           <div class="stage pop" style="--tc:${TYPE_COLORS[best.cat][0]}"><span class="dexno">No.${dexNo(best)}</span>${sprite(best, 140)}</div>
-          <p class="hello">찾았다!</p>
+          <div class="hello"><span class="bit" data-bit="sing" data-size="76"></span><span class="say px">찾았다!<small>비트가 골라 줬어요</small></span></div>
           <h1>${esc(best.name)}</h1><p>${esc(best.desc)}</p>
           <div class="talk px" style="text-align:left"><h3>추천하는 이유</h3><ul>${reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul></div>
           <div class="found-btns">
@@ -224,6 +227,7 @@ function initHome(){
       }
     }
     $("qBack").onclick = () => { location.hash = "#/"; };
+    fillBits($("quiz"));
   }
 
   /* 기준 창 */
@@ -264,6 +268,7 @@ function initHome(){
     else { document.title = HOME_TITLE; renderMeter(); renderTypes(); renderList(); }
   }
   const HOME_TITLE = document.title;
+  fillBits(document);
   window.addEventListener("hashchange", route);
   route();
 }
