@@ -12,6 +12,7 @@ OUT = ROOT
 # data.js를 node로 읽어서 데이터로 바꿈
 _js = open(os.path.join(ROOT, 'assets', 'data.js'), encoding='utf-8').read()
 _js += "\nprocess.stdout.write(JSON.stringify({CRITERIA, CATEGORIES, TOOLS}));"
+
 D = json.loads(subprocess.run(['node', '-e', _js], capture_output=True, text=True, check=True).stdout)
 TODAY = datetime.date.today().isoformat()
 CRIT, CATS, TOOLS = D['CRITERIA'], D['CATEGORIES'], D['TOOLS']
@@ -20,7 +21,7 @@ TC = {"chat":"#8DB4F5","image":"#F4A3C4","video":"#F5AE7E","audio":"#7FD6CB","mu
       "code":"#9ED69B","slide":"#F5D97A","study":"#E9BE8C","trans":"#8FCFF0"}
 e = lambda s: html.escape(str(s or ''), quote=True)
 cat_label = {c['id']: c['label'] for c in CATS}
-dexno = {t['id']: f"{i+1:03d}" for i, t in enumerate(TOOLS)}
+dexno = {t['id']: f"{t.get('no', i+1):03d}" for i, t in enumerate(TOOLS)}
 def total(t): return sum(t['s'].get(c['key'], 0) for c in CRIT) / len(CRIT)
 def ranked(cat): return sorted([t for t in TOOLS if t['cat'] == cat], key=lambda t: -total(t))
 def f1(v): return f"{v + 1e-9:.1f}"

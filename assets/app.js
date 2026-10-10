@@ -11,7 +11,8 @@ const TYPE_COLORS = {
   slide:["#F5D97A","#B38B14"], study:["#E9BE8C","#9E6A2E"], trans:["#8FCFF0","#2F80B0"]
 };
 const catLabel = id => (CATEGORIES.find(c => c.id === id) || {}).label || "";
-const dexNo = t => String(TOOLS.indexOf(t) + 1).padStart(3, "0");
+const dexNo = t => String(t.no || TOOLS.indexOf(t) + 1).padStart(3, "0");
+const byNo = (a, b) => (a.no || 0) - (b.no || 0);
 const aiUrl = t => `/ai/${t.id}/`;
 const DEFAULT_W = 2;
 const weights = Object.assign(Object.fromEntries(CRITERIA.map(c => [c.key, DEFAULT_W])), store.get("weights", {}));
@@ -233,7 +234,7 @@ function initHome(){
       rows = TOOLS.filter(t => favs.has(t.id)).map(t => ({t, v: total(t)})).sort((a, b) => b.v - a.v).map(r => entry(r.t, r.v, null, true));
     } else if (current === "all"){
       $("title").textContent = "전체 도감";
-      rows = TOOLS.map(t => entry(t, total(t), null, true));
+      rows = [...TOOLS].sort(byNo).map(t => entry(t, total(t), null, true));
     } else {
       if (!CATEGORIES.some(c => c.id === current)) current = "chat";
       $("title").textContent = `${catLabel(current)} 타입 순위`;
@@ -258,7 +259,7 @@ function initHome(){
   function renderDex(){
     const bar = TOOLS.map((t, i) => `<i class="${i < seen.size ? "on" : ""}"></i>`).join("");
     const secs = CATEGORIES.map(c => {
-      const items = TOOLS.filter(t => t.cat === c.id);
+      const items = TOOLS.filter(t => t.cat === c.id).sort(byNo);
       const got = items.filter(t => seen.has(t.id)).length;
       return `<section class="dexsec"><h2 style="--tc:${TYPE_COLORS[c.id][0]}"><i></i>${esc(c.label)}<span class="n">${got}/${items.length}</span></h2>
         <div class="grid">${items.map(t => {
