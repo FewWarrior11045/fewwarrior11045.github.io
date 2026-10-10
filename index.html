@@ -12,272 +12,83 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AI 도감</title>
+<title>AI 도감 | 학생이 직접 써보고 매긴 AI 순위</title>
+<meta name="description" content="학생이 직접 써보고 점수를 매긴 AI 도감. 챗봇, 그림, 영상, 음악, 발표자료 등 47개 AI를 타입별 순위와 후기로 비교하고, 질문 4개로 나에게 맞는 AI를 찾아보세요.">
+<link rel="canonical" href="https://aidogam.kr/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AI 도감">
+<meta property="og:title" content="AI 도감 | 학생이 직접 써보고 매긴 AI 순위">
+<meta property="og:description" content="학생이 직접 써보고 점수를 매긴 AI 도감. 챗봇, 그림, 영상, 음악, 발표자료 등 47개 AI를 타입별 순위와 후기로 비교하고, 질문 4개로 나에게 맞는 AI를 찾아보세요.">
+<meta property="og:url" content="https://aidogam.kr/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#262A5C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E👾%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-<style>
-:root{
-  --case:#262A5C;      /* 게임기 몸체 */
-  --case-dk:#181B3F;
-  --lcd:#E3EDD2;       /* 화면 */
-  --lcd-dk:#C9D8B2;
-  --ink:#1E2A1B;       /* 글자·테두리 */
-  --sub:#3B4735;
-  --sel:#3182F6;       /* 선택 */
-  --gold:#FFC342;
-  --px:4px;
-  --kr:"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --title:"Do Hyeon", "Noto Sans KR", sans-serif;
-  --num:"Press Start 2P", "Courier New", monospace;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-  color-scheme:dark;
-}
-@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){ --case:#2C3168; } }
-:root[data-theme="dark"]{ --case:#262A5C; }
-*,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{
-  margin:0; background:var(--case); color:var(--ink); font-family:var(--kr); font-size:16px; line-height:1.5; font-weight:500;
-  background-image:radial-gradient(rgba(0,0,0,.18) 1px, transparent 1px); background-size:8px 8px;
-}
-button{font:inherit; color:inherit; cursor:pointer}
-.wrap{max-width:520px; margin:0 auto; padding:20px 18px 64px}
-:focus-visible{outline:3px dashed var(--gold); outline-offset:4px}
-
-/* 픽셀 테두리: 모서리가 계단처럼 깎인 상자 */
-.px{
-  background:var(--lcd);
-  box-shadow:
-    0 calc(var(--px) * -1) 0 0 var(--ink),
-    0 var(--px) 0 0 var(--ink),
-    calc(var(--px) * -1) 0 0 0 var(--ink),
-    var(--px) 0 0 0 var(--ink);
-  margin:var(--px);
-}
-
-/* 상단 */
-.top{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:22px}
-.logo{font-family:var(--title); font-weight:400; color:var(--lcd); font-size:2.4rem; line-height:1; letter-spacing:.02em; margin:0; text-shadow:3px 3px 0 var(--case-dk)}
-.logo small{display:block; font-family:var(--num); font-size:.6rem; color:var(--gold); letter-spacing:0; margin-bottom:10px; text-shadow:none}
-.meter{border:0; background:transparent; color:var(--lcd); text-align:right; font-size:.95rem; font-weight:700; flex:none; padding:4px 0}
-.meter .lbl{display:flex; align-items:center; justify-content:flex-end; gap:5px}
-.meter b{font-family:var(--num); font-size:.8rem; font-weight:400; color:var(--gold)}
-.meter .go{font-size:.7rem; color:var(--gold)}
-.meter:hover .lbl,.meter:focus-visible .lbl{text-decoration:underline; text-underline-offset:4px}
-.bar{display:grid; grid-template-columns:repeat(12,1fr); gap:1px; width:110px; margin:3px 0 0 auto}
-.bar i{height:8px; background:var(--case-dk)}
-.bar i.on{background:var(--gold)}
-
-/* 검색 */
-.search{display:flex; align-items:center; gap:10px; padding:4px 14px}
-.search span{font-family:var(--num); font-size:.6rem; animation:blink 1s steps(1) infinite}
-.search input{flex:1; min-width:0; border:0; outline:0; background:transparent; font:inherit; color:var(--ink); padding:10px 0}
-.search input::placeholder{color:var(--sub)}
-@keyframes blink{50%{opacity:0}}
-
-/* 타입 */
-.types{display:flex; gap:10px; overflow-x:auto; padding:12px 6px 10px; margin:6px -6px 4px; scrollbar-width:none}
-.types::-webkit-scrollbar{display:none}
-.type{
-  flex:none; border:0; padding:7px 14px; font-size:1rem; font-weight:700; color:var(--lcd); background:var(--case-dk);
-  box-shadow:0 -3px 0 0 var(--case-dk),0 3px 0 0 var(--case-dk),-3px 0 0 0 var(--case-dk),3px 0 0 0 var(--case-dk); margin:3px;
-}
-.type[aria-pressed="true"]{background:var(--tc,var(--lcd)); color:var(--ink);
-  box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink)}
-
-/* 목록 */
-.board{padding:16px 14px 8px; margin-top:12px}
-.board-head{display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:var(--px) dotted var(--ink); padding-bottom:10px; margin-bottom:4px}
-.board-head h2{margin:0; font-family:var(--title); font-size:1.4rem; font-weight:400}
-.tool-btn{border:0; background:var(--ink); color:var(--lcd); padding:8px 12px; font-size:.9rem; font-weight:700}
-.tool-btn:active{transform:translate(2px,2px)}
-.list{list-style:none; margin:0; padding:0}
-.entry{width:100%; display:grid; grid-template-columns:28px 44px 1fr auto; align-items:center; gap:12px; border:0; background:transparent; text-align:left; padding:12px 4px; border-bottom:2px dashed var(--lcd-dk)}
-.list li:last-child .entry{border-bottom:0}
-.entry:hover,.entry:focus-visible{background:var(--lcd-dk)}
-.entry .rank{font-family:var(--num); font-size:.85rem; color:var(--sub); text-align:center}
-.entry .rank.first{color:var(--sel)}
-.sprite{display:block; image-rendering:pixelated}
-.entry .nm{display:block; font-family:var(--title); font-size:1.3rem; line-height:1.2}
-
-.entry .ds{display:block; font-size:.88rem; color:var(--sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.entry .meta{display:flex; align-items:center; gap:6px; min-width:0; margin-top:2px}
-.chip{display:inline-block; flex:none; white-space:nowrap; font-size:.78rem; font-weight:700; padding:0 6px; background:var(--tc); color:var(--ink); line-height:1.5}
-.seen{flex:none; font-size:.78rem; font-weight:700; color:#fff; background:var(--sel); padding:0 6px}
-.score{font-family:var(--num); font-size:.95rem; text-align:right}
-.empty{padding:28px 6px; text-align:center; color:var(--sub)}
-
-/* 상세 */
-.dtop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px}
-.back{border:0; background:transparent; color:var(--lcd); font-size:1rem; font-weight:700; padding:6px 0}
-.icons{display:flex; gap:10px}
-.icon-btn{border:0; background:var(--lcd); color:var(--ink); font-size:.95rem; font-weight:700; padding:7px 12px; margin:3px;
-  box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink)}
-.icon-btn:active{transform:translate(2px,2px)}
-.icon-btn.fav[aria-pressed="true"]{background:#F04452; color:#fff}
-.heart{display:inline-block; vertical-align:middle; margin-left:6px}
-.pxheart{display:inline-block; vertical-align:-2px; image-rendering:pixelated}
-.icon-btn .pxheart,.type .pxheart{margin-right:5px}
-/* 퀴즈 입구 */
-.quest{display:flex; align-items:center; gap:12px; width:calc(100% - 8px); border:0; text-align:left; padding:12px 14px; margin:18px 4px 4px; background:var(--gold);
-  box-shadow:0 -4px 0 0 var(--ink),0 4px 0 0 var(--ink),-4px 0 0 0 var(--ink),4px 0 0 0 var(--ink)}
-.quest:active{transform:translate(2px,2px)}
-.quest .em{font-size:1.7rem; line-height:1}
-.quest b{display:block; font-family:var(--title); font-weight:400; font-size:1.3rem; line-height:1.2}
-.quest span.s{display:block; font-size:.88rem; color:#4A3B12}
-.quest .arrow{margin-left:auto; font-family:var(--num); font-size:.8rem}
-/* 퀴즈 */
-.qbox{padding:18px 16px 16px}
-.qtop{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px}
-.qstep{font-family:var(--num); font-size:.75rem}
-.qprog{display:grid; grid-template-columns:repeat(4,1fr); gap:4px; flex:1; max-width:200px}
-.qprog i{height:10px; background:var(--lcd-dk)}
-.qprog i.on{background:var(--sel)}
-.qtitle{margin:0 0 16px; font-family:var(--title); font-weight:400; font-size:1.7rem; line-height:1.25}
-.qopts{display:grid; gap:10px}
-.qopts.two{grid-template-columns:1fr 1fr}
-.qopt{display:flex; align-items:center; gap:10px; border:0; background:#FAFDF4; padding:12px 12px 12px 26px; text-align:left; font-weight:700; position:relative; margin:3px;
-  box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink)}
-.qopt::before{content:"▶"; position:absolute; left:9px; font-size:.7rem; color:var(--sel); opacity:0}
-.qopt:hover::before,.qopt:focus-visible::before{opacity:1}
-.qopt:hover,.qopt:focus-visible{background:#fff}
-.qopt .em{font-size:1.3rem; flex:none}
-.qopt{word-break:keep-all}
-.qopts.two .qopt{flex-direction:column; justify-content:center; gap:4px; padding:12px 8px; text-align:center; font-size:.95rem; line-height:1.3}
-.qopts.two .qopt::before{left:7px; top:8px}
-.qprev{border:0; background:transparent; color:var(--sub); font-weight:700; margin-top:14px; padding:6px 0}
-.found{text-align:center; padding:0 0 14px}
-.found .stage{margin-bottom:12px}
-.found .hello{font-family:var(--num); font-size:.75rem; color:var(--ink); margin:0 0 6px}
-.found h1{margin:0; font-family:var(--title); font-weight:400; font-size:2.2rem; line-height:1.1}
-.found p{margin:4px 16px 0; color:var(--sub)}
-.found-btns{display:grid; gap:12px; padding:4px 12px 4px}
-.found-btns .two{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-.act.plain{background:var(--lcd)}
-.subboard{padding:14px 14px 6px; margin-top:16px}
-.subboard h2{margin:0 0 4px; font-family:var(--title); font-weight:400; font-size:1.25rem}
-
-/* 내 도감 */
-.dexhead{padding:16px 16px 14px; margin-bottom:18px}
-.dexhead h1{margin:0; font-family:var(--title); font-weight:400; font-size:1.9rem; line-height:1.1}
-.dexhead .count{display:flex; align-items:baseline; justify-content:space-between; margin:8px 0 6px; color:var(--sub)}
-.dexhead .count b{font-family:var(--num); font-weight:400; font-size:1rem; color:var(--ink)}
-.bigbar{display:grid; grid-template-columns:repeat(47,1fr); gap:1px}
-.bigbar i{height:10px; background:var(--lcd-dk)}
-.bigbar i.on{background:var(--gold); box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
-.dexsec{margin:0 0 18px}
-.dexsec h2{display:flex; align-items:center; gap:8px; margin:0 0 8px; color:var(--lcd); font-family:var(--title); font-weight:400; font-size:1.25rem}
-.dexsec h2 .n{font-family:var(--num); font-size:.7rem; color:var(--gold)}
-.dexsec h2 i{width:12px; height:12px; background:var(--tc); display:inline-block}
-.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(78px,1fr)); gap:10px}
-.cell{border:0; background:var(--lcd); padding:8px 4px 6px; display:flex; flex-direction:column; align-items:center; gap:2px; margin:3px;
-  box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink)}
-.cell.locked{background:var(--lcd-dk)}
-.cell .no{font-family:var(--num); font-size:.5rem; color:var(--sub)}
-.cell .nm{font-size:.8rem; font-weight:700; line-height:1.25; text-align:center; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.cell.locked .nm{color:var(--sub)}
-.cell:hover,.cell:focus-visible{background:#F6FAEE}
-.card{padding:0; overflow:hidden}
-.stage{position:relative; display:grid; place-items:center; padding:26px 0 18px; background:var(--tc);
-  background-image:repeating-linear-gradient(0deg, rgba(0,0,0,.06) 0 2px, transparent 2px 4px)}
-.stage .sprite{width:160px; height:160px}
-.stage.pop .sprite{animation:pop .5s steps(4) both}
-@keyframes pop{0%{transform:translateY(24px) scale(.6)} 60%{transform:translateY(-8px) scale(1.05)} 100%{transform:none}}
-.stage .dexno{position:absolute; left:12px; top:12px; font-family:var(--num); font-size:.8rem}
-.stage .rankbadge{position:absolute; right:12px; top:10px; font-size:.95rem; font-weight:700; background:var(--ink); color:var(--lcd); padding:2px 8px}
-.id{padding:14px 16px 4px; display:flex; align-items:flex-end; justify-content:space-between; gap:12px}
-.id h1{margin:0; font-family:var(--title); font-size:2.1rem; font-weight:400; line-height:1.1}
-.id .desc{margin:4px 0 0; color:var(--sub); font-size:.95rem}
-.id .big{font-family:var(--num); font-size:1.5rem; text-align:right; flex:none}
-.id .big small{display:block; font-family:var(--kr); font-size:.8rem; color:var(--sub); margin-top:6px}
-.stats{padding:12px 16px 4px; display:grid; gap:8px}
-.stat{display:grid; grid-template-columns:7.2em 1fr 40px; white-space:nowrap; align-items:center; gap:10px; font-size:.95rem; font-weight:700}
-.seg{display:grid; grid-template-columns:repeat(10,1fr); gap:3px}
-.seg i{height:12px; background:var(--lcd-dk)}
-.seg i.on{background:var(--ink)}
-.stat b{font-family:var(--num); font-size:.75rem; font-weight:400; text-align:right}
-.talk{margin:16px 12px 6px; padding:12px 14px; background:#FAFDF4; position:relative}
-.talk h3{margin:0 0 4px; font-family:var(--title); font-size:1.15rem; font-weight:400; color:var(--sel)}
-.talk ul{margin:0 0 10px; padding:0; list-style:none}
-.talk li{padding-left:16px; position:relative}
-.talk li::before{content:"▸"; position:absolute; left:0}
-.talk p{margin:0 0 10px}
-.talk .more{position:absolute; right:10px; bottom:6px; font-size:.7rem; animation:blink 1s steps(1) infinite}
-.actions{display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:14px 12px 16px}
-.act{border:0; padding:12px 8px; font-size:1.05rem; font-weight:700; text-align:center; text-decoration:none; display:block;
-  box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink), 3px 6px 0 0 var(--ink); margin:3px}
-.act:active{transform:translate(3px,3px); box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink)}
-.act.collect{background:var(--lcd)}
-.act.collect[aria-pressed="true"]{background:var(--gold)}
-.act.go{background:var(--sel); color:#fff}
-
-/* 기준 창 */
-.modal-bg{position:fixed; inset:0; background:rgba(10,12,30,.6); display:none; z-index:20}
-.modal{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); width:min(460px, calc(100% - 40px)); z-index:21; display:none; padding:18px 16px 16px}
-.modal.open,.modal-bg.open{display:block}
-.modal h2{margin:0 0 2px; font-family:var(--title); font-size:1.4rem; font-weight:400}
-.modal p{margin:0 0 12px; color:var(--sub); font-size:.9rem}
-.wrow{display:grid; grid-template-columns:1fr auto 44px auto; align-items:center; gap:10px; padding:6px 0}
-.step{border:0; width:38px; height:38px; background:var(--ink); color:var(--lcd); font-family:var(--num); font-size:.9rem}
-.step:disabled{opacity:.3; cursor:default}
-.wrow{font-weight:700}
-.wrow output{font-family:var(--num); font-size:.85rem; text-align:center}
-.modal-foot{display:flex; justify-content:space-between; gap:10px; margin-top:12px}
-.modal-foot .tool-btn{padding:10px 14px; font-size:.95rem}
-.modal-foot .plain{background:transparent; color:var(--sub)}
-
-.toast{position:fixed; white-space:nowrap; max-width:calc(100% - 40px); overflow:hidden; text-overflow:ellipsis; left:50%; bottom:calc(28px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--ink); color:var(--lcd); padding:10px 16px; font-size:.95rem; z-index:30; display:none}
-.toast.show{display:block}
-.foot{color:var(--lcd-dk); opacity:.85; text-align:center; font-size:.85rem; margin-top:26px}
-
-@media (prefers-reduced-motion: reduce){
-  .search span,.talk .more{animation:none}
-  .stage.pop .sprite{animation:none}
-}
-</style>
+<link rel="stylesheet" href="/assets/style.css">
 </head>
-<body>
+<body data-page="home">
 <div class="wrap">
-
-  <!-- 홈 -->
   <section id="home">
     <header class="top">
       <h1 class="logo"><small>NO.001~047</small>AI 도감</h1>
       <button class="meter" id="openDex" aria-label="내 도감 열기"><span class="lbl">써본 AI <b id="cnt">0/47</b><span class="go" aria-hidden="true">▶</span></span><span class="bar" id="bar" aria-hidden="true"></span></button>
     </header>
-
     <label class="search px"><span aria-hidden="true">▶</span>
       <input id="q" type="search" placeholder="AI 이름이나 하고 싶은 일 검색" autocomplete="off" aria-label="AI 검색">
     </label>
-
     <button class="quest" id="openQuiz"><span class="em" aria-hidden="true">🎯</span>
       <span><b>나에게 맞는 AI 찾기</b><span class="s">질문 4개에 답하면 딱 맞는 AI를 골라 줘요</span></span><span class="arrow" aria-hidden="true">▶</span></button>
-
     <div class="types" id="types" role="toolbar" aria-label="타입"></div>
-
     <div class="board px">
       <div class="board-head">
         <h2 id="title">챗봇 타입 순위</h2>
         <button class="tool-btn" id="openW">기준 바꾸기</button>
       </div>
-      <ul class="list" id="list"></ul>
+      <ul class="list" id="list"><li><a class="entry" href="/ai/chatgpt/">
+    <span class="rank first">1</span>
+    <span class="sp" data-id="chatgpt" data-size="44"></span>
+    <span style="min-width:0"><span class="nm">ChatGPT</span>
+      <span class="meta"><span class="ds">뭐든 물어보기 좋은 범용 챗봇</span></span></span>
+    <span class="score">4.5</span></a></li><li><a class="entry" href="/ai/wrtn/">
+    <span class="rank ">2</span>
+    <span class="sp" data-id="wrtn" data-size="44"></span>
+    <span style="min-width:0"><span class="nm">뤼튼</span>
+      <span class="meta"><span class="ds">한국에서 만든 AI 챗봇</span></span></span>
+    <span class="score">4.5</span></a></li><li><a class="entry" href="/ai/claude/">
+    <span class="rank ">3</span>
+    <span class="sp" data-id="claude" data-size="44"></span>
+    <span style="min-width:0"><span class="nm">Claude</span>
+      <span class="meta"><span class="ds">긴 글 읽기와 글쓰기에 강한 챗봇</span></span></span>
+    <span class="score">4.3</span></a></li><li><a class="entry" href="/ai/gemini/">
+    <span class="rank ">4</span>
+    <span class="sp" data-id="gemini" data-size="44"></span>
+    <span style="min-width:0"><span class="nm">Gemini</span>
+      <span class="meta"><span class="ds">구글 서비스와 연결되는 챗봇</span></span></span>
+    <span class="score">4.3</span></a></li><li><a class="entry" href="/ai/copilot/">
+    <span class="rank ">5</span>
+    <span class="sp" data-id="copilot" data-size="44"></span>
+    <span style="min-width:0"><span class="nm">Microsoft Copilot</span>
+      <span class="meta"><span class="ds">윈도우와 오피스에 들어간 챗봇</span></span></span>
+    <span class="score">4.3</span></a></li><li><a class="entry" href="/ai/perplexity/">
+    <span class="rank ">6</span>
+    <span class="sp" data-id="perplexity" data-size="44"></span>
+    <span style="min-width:0"><span class="nm">Perplexity</span>
+      <span class="meta"><span class="ds">출처를 달아주는 검색형 챗봇</span></span></span>
+    <span class="score">4.0</span></a></li><li><a class="entry" href="/ai/deepseek/">
+    <span class="rank ">7</span>
+    <span class="sp" data-id="deepseek" data-size="44"></span>
+    <span style="min-width:0"><span class="nm">DeepSeek</span>
+      <span class="meta"><span class="ds">수학과 논리 문제에 강한 챗봇</span></span></span>
+    <span class="score">4.0</span></a></li></ul>
     </div>
     <p class="foot">점수와 후기는 직접 써본 경험을 바탕으로 합니다.</p>
+    <nav class="allnav" aria-label="전체 AI 목록"><h2>AI 도감 전체 목록</h2><dl><dt>챗봇</dt><dd><a href="/ai/chatgpt/">ChatGPT</a><a href="/ai/wrtn/">뤼튼</a><a href="/ai/claude/">Claude</a><a href="/ai/gemini/">Gemini</a><a href="/ai/copilot/">Microsoft Copilot</a><a href="/ai/perplexity/">Perplexity</a><a href="/ai/deepseek/">DeepSeek</a></dd><dt>그림</dt><dd><a href="/ai/ideogram/">Ideogram</a><a href="/ai/firefly/">Adobe Firefly</a><a href="/ai/recraft/">Recraft</a><a href="/ai/leonardo/">Leonardo AI</a><a href="/ai/krea/">Krea</a><a href="/ai/stable-diffusion/">Stable Diffusion</a><a href="/ai/midjourney/">Midjourney</a></dd><dt>영상</dt><dd><a href="/ai/vrew/">Vrew</a><a href="/ai/capcut/">CapCut</a><a href="/ai/luma/">Luma Dream Machine</a><a href="/ai/hailuo/">Hailuo</a><a href="/ai/kling/">Kling</a><a href="/ai/pika/">Pika</a><a href="/ai/runway/">Runway</a></dd><dt>오디오 편집</dt><dd><a href="/ai/clovanote/">클로바노트</a><a href="/ai/adobe-podcast/">Adobe Podcast</a><a href="/ai/elevenlabs/">ElevenLabs</a><a href="/ai/moises/">Moises</a><a href="/ai/descript/">Descript</a></dd><dt>음악</dt><dd><a href="/ai/suno/">Suno</a><a href="/ai/udio/">Udio</a><a href="/ai/soundraw/">Soundraw</a><a href="/ai/aiva/">AIVA</a></dd><dt>코딩</dt><dd><a href="/ai/github-copilot/">GitHub Copilot</a><a href="/ai/lovable/">Lovable</a><a href="/ai/replit/">Replit</a><a href="/ai/cursor/">Cursor</a><a href="/ai/bolt/">Bolt</a><a href="/ai/claude-code/">Claude Code</a></dd><dt>발표자료</dt><dd><a href="/ai/miricanvas/">미리캔버스</a><a href="/ai/canva/">Canva</a><a href="/ai/gamma/">Gamma</a><a href="/ai/napkin/">Napkin AI</a></dd><dt>공부</dt><dd><a href="/ai/qanda/">콴다</a><a href="/ai/notebooklm/">NotebookLM</a><a href="/ai/speak/">스픽</a><a href="/ai/quizlet/">Quizlet</a></dd><dt>번역</dt><dd><a href="/ai/papago/">파파고</a><a href="/ai/deepl/">DeepL</a><a href="/ai/google-translate/">Google 번역</a></dd></dl></nav>
   </section>
-
-  <!-- 상세 -->
-  <section id="detail" hidden></section>
-
-  <!-- 내 도감 -->
   <section id="dex" hidden></section>
-
-  <!-- 퀴즈 -->
   <section id="quiz" hidden></section>
 </div>
-
 <div class="modal-bg" id="mbg"></div>
 <div class="modal px" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
   <h2 id="mTitle">내 채점 기준</h2>
@@ -289,588 +100,7 @@ button{font:inherit; color:inherit; cursor:pointer}
   </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<script>
-// 채점 기준
-const CRITERIA = [
-  { key: "quality", label: "결과물 품질" },
-  { key: "free",    label: "무료로 쓸 만함" },
-  { key: "korean",  label: "한국어" },
-  { key: "easy",    label: "쉬운 정도" },
-];
-
-// 카테고리
-const CATEGORIES = [
-  { id: "chat",  label: "챗봇" },
-  { id: "image", label: "그림" },
-  { id: "video", label: "영상" },
-  { id: "audio", label: "오디오 편집" },
-  { id: "music", label: "음악" },
-  { id: "code",  label: "코딩" },
-  { id: "slide", label: "발표자료" },
-  { id: "study", label: "공부" },
-  { id: "trans", label: "번역" },
-];
-
-/* AI 목록
-   id      : 주소에 쓰이는 영어 이름 (예: 사이트주소/#/ai/chatgpt)
-   s       : 점수 1~5 (0.5 단위 가능) — 지금은 전부 예시!
-   pros    : 장점, cons: 단점, who: 이런 사람에게 추천
-   review  : 직접 써본 후기 (줄바꿈은 \n). 비워두면 "후기 준비 중"으로 보여요
-   updated : 마지막으로 확인한 날짜                                          */
-const TOOLS = [
-  { id:"chatgpt", cat:"chat", name:"ChatGPT", desc:"뭐든 물어보기 좋은 범용 챗봇", url:"https://chatgpt.com",
-    s:{quality:4.5, free:4, korean:4.5, easy:5},
-    pros:["질문, 글쓰기, 번역 등 거의 모든 용도에 쓸 수 있음","이미지 만들기도 같이 됨"], cons:["무료는 많이 쓰면 한도에 걸림"],
-    who:"AI를 처음 써보는 사람", review:"", updated:"2026-10" },
-  { id:"claude", cat:"chat", name:"Claude", desc:"긴 글 읽기와 글쓰기에 강한 챗봇", url:"https://claude.ai",
-    s:{quality:4.5, free:3.5, korean:4.5, easy:4.5},
-    pros:["긴 PDF나 문서 요약이 강함","한국어 문장이 자연스러움"], cons:["무료는 긴 대화에서 한도가 빨리 참"],
-    who:"보고서, 독후감, 긴 글을 자주 쓰는 사람", review:"", updated:"2026-10" },
-  { id:"gemini", cat:"chat", name:"Gemini", desc:"구글 서비스와 연결되는 챗봇", url:"https://gemini.google.com",
-    s:{quality:4, free:4.5, korean:4, easy:4.5},
-    pros:["구글 계정만 있으면 바로 사용","유튜브, 지메일 등과 연결"], cons:["답변 스타일이 들쭉날쭉할 때가 있음"],
-    who:"구글 서비스를 많이 쓰는 사람", review:"", updated:"2026-10" },
-  { id:"perplexity", cat:"chat", name:"Perplexity", desc:"출처를 달아주는 검색형 챗봇", url:"https://www.perplexity.ai",
-    s:{quality:4, free:4, korean:3.5, easy:4.5},
-    pros:["답변마다 출처 링크를 보여줌","최신 정보 찾기에 좋음"], cons:["긴 글쓰기는 다른 챗봇보다 약함"],
-    who:"과제 자료 조사가 필요한 사람", review:"", updated:"2026-10" },
-
-  { id:"midjourney", cat:"image", name:"Midjourney", desc:"예술적인 느낌의 그림", url:"https://www.midjourney.com",
-    s:{quality:5, free:1, korean:2.5, easy:3},
-    pros:["그림 퀄리티가 최상급","분위기 있는 예술 작품에 강함"], cons:["무료로 쓰기 어려움","영어로 쓰는 게 결과가 좋음"],
-    who:"퀄리티 높은 그림이 꼭 필요한 사람", review:"", updated:"2026-10" },
-  { id:"ideogram", cat:"image", name:"Ideogram", desc:"그림 속 글자를 잘 써줌", url:"https://ideogram.ai",
-    s:{quality:4, free:3.5, korean:3, easy:4},
-    pros:["포스터처럼 글자가 들어간 그림에 강함","사용법이 간단함"], cons:["한글 글자는 아직 어색할 때가 있음"],
-    who:"포스터, 썸네일을 만드는 사람", review:"", updated:"2026-10" },
-  { id:"firefly", cat:"image", name:"Adobe Firefly", desc:"포토샵과 이어서 쓰기 좋음", url:"https://firefly.adobe.com",
-    s:{quality:4, free:3, korean:3.5, easy:4},
-    pros:["포토샵, 어도비 익스프레스와 연결","사진 일부만 바꾸기가 편함"], cons:["무료 크레딧이 적은 편"],
-    who:"어도비 프로그램을 쓰는 사람", review:"", updated:"2026-10" },
-  { id:"stable-diffusion", cat:"image", name:"Stable Diffusion", desc:"내 컴퓨터에서 자유롭게 설정", url:"https://stability.ai",
-    s:{quality:4, free:5, korean:2, easy:1.5},
-    pros:["내 컴퓨터에 설치하면 무료로 무제한","설정을 자유롭게 바꿀 수 있음"], cons:["설치가 어렵고 좋은 그래픽카드가 필요함"],
-    who:"컴퓨터를 잘 다루고 직접 만져보고 싶은 사람", review:"", updated:"2026-10" },
-
-  { id:"runway", cat:"video", name:"Runway", desc:"영상 생성과 편집 기능이 많음", url:"https://runwayml.com",
-    s:{quality:4.5, free:2.5, korean:2.5, easy:3.5},
-    pros:["영상 생성 외에도 편집 도구가 많음"], cons:["무료로 만들 수 있는 양이 적음"],
-    who:"영상 편집까지 한 곳에서 하고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"kling", cat:"video", name:"Kling", desc:"사실적인 움직임의 짧은 영상", url:"https://klingai.com",
-    s:{quality:4.5, free:3, korean:2.5, easy:3.5},
-    pros:["사람과 물체의 움직임이 자연스러움"], cons:["영상 하나 만드는 데 시간이 걸림"],
-    who:"짧고 사실적인 영상이 필요한 사람", review:"", updated:"2026-10" },
-  { id:"pika", cat:"video", name:"Pika", desc:"재밌는 효과 영상을 빠르게", url:"https://pika.art",
-    s:{quality:3.5, free:3, korean:2.5, easy:4.5},
-    pros:["재밌는 효과를 쉽게 넣을 수 있음"], cons:["긴 영상이나 정교한 장면은 약함"],
-    who:"SNS용 짧은 재미 영상을 만드는 사람", review:"", updated:"2026-10" },
-
-  { id:"adobe-podcast", cat:"audio", name:"Adobe Podcast", desc:"녹음한 목소리 잡음 제거", url:"https://podcast.adobe.com",
-    s:{quality:4.5, free:4, korean:3.5, easy:5},
-    pros:["파일만 올리면 잡음이 깔끔하게 사라짐"], cons:["세밀한 편집 기능은 적음"],
-    who:"폰으로 녹음한 목소리를 깨끗하게 만들고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"elevenlabs", cat:"audio", name:"ElevenLabs", desc:"자연스러운 AI 목소리 만들기", url:"https://elevenlabs.io",
-    s:{quality:5, free:3, korean:4, easy:4},
-    pros:["사람 같은 자연스러운 목소리","한국어 목소리도 지원"], cons:["무료로 만들 수 있는 글자 수가 적음"],
-    who:"영상 내레이션이 필요한 사람", review:"", updated:"2026-10" },
-  { id:"descript", cat:"audio", name:"Descript", desc:"글자 고치듯 오디오 편집", url:"https://www.descript.com",
-    s:{quality:4, free:3, korean:2.5, easy:4},
-    pros:["받아쓴 글자를 지우면 오디오도 같이 잘림"], cons:["한국어 받아쓰기 정확도가 아쉬움"],
-    who:"팟캐스트나 인터뷰를 편집하는 사람", review:"", updated:"2026-10" },
-
-  { id:"suno", cat:"music", name:"Suno", desc:"가사 넣으면 노래 완성", url:"https://suno.com",
-    s:{quality:4.5, free:3.5, korean:4, easy:5},
-    pros:["가사와 장르만 쓰면 노래 완성","한국어 가사도 잘 부름"], cons:["무료로 만든 곡은 사용 범위에 제한이 있을 수 있음"],
-    who:"재미로 나만의 노래를 만들고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"udio", cat:"music", name:"Udio", desc:"음질 좋은 노래 생성", url:"https://www.udio.com",
-    s:{quality:4.5, free:3, korean:3.5, easy:4},
-    pros:["음질과 악기 표현이 좋음"], cons:["원하는 곡을 얻으려면 여러 번 시도해야 함"],
-    who:"음악 퀄리티를 중요하게 보는 사람", review:"", updated:"2026-10" },
-
-  { id:"cursor", cat:"code", name:"Cursor", desc:"AI가 들어간 코드 편집기", url:"https://cursor.com",
-    s:{quality:4.5, free:3, korean:3.5, easy:3.5},
-    pros:["코드를 쓰면서 바로 AI에게 물어볼 수 있음"], cons:["프로그램 설치가 필요함"],
-    who:"코딩을 배우는 중이거나 프로젝트를 하는 사람", review:"", updated:"2026-10" },
-  { id:"claude-code", cat:"code", name:"Claude Code", desc:"명령어로 코딩을 맡기는 도구", url:"https://claude.com/product/claude-code",
-    s:{quality:5, free:2, korean:4, easy:3},
-    pros:["큰 작업도 알아서 여러 파일을 고쳐줌"], cons:["유료 요금제가 필요함","터미널 사용에 익숙해야 함"],
-    who:"본격적으로 프로그램을 만드는 사람", review:"", updated:"2026-10" },
-  { id:"replit", cat:"code", name:"Replit", desc:"브라우저에서 바로 만들고 실행", url:"https://replit.com",
-    s:{quality:4, free:3.5, korean:3, easy:4.5},
-    pros:["설치 없이 브라우저에서 바로 코딩","만든 걸 바로 공유 가능"], cons:["큰 프로젝트는 무료로 한계가 있음"],
-    who:"설치 없이 코딩을 시작하고 싶은 사람", review:"", updated:"2026-10" },
-
-  { id:"gamma", cat:"slide", name:"Gamma", desc:"주제만 쓰면 발표자료 초안", url:"https://gamma.app",
-    s:{quality:4, free:3.5, korean:4, easy:5},
-    pros:["주제만 쓰면 몇 분 만에 발표자료 완성"], cons:["디자인이 비슷비슷해 보일 수 있음"],
-    who:"수행평가 발표자료를 빨리 만들어야 하는 사람", review:"", updated:"2026-10" },
-  { id:"canva", cat:"slide", name:"Canva", desc:"디자인 템플릿 + AI 기능", url:"https://www.canva.com",
-    s:{quality:4, free:4, korean:4.5, easy:4.5},
-    pros:["예쁜 템플릿이 아주 많음","한국어 글꼴이 다양함"], cons:["AI 기능 일부는 유료"],
-    who:"디자인에 신경 쓰고 싶은 사람", review:"", updated:"2026-10" },
-  /* ---- 추가한 AI ---- */
-  { id:"copilot", cat:"chat", name:"Microsoft Copilot", desc:"윈도우와 오피스에 들어간 챗봇", url:"https://copilot.microsoft.com",
-    s:{quality:4, free:4.5, korean:4, easy:4.5},
-    pros:["윈도우, 엣지에서 바로 사용","검색 결과를 함께 보여줌"], cons:["대화가 길어지면 맥락을 놓칠 때가 있음"],
-    who:"윈도우 컴퓨터를 주로 쓰는 사람", review:"", updated:"2026-10" },
-  { id:"wrtn", cat:"chat", name:"뤼튼", desc:"한국에서 만든 AI 챗봇", url:"https://wrtn.ai",
-    s:{quality:3.5, free:4.5, korean:5, easy:5},
-    pros:["한국어 화면이라 처음 쓰기 쉬움","다양한 AI 기능을 한 곳에 모아둠"], cons:["복잡한 질문은 다른 챗봇보다 약할 수 있음"],
-    who:"영어 화면이 부담스러운 사람", review:"", updated:"2026-10" },
-  { id:"deepseek", cat:"chat", name:"DeepSeek", desc:"수학과 논리 문제에 강한 챗봇", url:"https://www.deepseek.com",
-    s:{quality:4, free:4.5, korean:3.5, easy:4},
-    pros:["수학, 코딩 풀이 과정을 자세히 보여줌"], cons:["개인정보 처리 방식에 대한 우려가 있음"],
-    who:"수학 문제 풀이 과정이 궁금한 사람", review:"", updated:"2026-10" },
-  { id:"leonardo", cat:"image", name:"Leonardo AI", desc:"게임 캐릭터, 일러스트에 강함", url:"https://leonardo.ai",
-    s:{quality:4, free:3.5, korean:2.5, easy:3.5},
-    pros:["캐릭터, 게임 그림 스타일이 다양함","매일 무료 크레딧이 들어옴"], cons:["기능이 많아서 처음엔 헷갈림"],
-    who:"게임 캐릭터나 일러스트를 만드는 사람", review:"", updated:"2026-10" },
-  { id:"krea", cat:"image", name:"Krea", desc:"그리는 대로 실시간으로 그림 생성", url:"https://www.krea.ai",
-    s:{quality:4, free:3, korean:2.5, easy:4},
-    pros:["낙서하면 바로 그림으로 바뀌는 실시간 기능"], cons:["무료로 쓸 수 있는 양이 적음"],
-    who:"직접 그려보며 아이디어를 내고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"recraft", cat:"image", name:"Recraft", desc:"아이콘, 로고, 벡터 그림 전문", url:"https://www.recraft.ai",
-    s:{quality:4, free:3.5, korean:2.5, easy:4},
-    pros:["크기를 키워도 안 깨지는 벡터 그림 생성","통일된 스타일로 여러 장 만들기"], cons:["사진처럼 사실적인 그림은 약함"],
-    who:"로고나 아이콘을 만드는 사람", review:"", updated:"2026-10" },
-  { id:"luma", cat:"video", name:"Luma Dream Machine", desc:"사진 한 장으로 영상 만들기", url:"https://lumalabs.ai",
-    s:{quality:4, free:3, korean:2.5, easy:4.5},
-    pros:["사진을 올리면 자연스럽게 움직이는 영상으로"], cons:["무료로 만들 수 있는 개수가 적음"],
-    who:"사진을 영상으로 바꿔보고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"hailuo", cat:"video", name:"Hailuo", desc:"표정과 동작이 생생한 영상", url:"https://hailuoai.video",
-    s:{quality:4, free:3.5, korean:2.5, easy:4},
-    pros:["사람 표정과 몸짓 표현이 좋음"], cons:["영상 생성 대기 시간이 길 때가 있음"],
-    who:"캐릭터가 나오는 짧은 영상을 만드는 사람", review:"", updated:"2026-10" },
-  { id:"vrew", cat:"video", name:"Vrew", desc:"자막을 자동으로 달아주는 영상 편집", url:"https://vrew.ai",
-    s:{quality:4, free:4, korean:5, easy:4.5},
-    pros:["한국어 자막 인식이 정확함","한국에서 만들어서 사용법이 쉬움"], cons:["화려한 효과 편집은 부족함"],
-    who:"유튜브 영상에 자막을 넣는 사람", review:"", updated:"2026-10" },
-  { id:"capcut", cat:"video", name:"CapCut", desc:"AI 기능이 많은 무료 영상 편집", url:"https://www.capcut.com",
-    s:{quality:4, free:4, korean:4.5, easy:4.5},
-    pros:["자동 자막, 배경 제거 등 AI 기능이 많음","휴대폰 앱으로도 편집 가능"], cons:["일부 효과와 기능은 유료"],
-    who:"쇼츠, 릴스 영상을 편집하는 사람", review:"", updated:"2026-10" },
-  { id:"clovanote", cat:"audio", name:"클로바노트", desc:"녹음하면 글로 받아써줌", url:"https://clovanote.naver.com",
-    s:{quality:4.5, free:4, korean:5, easy:5},
-    pros:["한국어 받아쓰기가 아주 정확함","말한 사람을 구분해서 정리"], cons:["오디오 자체를 편집하는 기능은 없음"],
-    who:"수업이나 회의 녹음을 정리하는 사람", review:"", updated:"2026-10" },
-  { id:"moises", cat:"audio", name:"Moises", desc:"노래에서 목소리와 악기 분리", url:"https://moises.ai",
-    s:{quality:4.5, free:3, korean:3, easy:4.5},
-    pros:["노래에서 보컬, 드럼, 베이스를 따로 분리","연습용으로 속도와 키 조절"], cons:["무료는 분리할 수 있는 곡 수가 적음"],
-    who:"악기 연습이나 커버곡을 하는 사람", review:"", updated:"2026-10" },
-  { id:"soundraw", cat:"music", name:"Soundraw", desc:"영상 배경음악 만들기", url:"https://soundraw.io",
-    s:{quality:3.5, free:2.5, korean:3, easy:4.5},
-    pros:["분위기와 길이만 고르면 배경음악 완성"], cons:["노래(가사) 생성은 안 됨","다운로드는 유료"],
-    who:"영상에 넣을 배경음악이 필요한 사람", review:"", updated:"2026-10" },
-  { id:"aiva", cat:"music", name:"AIVA", desc:"클래식, 영화 음악 작곡", url:"https://www.aiva.ai",
-    s:{quality:4, free:3, korean:2.5, easy:3.5},
-    pros:["오케스트라, 피아노 곡 작곡에 강함","악보로 내보내기 가능"], cons:["사용법을 익히는 데 시간이 걸림"],
-    who:"작곡이나 음악 공부를 하는 사람", review:"", updated:"2026-10" },
-  { id:"github-copilot", cat:"code", name:"GitHub Copilot", desc:"코드 자동완성의 원조", url:"https://github.com/features/copilot",
-    s:{quality:4.5, free:3.5, korean:3.5, easy:4},
-    pros:["VS Code 등 여러 편집기에서 사용 가능","학생 인증하면 혜택이 있음"], cons:["설정이 처음엔 조금 번거로움"],
-    who:"VS Code로 코딩을 하는 사람", review:"", updated:"2026-10" },
-  { id:"lovable", cat:"code", name:"Lovable", desc:"말로 설명하면 웹사이트 완성", url:"https://lovable.dev",
-    s:{quality:4, free:3, korean:3.5, easy:5},
-    pros:["코딩을 몰라도 대화로 웹사이트 제작"], cons:["무료로 수정할 수 있는 횟수가 적음"],
-    who:"코딩 없이 내 사이트를 만들고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"bolt", cat:"code", name:"Bolt", desc:"브라우저에서 앱을 바로 만들어줌", url:"https://bolt.new",
-    s:{quality:4, free:3, korean:3, easy:4.5},
-    pros:["설치 없이 브라우저에서 앱 제작과 실행"], cons:["큰 프로젝트는 무료 한도가 금방 참"],
-    who:"아이디어를 빨리 앱으로 만들어보고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"miricanvas", cat:"slide", name:"미리캔버스", desc:"한국형 디자인 템플릿 + AI", url:"https://www.miricanvas.com",
-    s:{quality:4, free:4, korean:5, easy:4.5},
-    pros:["한국 학생, 직장인용 템플릿이 많음","한글 글꼴이 다양함"], cons:["AI 기능은 다른 서비스보다 단순함"],
-    who:"수행평가 발표자료를 예쁘게 만들고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"napkin", cat:"slide", name:"Napkin AI", desc:"글을 넣으면 도표로 바꿔줌", url:"https://www.napkin.ai",
-    s:{quality:4, free:4, korean:3.5, easy:4.5},
-    pros:["글만 넣으면 그림 도표를 자동 생성"], cons:["발표자료 전체를 만들어주지는 않음"],
-    who:"발표자료에 넣을 도표가 필요한 사람", review:"", updated:"2026-10" },
-  { id:"notebooklm", cat:"study", name:"NotebookLM", desc:"내 자료로 공부 도우미 만들기", url:"https://notebooklm.google.com",
-    s:{quality:4.5, free:4.5, korean:4, easy:4.5},
-    pros:["올린 자료만 바탕으로 답해서 정확함","자료를 팟캐스트처럼 대화로 들려줌"], cons:["자료를 직접 모아서 올려야 함"],
-    who:"교과서, 프린트로 시험 공부하는 사람", review:"", updated:"2026-10" },
-  { id:"qanda", cat:"study", name:"콴다", desc:"문제 사진 찍으면 풀이 검색", url:"https://qanda.ai",
-    s:{quality:4, free:4, korean:5, easy:5},
-    pros:["사진 한 장으로 수학 풀이 검색","한국 교과 과정에 맞춰져 있음"], cons:["풀이만 보면 실력이 안 늘 수 있음"],
-    who:"막힌 수학 문제 풀이가 궁금한 학생", review:"", updated:"2026-10" },
-  { id:"speak", cat:"study", name:"스픽", desc:"AI와 영어로 말하기 연습", url:"https://www.speak.com",
-    s:{quality:4, free:2.5, korean:5, easy:4.5},
-    pros:["AI와 실제 대화하듯 영어 말하기 연습","발음을 바로 교정해줌"], cons:["대부분 기능이 유료"],
-    who:"영어 회화를 연습하고 싶은 사람", review:"", updated:"2026-10" },
-  { id:"quizlet", cat:"study", name:"Quizlet", desc:"단어장과 퀴즈 자동 생성", url:"https://quizlet.com",
-    s:{quality:4, free:3.5, korean:4, easy:4.5},
-    pros:["노트를 넣으면 단어 카드와 퀴즈 생성"], cons:["AI 기능 일부는 유료"],
-    who:"영단어, 암기 과목을 공부하는 사람", review:"", updated:"2026-10" },
-  { id:"deepl", cat:"trans", name:"DeepL", desc:"자연스러운 번역", url:"https://www.deepl.com",
-    s:{quality:4.5, free:4, korean:4.5, easy:5},
-    pros:["문장이 자연스럽게 번역됨","문서 파일 통째로 번역 가능"], cons:["무료는 한 번에 번역할 글자 수 제한"],
-    who:"영어 지문이나 자료를 번역하는 사람", review:"", updated:"2026-10" },
-  { id:"papago", cat:"trans", name:"파파고", desc:"한국어에 강한 네이버 번역", url:"https://papago.naver.com",
-    s:{quality:4, free:5, korean:5, easy:5},
-    pros:["한국어 말투와 존댓말 번역이 좋음","사진 속 글자 번역 가능"], cons:["전문 용어 번역은 아쉬울 때가 있음"],
-    who:"일상 번역이 필요한 사람", review:"", updated:"2026-10" },
-  { id:"google-translate", cat:"trans", name:"Google 번역", desc:"가장 많은 언어 지원", url:"https://translate.google.com",
-    s:{quality:3.5, free:5, korean:4, easy:5},
-    pros:["지원하는 언어가 아주 많음","카메라로 실시간 번역"], cons:["긴 문장은 어색하게 번역될 때가 있음"],
-    who:"여러 나라 언어를 번역해야 하는 사람", review:"", updated:"2026-10" },
-];
-
-
-
-/* AI 추천 퀴즈: 질문을 바꾸고 싶으면 QUIZ만 고치면 돼요.
-   set: 답을 고르면 바뀌는 값 (cat = 카테고리, w = 채점 기준 가중치) */
-const QUIZ = [
-  { q:"무엇을 하고 싶어요?", grid:true, opts:[
-    { em:"💬", t:"질문하고 대화하기", set:{cat:"chat"} },
-    { em:"🎨", t:"그림 만들기", set:{cat:"image"} },
-    { em:"🎬", t:"영상 만들기·편집", set:{cat:"video"} },
-    { em:"🎙️", t:"녹음·목소리 다루기", set:{cat:"audio"} },
-    { em:"🎵", t:"노래 만들기", set:{cat:"music"} },
-    { em:"💻", t:"코딩·웹사이트", set:{cat:"code"} },
-    { em:"📊", t:"발표자료 만들기", set:{cat:"slide"} },
-    { em:"📚", t:"공부하기", set:{cat:"study"} },
-    { em:"🌏", t:"번역하기", set:{cat:"trans"} },
-  ]},
-  { q:"돈은 얼마나 쓸 수 있어요?", opts:[
-    { em:"🙅", t:"무료로만 쓸래요", set:{w:{free:3}} },
-    { em:"🤏", t:"조금은 괜찮아요", set:{w:{free:1.5}} },
-    { em:"💎", t:"상관없어요, 제일 좋은 걸로", set:{w:{free:0, quality:3}} },
-  ]},
-  { q:"영어로 된 사이트도 괜찮아요?", opts:[
-    { em:"🇰🇷", t:"한국어가 편해요", set:{w:{korean:3}} },
-    { em:"👌", t:"영어도 괜찮아요", set:{w:{korean:0.5}} },
-  ]},
-  { q:"AI를 얼마나 써봤어요?", opts:[
-    { em:"🐣", t:"거의 처음이에요", set:{w:{easy:3}} },
-    { em:"🙂", t:"몇 번 써봤어요", set:{w:{easy:1.5}} },
-    { em:"😎", t:"자주 써요", set:{w:{easy:0.5}} },
-  ]},
-];
-const WHY = {
-  quality:"결과물 품질이 좋아요",
-  free:"무료로도 충분히 쓸 수 있어요",
-  korean:"한국어로 쓰기 편해요",
-  easy:"처음 써도 어렵지 않아요",
-};
-
-
-/* ===== 동작 코드 ===== */
-const $ = id => document.getElementById(id);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const store = {
-  get(k, d){ try { const v = localStorage.getItem("dogam_" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
-  set(k, v){ try { localStorage.setItem("dogam_" + k, JSON.stringify(v)); } catch {} }
-};
-const TYPE_COLORS = {
-  chat:["#8DB4F5","#3E6DC4"], image:["#F4A3C4","#C04E80"], video:["#F5AE7E","#BC6229"],
-  audio:["#7FD6CB","#2D8B7F"], music:["#BFA4F0","#7150BC"], code:["#9ED69B","#418F3E"],
-  slide:["#F5D97A","#B38B14"], study:["#E9BE8C","#9E6A2E"], trans:["#8FCFF0","#2F80B0"]
-};
-const catLabel = id => (CATEGORIES.find(c => c.id === id) || {}).label || "";
-const dexNo = t => String(TOOLS.indexOf(t) + 1).padStart(3, "0");
-const DEFAULT_W = 2;
-const weights = Object.assign(Object.fromEntries(CRITERIA.map(c => [c.key, DEFAULT_W])), store.get("weights", {}));
-const seen = new Set(store.get("seen", []));
-const favs = new Set(store.get("favs", []));
-let current = store.get("type", "chat");
-let query = "";
-let inApp = false; // 도감 목록에서 눌러 들어왔는지
-
-function total(t){
-  let s = 0, w = 0;
-  for (const c of CRITERIA){ s += (t.s[c.key] || 0) * weights[c.key]; w += weights[c.key]; }
-  return w ? s / w : 0;
-}
-function ranked(cat){ return TOOLS.filter(t => t.cat === cat).map(t => ({t, v: total(t)})).sort((a, b) => b.v - a.v); }
-
-/* 이름으로 정해지는 픽셀 캐릭터 (매번 같은 모양) */
-function sprite(t, size, sil){
-  let h = 2166136261;
-  for (const ch of t.id) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
-  const rnd = () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 1000) / 1000; };
-  const W = 8, H = 8, g = [];
-  for (let y = 0; y < H; y++){
-    g[y] = [];
-    for (let x = 0; x < W / 2; x++){
-      const core = y >= 2 && y <= 5 && x >= 2;
-      const edge = (y === 0 || y === H - 1) ? .25 : x === 0 ? .3 : .6;
-      g[y][x] = core || rnd() < edge ? 1 : 0;
-    }
-    for (let x = W / 2; x < W; x++) g[y][x] = g[y][W - 1 - x];
-  }
-  const [body, shade] = TYPE_COLORS[t.cat] || ["#ccc", "#888"];
-  const cells = [];
-  const filled = (x, y) => y >= 0 && y < H && x >= 0 && x < W && g[y][x];
-  for (let y = -1; y <= H; y++) for (let x = -1; x <= W; x++){
-    if (filled(x, y)) continue;
-    if (filled(x+1,y) || filled(x-1,y) || filled(x,y+1) || filled(x,y-1)) cells.push(`<rect x="${x+1}" y="${y+1}" width="1" height="1" fill="#1E2A1B"/>`);
-  }
-  const mouth = rnd() < .6;
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++){
-    if (!g[y][x]) continue;
-    let c = y >= 6 ? shade : body;
-    if (y === 3 && (x === 2 || x === 5)) c = "#1E2A1B";
-    if (y === 2 && (x === 2 || x === 5)) c = "#FFFFFF";
-    if (mouth && y === 5 && (x === 3 || x === 4)) c = shade;
-    if (sil) c = "#8C9A84";
-    cells.push(`<rect x="${x+1}" y="${y+1}" width="1" height="1" fill="${c}"/>`);
-  }
-  return `<svg class="sprite" width="${size}" height="${size}" viewBox="0 0 10 10" shape-rendering="crispEdges" aria-hidden="true">${cells.join("")}</svg>`;
-}
-
-/* 픽셀 하트: filled면 꽉 찬 하트, 아니면 빈 하트 */
-function heart(size, color, filled){
-  const full = [".XX.XX.","XXXXXXX","XXXXXXX",".XXXXX.","..XXX..","...X..."];
-  const line = [".XX.XX.","X..X..X","X.....X",".X...X.","..X.X..","...X..."];
-  const rows = filled ? full : line, r = [];
-  rows.forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "X") r.push(`<rect x="${x}" y="${y}" width="1" height="1"/>`); }));
-  return `<svg class="pxheart" width="${size}" height="${Math.round(size * 6 / 7)}" viewBox="0 0 7 6" fill="${color}" shape-rendering="crispEdges" aria-hidden="true">${r.join("")}</svg>`;
-}
-const favLabel = on => on ? `${heart(14, "#fff", true)}찜했어요` : `${heart(14, "#F04452", false)}찜하기`;
-
-function toast(msg){
-  const el = $("toast"); el.textContent = msg; el.classList.add("show");
-  clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 1600);
-}
-function renderMeter(){
-  $("cnt").textContent = `${seen.size}/${TOOLS.length}`;
-  const on = Math.round(seen.size / TOOLS.length * 12);
-  $("bar").innerHTML = Array.from({length:12}, (_, i) => `<i class="${i < on ? "on" : ""}"></i>`).join("");
-}
-function renderTypes(){
-  const all = [{id:"fav", label:`찜 ${favs.size}`}, {id:"all", label:"전체"}, ...CATEGORIES];
-  const tcOf = id => id === "all" ? "var(--lcd)" : id === "fav" ? "#F7A1AC" : TYPE_COLORS[id][0];
-  $("types").innerHTML = all.map(c => `<button class="type" data-c="${c.id}" aria-pressed="${!query && c.id === current}"
-    style="--tc:${tcOf(c.id)}">${c.id === "fav" ? heart(14, "#F04452", true) : ""}${esc(c.label)}</button>`).join("");
-  $("types").querySelectorAll(".type").forEach(b => b.onclick = () => {
-    current = b.dataset.c; store.set("type", current);
-    query = ""; $("q").value = ""; renderTypes(); renderList();
-  });
-}
-function entry(t, v, rank, showChip){
-  const tc = TYPE_COLORS[t.cat][0];
-  return `<li><button class="entry" data-id="${t.id}">
-    <span class="rank ${rank === 1 ? "first" : ""}">${rank ? rank : ""}</span>
-    ${sprite(t, 44)}
-    <span style="min-width:0"><span class="nm">${esc(t.name)}${favs.has(t.id) ? '<span class="heart" role="img" aria-label="찜함">${heart(16, "#F04452", true)}</span>' : ""}</span>
-      <span class="meta">${showChip ? `<span class="chip" style="--tc:${tc}">${esc(catLabel(t.cat))}</span>` : ""}${seen.has(t.id) ? '<span class="seen">써봄</span>' : ""}<span class="ds">${esc(t.desc)}</span></span></span>
-    <span class="score">${v.toFixed(1)}</span></button></li>`;
-}
-function renderList(){
-  const q = query.trim().toLowerCase();
-  let rows;
-  if (q){
-    $("title").textContent = `"${query.trim()}" 검색 결과`;
-    rows = TOOLS.filter(t => [t.name, t.desc, catLabel(t.cat), t.who, ...(t.pros || [])].join(" ").toLowerCase().includes(q))
-      .map(t => ({t, v: total(t)})).sort((a, b) => b.v - a.v).map(r => entry(r.t, r.v, null, true));
-  } else if (current === "fav"){
-    $("title").textContent = "찜한 AI";
-    rows = TOOLS.filter(t => favs.has(t.id)).map(t => ({t, v: total(t)})).sort((a, b) => b.v - a.v).map(r => entry(r.t, r.v, null, true));
-  } else if (current === "all"){
-    $("title").textContent = "전체 도감";
-    rows = TOOLS.map(t => entry(t, total(t), null, true));
-  } else {
-    $("title").textContent = `${catLabel(current)} 타입 순위`;
-    rows = ranked(current).map((r, i) => entry(r.t, r.v, i + 1));
-  }
-  const emptyMsg = q ? "찾는 AI가 없어요. 다른 단어로 검색해 보세요." : current === "fav" ? "아직 찜한 AI가 없어요.<br>AI 페이지에서 찜하기를 눌러 보세요." : "이 타입에 아직 AI가 없어요.";
-  $("list").innerHTML = rows.length ? rows.join("") : `<li class="empty">${emptyMsg}</li>`;
-  $("list").querySelectorAll(".entry").forEach(b => b.onclick = () => { inApp = true; location.hash = "#/ai/" + b.dataset.id; });
-}
-
-function renderDetail(t){
-  const r = ranked(t.cat), rank = r.findIndex(x => x.t === t) + 1, v = total(t);
-  const tc = TYPE_COLORS[t.cat][0];
-  const stats = CRITERIA.map(c => {
-    const s = t.s[c.key] || 0, on = Math.round(s * 2);
-    return `<div class="stat"><span>${esc(c.label)}</span>
-      <span class="seg" aria-hidden="true">${Array.from({length:10}, (_, i) => `<i class="${i < on ? "on" : ""}"></i>`).join("")}</span>
-      <b aria-label="${s}점">${s.toFixed(1)}</b></div>`;
-  }).join("");
-  const list = arr => (arr && arr.length) ? `<ul>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
-  const review = t.review ? `<p>${esc(t.review).replace(/\n/g, "<br>")}</p>` : `<p>아직 후기가 없어요. 직접 써보고 채울 예정이에요.</p>`;
-  const el = $("detail");
-  el.innerHTML = `
-    <div class="dtop">
-      <button class="back" id="back">◀ 도감으로</button>
-      <div class="icons">
-        <button class="icon-btn" id="share">공유</button>
-        <button class="icon-btn fav" id="fav" aria-pressed="${favs.has(t.id)}">${favLabel(favs.has(t.id))}</button>
-      </div>
-    </div>
-    <article class="card px">
-      <div class="stage pop" style="--tc:${tc}">
-        <span class="dexno">No.${dexNo(t)}</span>
-        <span class="rankbadge">${esc(catLabel(t.cat))} ${rank}위</span>
-        ${sprite(t, 160)}
-      </div>
-      <div class="id">
-        <div><h1>${esc(t.name)}</h1><p class="desc">${esc(t.desc)}</p></div>
-        <div class="big">${v.toFixed(1)}<small>5점 만점</small></div>
-      </div>
-      <div class="stats">${stats}</div>
-      <div class="talk px">
-        ${t.pros && t.pros.length ? `<h3>좋은 점</h3>${list(t.pros)}` : ""}
-        ${t.cons && t.cons.length ? `<h3>아쉬운 점</h3>${list(t.cons)}` : ""}
-        ${t.who ? `<h3>이런 사람에게</h3><p>${esc(t.who)}</p>` : ""}
-        <h3>직접 써본 후기</h3>${review}
-        <span class="more" aria-hidden="true">▼</span>
-      </div>
-      <div class="actions">
-        <button class="act collect" id="collect" aria-pressed="${seen.has(t.id)}">${seen.has(t.id) ? "써봤어요 ✓" : "써봤어요"}</button>
-        <a class="act go" href="${esc(t.url)}" target="_blank" rel="noopener">사이트 가기</a>
-      </div>
-    </article>`;
-  $("back").onclick = () => { if (inApp) { inApp = false; history.back(); } else location.hash = "#/"; };
-  $("fav").onclick = () => {
-    const on = !favs.has(t.id);
-    on ? favs.add(t.id) : favs.delete(t.id);
-    store.set("favs", [...favs]);
-    const b = $("fav"); b.setAttribute("aria-pressed", on); b.innerHTML = favLabel(on);
-    toast(on ? "찜 목록에 담았어요" : "찜을 취소했어요");
-  };
-  $("share").onclick = () => shareLink(location.href, `${t.name} | AI 도감`, `${t.name}: ${t.desc} (AI 도감)`);
-  $("collect").onclick = () => {
-    const on = !seen.has(t.id);
-    on ? seen.add(t.id) : seen.delete(t.id);
-    store.set("seen", [...seen]); renderMeter();
-    const b = $("collect"); b.setAttribute("aria-pressed", on); b.textContent = on ? "써봤어요 ✓" : "써봤어요";
-    toast(on ? `도감에 기록했어요: ${t.name}` : "기록을 지웠어요");
-  };
-}
-
-/* 내 도감: 써본 AI는 컬러, 아직 안 써본 AI는 실루엣 */
-function renderDex(){
-  const bar = TOOLS.map((t, i) => `<i class="${i < seen.size ? "on" : ""}"></i>`).join("");
-  const secs = CATEGORIES.map(c => {
-    const items = TOOLS.filter(t => t.cat === c.id);
-    const got = items.filter(t => seen.has(t.id)).length;
-    return `<section class="dexsec"><h2 style="--tc:${TYPE_COLORS[c.id][0]}"><i></i>${esc(c.label)}<span class="n">${got}/${items.length}</span></h2>
-      <div class="grid">${items.map(t => {
-        const on = seen.has(t.id);
-        return `<button class="cell ${on ? "" : "locked"}" data-id="${t.id}" aria-label="${esc(t.name)}${on ? ", 써봄" : ", 아직 안 써봄"}">
-          <span class="no">No.${dexNo(t)}</span>${sprite(t, 52, !on)}<span class="nm">${on ? esc(t.name) : "???"}</span></button>`;
-      }).join("")}</div></section>`;
-  }).join("");
-  $("dex").innerHTML = `
-    <div class="dtop"><button class="back" id="dexBack">◀ 목록으로</button></div>
-    <div class="dexhead px">
-      <h1>내 도감</h1>
-      <div class="count"><span>써본 AI</span><b>${seen.size} / ${TOOLS.length}</b></div>
-      <div class="bigbar" aria-hidden="true">${bar}</div>
-    </div>${secs}`;
-  $("dexBack").onclick = () => { location.hash = "#/"; };
-  $("dex").querySelectorAll(".cell").forEach(b => b.onclick = () => { inApp = true; location.hash = "#/ai/" + b.dataset.id; });
-}
-$("openDex").onclick = () => { location.hash = "#/dex"; };
-
-/* 퀴즈 */
-let qStep = 0, qAns = [];
-function quizResult(){
-  let cat = "chat"; const w = { quality:2, free:1, korean:1, easy:1 };
-  qAns.forEach(a => { if (a.set.cat) cat = a.set.cat; Object.assign(w, a.set.w || {}); });
-  const score = t => { let s = 0, sw = 0; for (const k in w){ s += (t.s[k] || 0) * w[k]; sw += w[k]; } return sw ? s / sw : 0; };
-  return { list: TOOLS.filter(t => t.cat === cat).map(t => ({t, fit: score(t)})).sort((a, b) => b.fit - a.fit), w };
-}
-function renderQuiz(){
-  const el = $("quiz");
-  const top = `<div class="dtop"><button class="back" id="qBack">◀ 목록으로</button></div>`;
-  if (qStep < QUIZ.length){
-    const Q = QUIZ[qStep];
-    el.innerHTML = `${top}<div class="qbox px">
-      <div class="qtop"><span class="qstep">Q${qStep + 1}/${QUIZ.length}</span>
-        <span class="qprog" aria-hidden="true">${QUIZ.map((_, i) => `<i class="${i <= qStep ? "on" : ""}"></i>`).join("")}</span></div>
-      <h1 class="qtitle">${esc(Q.q)}</h1>
-      <div class="qopts ${Q.grid ? "two" : ""}">${Q.opts.map((o, i) =>
-        `<button class="qopt" data-i="${i}"><span class="em" aria-hidden="true">${o.em}</span>${esc(o.t)}</button>`).join("")}</div>
-      ${qStep > 0 ? `<button class="qprev" id="qPrev">◀ 이전 질문</button>` : ""}
-    </div>`;
-    el.querySelectorAll(".qopt").forEach(b => b.onclick = () => { qAns[qStep] = Q.opts[+b.dataset.i]; qStep++; renderQuiz(); window.scrollTo(0, 0); });
-    if ($("qPrev")) $("qPrev").onclick = () => { qStep--; renderQuiz(); };
-    const first = el.querySelector(".qopt"); if (first) first.focus({ preventScroll:true });
-  } else {
-    const { list, w } = quizResult();
-    const best = list[0] && list[0].t;
-    if (!best){ el.innerHTML = `${top}<div class="qbox px"><p>이 분야에 아직 AI가 없어요.</p></div>`; }
-    else {
-      const reasons = Object.keys(w).filter(k => w[k] >= 1.5 && (best.s[k] || 0) >= 4).sort((a, b) => w[b] - w[a]).map(k => WHY[k]);
-      if (!reasons.length) reasons.push("고른 조건에서 가장 점수가 높아요");
-      if (best.who) reasons.push(`${best.who}에게 잘 맞아요`);
-      el.innerHTML = `${top}
-      <article class="card px found">
-        <div class="stage pop" style="--tc:${TYPE_COLORS[best.cat][0]}"><span class="dexno">No.${dexNo(best)}</span>${sprite(best, 140)}</div>
-        <p class="hello">찾았다!</p>
-        <h1>${esc(best.name)}</h1><p>${esc(best.desc)}</p>
-        <div class="talk px" style="text-align:left"><h3>추천하는 이유</h3><ul>${reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul></div>
-        <div class="found-btns">
-          <button class="act go" id="qGo">${esc(best.name)} 자세히 보기</button>
-          <div class="two"><button class="act plain" id="qShare">결과 공유</button><button class="act plain" id="qAgain">다시 하기</button></div>
-        </div>
-      </article>
-      ${list.length > 1 ? `<div class="board px subboard"><h2>이것도 잘 맞아요</h2><ul class="list">${list.slice(1, 3).map(r => entry(r.t, total(r.t), null, false)).join("")}</ul></div>` : ""}`;
-      $("qGo").onclick = () => { inApp = true; location.hash = "#/ai/" + best.id; };
-      $("qAgain").onclick = () => { qStep = 0; qAns = []; renderQuiz(); window.scrollTo(0, 0); };
-      $("qShare").onclick = () => shareLink(location.href.split("#")[0] + "#/quiz", "AI 추천 퀴즈", `AI 추천 퀴즈 결과, 나에게 딱 맞는 AI는 ${best.name}! 너도 해봐`);
-      el.querySelectorAll(".entry").forEach(b => b.onclick = () => { inApp = true; location.hash = "#/ai/" + b.dataset.id; });
-    }
-  }
-  $("qBack").onclick = () => { location.hash = "#/"; };
-}
-$("openQuiz").onclick = () => { qStep = 0; qAns = []; location.hash = "#/quiz"; };
-
-/* 공유: 휴대폰은 공유 창, 안 되면 링크 복사 */
-async function shareLink(url, title, text){
-  if (navigator.share){
-    try { await navigator.share({title, text, url}); return; }
-    catch (e) { if (e && e.name === "AbortError") return; }
-  }
-  try { await navigator.clipboard.writeText(url); toast("링크를 복사했어요"); return; } catch {}
-  try {
-    const ta = document.createElement("textarea"); ta.value = url; ta.setAttribute("readonly", "");
-    ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select();
-    const ok = document.execCommand("copy"); ta.remove();
-    toast(ok ? "링크를 복사했어요" : "주소창의 링크를 복사해 주세요");
-  } catch { toast("주소창의 링크를 복사해 주세요"); }
-}
-
-/* 기준 창 */
-function renderW(){
-  $("wrows").innerHTML = CRITERIA.map(c => `
-    <div class="wrow"><span>${esc(c.label)}</span>
-      <button class="step" data-k="${c.key}" data-d="-1" aria-label="${esc(c.label)} 낮추기" ${weights[c.key] <= 0 ? "disabled" : ""}>-</button>
-      <output>x${weights[c.key]}</output>
-      <button class="step" data-k="${c.key}" data-d="1" aria-label="${esc(c.label)} 높이기" ${weights[c.key] >= 3 ? "disabled" : ""}>+</button></div>`).join("");
-  $("wrows").querySelectorAll(".step").forEach(b => b.onclick = () => {
-    const k = b.dataset.k; weights[k] = Math.min(3, Math.max(0, weights[k] + +b.dataset.d));
-    store.set("weights", weights); renderW(); renderList();
-    const again = $("wrows").querySelector(`.step[data-k="${k}"][data-d="${b.dataset.d}"]`);
-    if (again && !again.disabled) again.focus();
-  });
-}
-function modal(open){
-  $("modal").classList.toggle("open", open); $("mbg").classList.toggle("open", open);
-  if (open) $("modal").querySelector("button").focus(); else $("openW").focus();
-}
-$("openW").onclick = () => { renderW(); modal(true); };
-$("closeW").onclick = $("mbg").onclick = () => modal(false);
-$("resetW").onclick = () => { CRITERIA.forEach(c => weights[c.key] = DEFAULT_W); store.set("weights", weights); renderW(); renderList(); toast("기본 기준으로 돌아왔어요"); };
-document.addEventListener("keydown", e => { if (e.key === "Escape" && $("modal").classList.contains("open")) modal(false); });
-
-$("q").oninput = () => { query = $("q").value; renderTypes(); renderList(); };
-
-function route(){
-  const m = location.hash.match(/^#\/ai\/(.+)$/);
-  const t = m && TOOLS.find(x => x.id === decodeURIComponent(m[1]));
-  const dex = !t && location.hash === "#/dex", quiz = !t && location.hash === "#/quiz";
-  $("home").hidden = !!t || dex || quiz; $("detail").hidden = !t; $("dex").hidden = !dex; $("quiz").hidden = !quiz;
-  if (t){ renderDetail(t); document.title = `${t.name} | AI 도감`; window.scrollTo(0, 0); }
-  else if (dex){ renderDex(); document.title = "내 도감 | AI 도감"; window.scrollTo(0, 0); }
-  else if (quiz){ renderQuiz(); document.title = "AI 추천 퀴즈 | AI 도감"; window.scrollTo(0, 0); }
-  else { document.title = "AI 도감"; renderTypes(); renderList(); }
-}
-window.addEventListener("hashchange", route);
-renderMeter(); renderTypes(); route();
-</script>
+<script src="/assets/data.js"></script>
+<script src="/assets/app.js"></script>
 </body>
 </html>
