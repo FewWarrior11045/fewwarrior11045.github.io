@@ -70,7 +70,7 @@ SCRIPTS = '<script src="/assets/data.js"></script>\n<script src="/assets/bit.js"
 TOAST = '<div class="toast" id="toast" role="status" aria-live="polite"></div>'
 EMAIL = 'aidogam.kr@gmail.com'
 FOOT = f'''<p class="foot">점수는 직접 써 본 경험과 공개된 정보를 바탕으로 매기며, 계속 고쳐 나가요.</p>
-    <p class="footlinks"><a href="/about/">소개</a><span>·</span><a href="/privacy/">개인정보 처리방침</a><span>·</span><a href="mailto:{EMAIL}">문의</a></p>'''
+    <p class="footlinks"><a href="/guide/">가이드</a><span>·</span><a href="/about/">소개</a><span>·</span><a href="/privacy/">개인정보 처리방침</a><span>·</span><a href="mailto:{EMAIL}">문의</a></p>'''
 
 def entry(t, rank):
     return f'''<li><a class="entry" href="/ai/{t['id']}/">
@@ -80,6 +80,11 @@ def entry(t, rank):
       <span class="meta"><span class="ds">{e(t['desc'])}</span></span></span>
     <span class="score">{f1(total(t))}</span></a></li>'''
 
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from guides import GUIDES
+def guide_box():
+    items = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span></a></li>' for g in GUIDES)
+    return f'<section class="guides"><h2>AI 활용 가이드 <a href="/guide/">전체 보기 ▶</a></h2><ul>{items}</ul></section>'
 def allnav():
     rows = ''.join(f'<dt>{e(c["label"])}</dt><dd>' + ' '.join(f'<a href="/ai/{t["id"]}/">{e(t["name"])}</a>' for t in ranked(c['id'])) + '</dd>' for c in CATS)
     return f'<nav class="allnav" aria-label="전체 AI 목록"><h2>AI 도감 전체 목록</h2><dl>{rows}</dl></nav>'
@@ -113,6 +118,7 @@ home = head("AI 도감 | 학생이 직접 써보고 매긴 AI 순위", home_desc
       <ul class="list" id="list">{''.join(entry(t, i+1) for i, t in enumerate(ranked('chat')))}</ul>
     </div>
     {FOOT}
+    {guide_box()}
     {allnav()}
   </section>
   <section id="dex" hidden></section>
@@ -281,6 +287,43 @@ for path, title, desc, body in [
     os.makedirs(OUT + path, exist_ok=True)
     open(OUT + path + 'index.html', 'w', encoding='utf-8').write(info_page(path, title, desc, body))
 
+
+# ---------- 가이드 ----------
+tool_by_id = {t['id']: t for t in TOOLS}
+def ai_card(t):
+    r = ranked(t['cat']); rank = r.index(t) + 1
+    return f'<li><a class="entry" href="/ai/{t["id"]}/"><span class="rank"></span><span class="sp" data-id="{t["id"]}" data-size="44"></span><span style="min-width:0"><span class="nm">{e(t["name"])}</span><span class="meta"><span class="ds">{e(cat_label[t["cat"]])} {rank}위 · {e(t["desc"])}</span></span></span><span class="score">{f1(total(t))}</span></a></li>'
+def guide_page(path, title, desc, inner):
+    return head(title, desc, path).replace('<meta property="og:type" content="website">','<meta property="og:type" content="article">') + f"""
+<body data-page="guide">
+<div class="wrap">
+  <div class="dtop"><a class="back" href="/guide/">◀ 가이드 목록</a><a class="back" href="/">도감으로 ▶</a></div>
+  {inner}
+  {FOOT}
+</div>
+{TOAST}
+{SCRIPTS}
+</body>
+</html>
+"""
+for g in GUIDES:
+    path = f"/guide/{g['slug']}/"
+    cards = ''.join(ai_card(tool_by_id[i]) for i in g['ais'] if i in tool_by_id)
+    inner = f"""<article class="card px doc">
+    <p class="crumb" style="color:var(--sub)">AI 활용 가이드</p>
+    <h1>{e(g['title'])}</h1>
+    <p class="updated">AI 도감 · {g['date']}</p>
+    {g['body']}
+    <p class="updated">가격, 무료 사용량, 기능은 자주 바뀌어요. 쓰기 전에 각 서비스의 공식 사이트에서 확인해 주세요.</p>
+  </article>
+  <div class="board px others"><div class="board-head"><h2>이 글에 나온 AI</h2></div><ul class="list">{cards}</ul></div>"""
+    os.makedirs(OUT + path, exist_ok=True)
+    open(OUT + path + 'index.html', 'w', encoding='utf-8').write(guide_page(path, f"{g['title']} | AI 도감", g['desc'], inner))
+gl = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span><small>{g["date"]}</small></a></li>' for g in GUIDES)
+os.makedirs(OUT + '/guide/', exist_ok=True)
+open(OUT + '/guide/index.html', 'w', encoding='utf-8').write(guide_page('/guide/', 'AI 활용 가이드 | AI 도감', '숙제, 공부, 영상, 요리까지. 학생 눈높이로 정리한 AI 활용 가이드 모음이에요.',
+  f'<article class="card px doc"><h1>AI 활용 가이드</h1><p>숙제, 공부, 영상, 요리까지. AI를 어떻게 쓰면 좋은지 학생 눈높이로 정리했어요.</p><ul class="glist">{gl}</ul></article>').replace('<a class="back" href="/guide/">◀ 가이드 목록</a>','<a class="back" href="/">◀ 도감으로</a>').replace('<a class="back" href="/">도감으로 ▶</a>',''))
+
 # ---------- 404 ----------
 open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 수 없어요 | AI 도감", "AI 도감에서 찾는 페이지가 없어요.", "/404.html").replace('<link rel="canonical" href="https://aidogam.kr/404.html">', '<meta name="robots" content="noindex">') + '''
 <body data-page="404">
@@ -300,7 +343,7 @@ open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 �
 ''')
 
 # ---------- sitemap / robots ----------
-urls = ['/', '/about/', '/privacy/'] + [f"/ai/{t['id']}/" for t in TOOLS]
+urls = ['/', '/guide/'] + [f"/guide/{g['slug']}/" for g in GUIDES] + ['/about/', '/privacy/'] + [f"/ai/{t['id']}/" for t in TOOLS]
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
      ''.join(f'  <url><loc>{SITE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n' for u in urls) + '</urlset>\n'
 open(f'{OUT}/sitemap.xml', 'w', encoding='utf-8').write(sm)

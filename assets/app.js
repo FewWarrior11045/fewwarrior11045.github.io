@@ -482,6 +482,7 @@ function reloadState(){
   const start = () => {
     if (page === "home") initHome();
     else if (page === "ai") initDetail(document.body.dataset.id);
+    else if (page === "guide") fillSprites();
   };
   start();
   checkBadges();
