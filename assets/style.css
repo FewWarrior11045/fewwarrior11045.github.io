@@ -310,6 +310,7 @@ a.entry{cursor:pointer}
 .dev-btn b{display:block; font-size:.9rem}
 .dev-btn small{display:block; font-size:.72rem; color:var(--sub); line-height:1.35}
 .dev-btn[data-act="all"]{background:#FFD1DD}
+.dev-btn[data-act="ga"]{grid-column:1/-1; background:#FFF1C9}
 
 /* ===== 가이드 ===== */
 .guides{margin-top:24px}

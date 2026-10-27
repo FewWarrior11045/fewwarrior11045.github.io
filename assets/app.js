@@ -369,6 +369,7 @@ function initHome(){
       <p>이 기기(브라우저)에 저장된 기록만 바뀌어요. 다른 사람한텐 영향 없어요.</p>
       <div class="dev-stat">찜 ${favs.size} · 써봄 ${seen.size} · 배지 ${earnedBadges().size}/${BADGES.length} · 소리 ${soundOn() ? "켜짐" : "꺼짐"}</div>
       <div class="dev-grid">
+        ${row("ga", store.get("noga", 0) ? "📵 내 방문 기록 안 함: 켜짐" : "📈 내 방문 기록 안 함: 꺼짐", store.get("noga", 0) ? "이 기기 방문은 GA에 안 남아요 (누르면 다시 기록)" : "누르면 이 기기 방문을 GA에서 빼요")}
         ${row("badges", "업적 초기화", "딴 배지 전부 지우기")}
         ${row("favs", "찜 초기화", "찜한 AI 전부 지우기")}
         ${row("seen", "써봤어요 초기화", "도감 기록 전부 지우기")}
@@ -385,6 +386,11 @@ function initHome(){
       const act = btn.dataset.act;
       if (act === "test"){ close(); badgeToast(BADGES[Math.floor(Math.random() * BADGES.length)]); return; }
       if (act === "sound"){ store.set("sound", soundOn() ? 0 : 1); openDev(); return; }
+      if (act === "ga"){
+        const off = store.get("noga", 0) ? 0 : 1; store.set("noga", off);
+        window["ga-disable-G-4PGZ1RDWYT"] = !!off;
+        toast(off ? "이제 이 기기 방문은 GA에 안 남아요" : "이 기기 방문을 다시 기록해요"); openDev(); return;
+      }
       if (act === "all" && !confirm("이 사이트 기록을 전부 지울까요?")) return;
       if (act === "badges" || act === "all"){ store.set("badges", []); store.set("quizDone", 0); store.set("customW", 0); }
       if (act === "favs" || act === "all"){ favs.clear(); store.set("favs", []); }

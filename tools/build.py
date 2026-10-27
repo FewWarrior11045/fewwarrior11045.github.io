@@ -32,7 +32,8 @@ GA = '''<!-- Google tag (gtag.js) -->
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
+  // 개발자 창에서 "내 방문 기록 안 함"을 켠 기기는 GA에 기록하지 않음
+  try { if (localStorage.getItem('dogam_noga') === '1') window['ga-disable-G-4PGZ1RDWYT'] = true; } catch (e) {}
   gtag('config', 'G-4PGZ1RDWYT');
 </script>
 <!-- Google AdSense (자동 광고는 애드센스 화면에서 꺼 둠) -->

@@ -7,7 +7,8 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
+  // 개발자 창에서 "내 방문 기록 안 함"을 켠 기기는 GA에 기록하지 않음
+  try { if (localStorage.getItem('dogam_noga') === '1') window['ga-disable-G-4PGZ1RDWYT'] = true; } catch (e) {}
   gtag('config', 'G-4PGZ1RDWYT');
 </script>
 <!-- Google AdSense (자동 광고는 애드센스 화면에서 꺼 둠) -->
@@ -34,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css?v=33060ccb">
+<link rel="stylesheet" href="/assets/style.css?v=2d0bf62a">
 </head>
 <body data-page="ai" data-id="deepl">
 <div class="wrap">
@@ -92,6 +93,6 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="/assets/data.js?v=05e8c5bb"></script>
 <script src="/assets/bit.js?v=d5ba3ce0"></script>
-<script src="/assets/app.js?v=df0e2dce"></script>
+<script src="/assets/app.js?v=07cc00b1"></script>
 </body>
 </html>
