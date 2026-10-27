@@ -484,6 +484,22 @@ function reloadState(){
     else if (page === "ai") initDetail(document.body.dataset.id);
     else if (page === "guide") fillSprites();
   };
+  // AI 공식 사이트로 나가는 링크를 누르면 GA4에 'outbound_ai_click' 이벤트로 기록해요.
+  // (누가 눌렀는지는 안 남고, 어떤 AI 버튼이 몇 번 눌렸는지만 남아요)
+  const hostOf = u => { try { return new URL(u, location.href).hostname.replace(/^www\./, ""); } catch (_) { return ""; } };
+  document.addEventListener("click", ev => {
+    const a = ev.target.closest && ev.target.closest("a[href]");
+    if (!a || typeof gtag !== "function") return;
+    const host = hostOf(a.href);
+    if (!host || host === location.hostname.replace(/^www\./, "")) return;
+    const t = TOOLS.find(x => hostOf(x.url) === host);
+    if (!t) return;
+    gtag("event", "outbound_ai_click", {
+      ai_id: t.id, ai_name: t.name, ai_type: t.cat,
+      from_page: page || "", link_text: (a.textContent || "").trim().slice(0, 40),
+      transport_type: "beacon"
+    });
+  });
   start();
   checkBadges();
   // 뒤로 가기로 돌아왔을 때 브라우저가 예전 화면을 그대로 꺼내 보여 주는 경우가 있어서,

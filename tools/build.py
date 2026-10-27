@@ -82,6 +82,11 @@ def entry(t, rank):
 
 import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from guides import GUIDES
+def related_guides(t):
+    gs = [g for g in GUIDES if t['id'] in g.get('ais', [])]
+    if not gs: return ''
+    items = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span></a></li>' for g in gs)
+    return f'<section class="guides related"><h2>{e(t["name"])} 활용 가이드</h2><ul>{items}</ul></section>'
 def guide_box():
     items = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span></a></li>' for g in GUIDES)
     return f'<section class="guides"><h2>AI 활용 가이드 <a href="/guide/">전체 보기 ▶</a></h2><ul>{items}</ul></section>'
@@ -90,8 +95,8 @@ def allnav():
     return f'<nav class="allnav" aria-label="전체 AI 목록"><h2>AI 도감 전체 목록</h2><dl>{rows}</dl></nav>'
 
 # ---------- 홈 ----------
-home_desc = f"학생이 직접 써보고 점수를 매긴 AI 도감. 챗봇, 그림, 영상, 음악, 발표자료 등 {len(TOOLS)}개 AI를 타입별 순위와 후기로 비교하고, 질문 4개로 나에게 맞는 AI를 찾아보세요."
-home = head("AI 도감 | 학생이 직접 써보고 매긴 AI 순위", home_desc, "/") + f'''
+home_desc = f"과제·수행평가·공부에 쓸 AI 추천. 학생이 직접 써 보고 점수를 매긴 {len(TOOLS)}개 AI를 챗봇, 그림, 영상, 발표자료 등 타입별 순위로 비교하고, 질문 4개로 나에게 맞는 AI를 찾아보세요."
+home = head("AI 추천 · 비교 | 학생이 직접 써 본 AI 도감", home_desc, "/") + f'''
 <body data-page="home">
 <div class="wrap">
   <section id="home">
@@ -142,6 +147,9 @@ home = head("AI 도감 | 학생이 직접 써보고 매긴 AI 순위", home_desc
 open(f'{OUT}/index.html', 'w', encoding='utf-8').write(home)
 
 # ---------- AI별 페이지 ----------
+CAT_KW = {"chat":"과제·질문용 AI 챗봇 추천", "image":"그림 그려 주는 AI 추천", "video":"영상 만드는 AI 추천",
+          "audio":"음성 편집 AI 추천", "music":"작곡 AI 추천", "code":"코딩 AI 추천",
+          "slide":"PPT 만들어 주는 AI 추천", "study":"공부용 AI 추천", "trans":"번역 AI 추천"}
 for t in TOOLS:
     r = ranked(t['cat']); rank = r.index(t) + 1; v = total(t); cl = cat_label[t['cat']]
     pros = ', '.join(t.get('pros') or [])
@@ -160,7 +168,7 @@ for t in TOOLS:
     if t.get('who'): talk += f'<h3>이런 사람에게</h3><p>{e(t["who"])}</p>'
     talk += f'<h3>직접 써본 후기</h3>{review}'
     others = ''.join(entry(x, i+1) for i, x in enumerate(r) if x is not t)
-    page = head(f"{t['name']} 점수·후기 | AI 도감", desc, f"/ai/{t['id']}/") + f'''
+    page = head(f"{t['name']} 후기·점수 – {CAT_KW.get(t['cat'], 'AI 추천')} | AI 도감", desc, f"/ai/{t['id']}/") + f'''
 <body data-page="ai" data-id="{t['id']}">
 <div class="wrap">
   <div class="dtop">
@@ -185,9 +193,10 @@ for t in TOOLS:
     <div class="talk px">{talk}<span class="more" aria-hidden="true">▼</span></div>
     <div class="actions">
       <button class="act collect" id="collect" aria-pressed="false">써봤어요</button>
-      <a class="act go" href="{e(t['url'])}" target="_blank" rel="noopener">사이트 가기</a>
+      <a class="act go" href="{e(t['url'])}" target="_blank" rel="noopener">{e(t['name'] + ' 무료로 써 보기') if t.get('freeTry') else '공식 사이트 가기'}</a>
     </div>
   </article>
+  {related_guides(t)}
   <div class="board px others">
     <div class="board-head"><h2>{e(cl)} 타입 다른 AI</h2></div>
     <ul class="list" id="others">{others}</ul>

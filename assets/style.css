@@ -323,3 +323,6 @@ a.entry{cursor:pointer}
 .guides span,.glist span{display:block; font-size:.82rem; color:var(--sub); margin-top:3px; line-height:1.5}
 .glist small{display:block; font-size:.75rem; color:var(--sub); margin-top:4px}
 .dtop a.back + a.back{margin-left:auto}
+
+/* 버튼 글자가 단어 중간에서 끊기지 않게 */
+.actions .act{word-break:keep-all}
