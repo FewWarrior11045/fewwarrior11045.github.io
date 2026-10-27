@@ -83,12 +83,14 @@ def entry(t, rank):
 import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from guides import GUIDES
 def related_guides(t):
-    gs = [g for g in GUIDES if t['id'] in g.get('ais', [])]
+    gs = sorted([g for g in GUIDES if t['id'] in g.get('ais', [])], key=lambda g: g.get('date', ''), reverse=True)
     if not gs: return ''
-    items = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span></a></li>' for g in gs)
-    return f'<section class="guides related"><h2>{e(t["name"])} 활용 가이드</h2><ul>{items}</ul></section>'
+    more = ' <a href="/guide/">가이드 더 보기 ▶</a>' if len(gs) > 2 else ''
+    items = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span></a></li>' for g in gs[:2])
+    return f'<section class="guides related"><h2>{e(t["name"])} 활용 가이드{more}</h2><ul>{items}</ul></section>'
 def guide_box():
-    items = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span></a></li>' for g in GUIDES)
+    latest = sorted(GUIDES, key=lambda g: g.get('date', ''), reverse=True)[:3]   # 홈에는 최신 3개만
+    items = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span></a></li>' for g in latest)
     return f'<section class="guides"><h2>AI 활용 가이드 <a href="/guide/">전체 보기 ▶</a></h2><ul>{items}</ul></section>'
 def allnav():
     rows = ''.join(f'<dt>{e(c["label"])}</dt><dd>' + ' '.join(f'<a href="/ai/{t["id"]}/">{e(t["name"])}</a>' for t in ranked(c['id'])) + '</dd>' for c in CATS)
@@ -357,4 +359,20 @@ sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps
      ''.join(f'  <url><loc>{SITE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n' for u in urls) + '</urlset>\n'
 open(f'{OUT}/sitemap.xml', 'w', encoding='utf-8').write(sm)
 open(f'{OUT}/robots.txt', 'w', encoding='utf-8').write(f"User-agent: *\nAllow: /\nDisallow: /tools/\n\nSitemap: {SITE}/sitemap.xml\n")
+# ---------- 버전 꼬리표 ----------
+# app.js·style.css 등을 고치면 파일 내용으로 만든 꼬리표(?v=...)가 바뀌어서,
+# 방문자 브라우저가 옛날 파일(캐시) 대신 새 파일을 바로 받아 가요.
+import hashlib, re, glob
+ASSET_VER = {}
+for name in ['app.js', 'data.js', 'bit.js', 'style.css']:
+    raw = open(os.path.join(ROOT, 'assets', name), 'rb').read().replace(b'\r\n', b'\n')
+    ASSET_VER[name] = hashlib.md5(raw).hexdigest()[:8]
+_asset_re = re.compile(r'(/assets/(app\.js|data\.js|bit\.js|style\.css))(\?v=[0-9a-f]+)?"')
+for f in glob.glob(os.path.join(OUT, '**', '*.html'), recursive=True):
+    base = os.path.basename(f)
+    if base.startswith(('google', 'naver')) or os.sep + 'tools' + os.sep in f: continue
+    txt = open(f, encoding='utf-8').read()
+    new = _asset_re.sub(lambda m: f'{m.group(1)}?v={ASSET_VER[m.group(2)]}"', txt)
+    if new != txt: open(f, 'w', encoding='utf-8').write(new)
+
 print('pages', len(TOOLS)+1)
