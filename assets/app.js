@@ -424,7 +424,15 @@ function initHome(){
     if (dex){ renderDex(); document.title = "내 도감 | AI 도감"; window.scrollTo(0, 0); }
     else if (quiz){ renderQuiz(); document.title = "AI 추천 퀴즈 | AI 도감"; window.scrollTo(0, 0); }
     else { document.title = HOME_TITLE; renderMeter(); renderTypes(); renderList(); }
+    // 홈 ↔ 퀴즈 ↔ 내 도감으로 화면이 바뀌면, 제목을 바꾼 "뒤에" GA에 페이지 조회를 직접 보내요.
+    // (첫 화면 조회는 head의 GA 코드가 보내니까 여기선 화면이 바뀔 때만)
+    const view = dex ? "dex" : quiz ? "quiz" : "home";
+    if (lastView && view !== lastView && typeof gtag === "function"){
+      gtag("event", "page_view", { page_title: document.title, page_location: location.href });
+    }
+    lastView = view;
   }
+  let lastView = "";
   const HOME_TITLE = document.title;
   fillBits(document);
   window.addEventListener("hashchange", route);

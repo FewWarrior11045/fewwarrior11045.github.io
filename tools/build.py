@@ -14,7 +14,7 @@ _js = open(os.path.join(ROOT, 'assets', 'data.js'), encoding='utf-8').read()
 _js += "\nprocess.stdout.write(JSON.stringify({CRITERIA, CATEGORIES, TOOLS}));"
 
 D = json.loads(subprocess.run(['node', '-e', _js], capture_output=True, text=True, check=True).stdout)
-TODAY = datetime.date.today().isoformat()
+TODAY = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).date().isoformat()   # 한국 시간 기준 날짜
 CRIT, CATS, TOOLS = D['CRITERIA'], D['CATEGORIES'], D['TOOLS']
 SITE = 'https://aidogam.kr'
 TC = {"chat":"#8DB4F5","image":"#F4A3C4","video":"#F5AE7E","audio":"#7FD6CB","music":"#BFA4F0",
@@ -370,9 +370,6 @@ open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 �
 
 # ---------- sitemap / robots ----------
 urls = ['/', '/guide/'] + [f"/guide/{g['slug']}/" for g in GUIDES] + ['/about/', '/privacy/'] + [f"/ai/{t['id']}/" for t in TOOLS]
-sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
-     ''.join(f'  <url><loc>{SITE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n' for u in urls) + '</urlset>\n'
-open(f'{OUT}/sitemap.xml', 'w', encoding='utf-8').write(sm)
 open(f'{OUT}/ads.txt', 'w', encoding='utf-8').write("google.com, pub-4796875273226797, DIRECT, f08c47fec0942fa0\n")
 open(f'{OUT}/robots.txt', 'w', encoding='utf-8').write(f"User-agent: *\nAllow: /\nDisallow: /tools/\n\nSitemap: {SITE}/sitemap.xml\n")
 # ---------- 버전 꼬리표 ----------
@@ -391,4 +388,24 @@ for f in glob.glob(os.path.join(OUT, '**', '*.html'), recursive=True):
     new = _asset_re.sub(lambda m: f'{m.group(1)}?v={ASSET_VER[m.group(2)]}"', txt)
     if new != txt: open(f, 'w', encoding='utf-8').write(new)
 
+# ---------- sitemap (실제로 바뀐 페이지만 날짜 갱신) ----------
+# 페이지 내용을 지난번 빌드와 비교해서, 진짜 바뀐 페이지만 lastmod를 오늘로 바꿔요.
+# 버전 꼬리표(?v=...)와 "마지막 업데이트: 날짜" 줄은 비교에서 빼요. (이것만 바뀐 건 내용 변화가 아니라서)
+LASTMOD_FILE = os.path.join(ROOT, 'tools', 'lastmod.json')
+try: lastmod = json.load(open(LASTMOD_FILE, encoding='utf-8'))
+except Exception: lastmod = {}
+_ignore_re = re.compile(r'\?v=[0-9a-f]+|마지막 업데이트: \d{4}-\d{2}-\d{2}')
+new_lastmod = {}
+for u in urls:
+    f = os.path.join(OUT, u.strip('/'), 'index.html') if u != '/' else os.path.join(OUT, 'index.html')
+    body = _ignore_re.sub('', open(f, encoding='utf-8').read())
+    h = hashlib.md5(body.encode('utf-8')).hexdigest()
+    old = lastmod.get(u)
+    new_lastmod[u] = old if old and old.get('hash') == h else {'hash': h, 'date': TODAY}
+json.dump(new_lastmod, open(LASTMOD_FILE, 'w', encoding='utf-8'), ensure_ascii=False, indent=1, sort_keys=True)
+sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
+     ''.join(f'  <url><loc>{SITE}{u}</loc><lastmod>{new_lastmod[u]["date"]}</lastmod></url>\n' for u in urls) + '</urlset>\n'
+open(f'{OUT}/sitemap.xml', 'w', encoding='utf-8').write(sm)
+changed = sum(1 for u in urls if new_lastmod[u]['date'] == TODAY and lastmod.get(u, {}).get('hash') != new_lastmod[u]['hash'])
+print('sitemap', len(urls), '· 바뀐 페이지', changed)
 print('pages', len(TOOLS)+1)
