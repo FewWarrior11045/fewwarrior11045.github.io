@@ -169,6 +169,7 @@ for t in TOOLS:
     lst = lambda a: ('<ul>' + ''.join(f'<li>{e(x)}</li>' for x in a) + '</ul>') if a else ''
     review = f'<p>{e(t["review"]).replace(chr(10), "<br>")}</p>' if t.get('review') else '<p>아직 후기가 없어요. 직접 써보고 채울 예정이에요.</p>'
     talk = ''
+    if t.get('intro'): talk += f'<h3>이런 AI예요</h3><p>{e(t["intro"])}</p>'
     if t.get('pros'): talk += f'<h3>좋은 점</h3>{lst(t["pros"])}'
     if t.get('cons'): talk += f'<h3>아쉬운 점</h3>{lst(t["cons"])}'
     if t.get('who'): talk += f'<h3>이런 사람에게</h3><p>{e(t["who"])}</p>'
