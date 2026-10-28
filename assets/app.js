@@ -353,6 +353,12 @@ function initHome(){
   }
   /* 개발자 창: 로고 "AI 도감"을 3초 안에 7번 누르면 열림 */
   let taps = [];
+  /* 로고 누르면 처음 화면으로 (유튜브처럼): 검색어를 지우고 맨 위로 */
+  document.querySelector(".logo a").addEventListener("click", ev => {
+    ev.preventDefault();
+    if (query){ query = ""; $("q").value = ""; renderTypes(); renderList(); }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
   document.querySelector(".logo").addEventListener("click", () => {
     const now = Date.now(); taps = taps.filter(t => now - t < 3000); taps.push(now);
     if (taps.length >= 7){ taps = []; openDev(); }

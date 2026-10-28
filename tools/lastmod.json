@@ -1,7 +1,7 @@
 {
  "/": {
-  "date": "2026-10-28",
-  "hash": "852eb8ea55110c498781c076a6d1440a"
+  "date": "2026-10-29",
+  "hash": "c3ffed6285c54842acac19da8a330002"
  },
  "/about/": {
   "date": "2026-10-28",
@@ -9,11 +9,11 @@
  },
  "/ai/adobe-podcast/": {
   "date": "2026-10-29",
-  "hash": "caad8f2e5c7b7080f52788c1529bdc44"
+  "hash": "27d7d1d054f15fe7c0c0a0b1af67e468"
  },
  "/ai/aiva/": {
   "date": "2026-10-29",
-  "hash": "dee3293ecf4560339eb11b0791dd519d"
+  "hash": "1bd6883726e8e534e7bd5329e6eac57f"
  },
  "/ai/bolt/": {
   "date": "2026-10-29",
@@ -25,11 +25,11 @@
  },
  "/ai/capcut/": {
   "date": "2026-10-29",
-  "hash": "b870d09b2e2a10548f70d413cf1b22c8"
+  "hash": "db986e87f1817f5914ddfc9270ef73df"
  },
  "/ai/chatgpt/": {
   "date": "2026-10-29",
-  "hash": "28a429269f8d5de9493f89cf06e61e78"
+  "hash": "7393c1d8b878c741969b2475bb3fd705"
  },
  "/ai/claude-code/": {
   "date": "2026-10-29",
@@ -37,7 +37,7 @@
  },
  "/ai/claude/": {
   "date": "2026-10-29",
-  "hash": "f5fc0ef9edc9e112038c23756c06cde1"
+  "hash": "251715feb5dba931cfec1937dbeb165b"
  },
  "/ai/clovanote/": {
   "date": "2026-10-29",
@@ -45,7 +45,7 @@
  },
  "/ai/copilot/": {
   "date": "2026-10-29",
-  "hash": "be3b22b7b4e83391c5d00c9302d83228"
+  "hash": "e349ac06673452706458abce4ab70560"
  },
  "/ai/cursor/": {
   "date": "2026-10-29",
@@ -53,7 +53,7 @@
  },
  "/ai/daglo/": {
   "date": "2026-10-29",
-  "hash": "d57ae44390f876fd13325738c00cb703"
+  "hash": "9472e51e269a854cc7e8777b5294551b"
  },
  "/ai/deepl/": {
   "date": "2026-10-29",
@@ -61,7 +61,7 @@
  },
  "/ai/deepseek/": {
   "date": "2026-10-29",
-  "hash": "2b6fb9e5d84e7d0c799a1c285b636db5"
+  "hash": "d3d29b6ae1f6c5726c32c2e6bcd480c3"
  },
  "/ai/descript/": {
   "date": "2026-10-29",
@@ -81,7 +81,7 @@
  },
  "/ai/gemini/": {
   "date": "2026-10-29",
-  "hash": "2833e396959c42cacba88b3ed8d5e506"
+  "hash": "148aaa14fbea73a4376c1a06a3cdf5d7"
  },
  "/ai/github-copilot/": {
   "date": "2026-10-29",
@@ -101,11 +101,11 @@
  },
  "/ai/invideo/": {
   "date": "2026-10-29",
-  "hash": "28049c109ad2d2c18de8f15c7b498766"
+  "hash": "4785bb9f3314f81c9bf2f3f1ea3d62fd"
  },
  "/ai/kling/": {
   "date": "2026-10-29",
-  "hash": "a4fdef164b8d81b6586e34412f55359f"
+  "hash": "f2e313ffd63bdbcf4663c0b98227ebd1"
  },
  "/ai/krea/": {
   "date": "2026-10-29",
@@ -141,11 +141,11 @@
  },
  "/ai/notebooklm/": {
   "date": "2026-10-29",
-  "hash": "b4eba7445ac84285d9c6b7a0641d5eeb"
+  "hash": "780ab83e8c8cbe31008ab301ff4f6aa2"
  },
  "/ai/notion-ai/": {
   "date": "2026-10-29",
-  "hash": "02f7efc7565d34145487a70f359f5a66"
+  "hash": "e175d2389ac47ab8502f846b99f01753"
  },
  "/ai/papago/": {
   "date": "2026-10-29",
@@ -153,19 +153,19 @@
  },
  "/ai/perplexity/": {
   "date": "2026-10-29",
-  "hash": "26fb995b9afa97e453b1f5e899d43a0f"
+  "hash": "b218480f140fdf9fee153b194ac8d0bd"
  },
  "/ai/pika/": {
   "date": "2026-10-29",
-  "hash": "2f502a036e9955dd275ac15f0012e846"
+  "hash": "c732cf96b6459fdc7205266a94ea72f8"
  },
  "/ai/qanda/": {
   "date": "2026-10-29",
-  "hash": "471789d7be4478817280b0b3141867f3"
+  "hash": "2da835cf9ff412123b60571b2c542ed5"
  },
  "/ai/quizlet/": {
   "date": "2026-10-29",
-  "hash": "1810842fd8f874d6597f2ded8bc089db"
+  "hash": "d3267a7d8b8b7f7a5e20be15544d6656"
  },
  "/ai/recraft/": {
   "date": "2026-10-29",
@@ -177,15 +177,15 @@
  },
  "/ai/runway/": {
   "date": "2026-10-29",
-  "hash": "c3ca1bc3ca4c2b52ac050c7bc8965a5f"
+  "hash": "6fe93b04d18be73f7f2ccc87c6454ca7"
  },
  "/ai/soundraw/": {
   "date": "2026-10-29",
-  "hash": "6e7645b577baf1f7ea5b15014cfba1f8"
+  "hash": "a4ad7171f8dd8c1ffcb6fd7cfb685a5a"
  },
  "/ai/speak/": {
   "date": "2026-10-29",
-  "hash": "821226066fb8207c42d21e7062066633"
+  "hash": "10cc40dc6e9b8f5cde159d39d44b3482"
  },
  "/ai/stable-diffusion/": {
   "date": "2026-10-29",
@@ -197,19 +197,19 @@
  },
  "/ai/udio/": {
   "date": "2026-10-29",
-  "hash": "00ec4dd177181a5c0ac270d33155b81e"
+  "hash": "08814a8938dbda017d87a0ec18758a66"
  },
  "/ai/veo/": {
   "date": "2026-10-29",
-  "hash": "cc35e05038153ae56fcf5f7ee1e05fbd"
+  "hash": "992cf229ad4f023975b03536bac5d3dd"
  },
  "/ai/vrew/": {
   "date": "2026-10-29",
-  "hash": "9f0ced1ecf0795a89e0d264f3527028b"
+  "hash": "843b135f99ba59bbf7e092956a3c4193"
  },
  "/ai/wrtn/": {
   "date": "2026-10-29",
-  "hash": "5a9dcd3a222ab15c8493edc7efd39fde"
+  "hash": "66527400d73bea8e1344b3724de7b698"
  },
  "/guide/": {
   "date": "2026-10-29",

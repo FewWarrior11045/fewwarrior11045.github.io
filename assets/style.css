@@ -42,6 +42,7 @@ button{font:inherit; color:inherit; cursor:pointer}
 /* 상단 */
 .top{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:22px}
 .logo{font-family:var(--title); font-weight:400; color:var(--lcd); font-size:2.4rem; line-height:1; letter-spacing:.02em; margin:0; text-shadow:3px 3px 0 var(--case-dk)}
+.logo a{color:inherit; text-decoration:none; display:block; cursor:pointer; -webkit-tap-highlight-color:transparent}
 .logo small{display:block; font-family:var(--num); font-size:.6rem; color:var(--gold); letter-spacing:0; margin-bottom:10px; text-shadow:none}
 .meter{border:0; background:transparent; color:var(--lcd); text-align:right; font-size:.95rem; font-weight:700; flex:none; padding:4px 0}
 .meter .lbl{display:flex; align-items:center; justify-content:flex-end; gap:5px}

@@ -4,7 +4,7 @@ AI 도감 페이지 만들기 프로그램
 - 사용법: 사이트 폴더 맨 위에서  python3 tools/build.py   (node가 설치되어 있어야 해요)
 - Claude에게 부탁할 때: 이 파일과 assets/data.js를 함께 주고 "다시 만들어 줘"라고 하면 돼요.
 """
-import json, html, os, subprocess, datetime
+import json, html, os, subprocess, datetime, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # 사이트 폴더 맨 위
 OUT = ROOT
@@ -115,7 +115,7 @@ home = head("AI 추천 · 비교 | 학생이 직접 써 본 AI 도감", home_des
 <div class="wrap">
   <section id="home">
     <header class="top">
-      <h1 class="logo"><small>NO.001~{len(TOOLS):03d}</small>AI 도감</h1>
+      <h1 class="logo"><a href="/" aria-label="AI 도감 홈"><small>NO.001~{len(TOOLS):03d}</small>AI 도감</a></h1>
       <button class="meter" id="openDex" aria-label="내 도감 열기"><span class="lbl">써본 AI <b id="cnt">0/{len(TOOLS)}</b><span class="go" aria-hidden="true">▶</span></span><span class="bar" id="bar" aria-hidden="true"></span></button>
     </header>
     <label class="search px"><span aria-hidden="true">▶</span>
@@ -167,9 +167,18 @@ CAT_KW = {"chat":"과제·질문용 AI 챗봇 추천", "image":"그림 그려 �
 for t in TOOLS:
     r = ranked(t['cat']); rank = r.index(t) + 1; v = total(t); cl = cat_label[t['cat']]
     pros = ', '.join(t.get('pros') or [])
-    desc = f"{t['name']} 점수 {f1(v)}/5 · {cl} {rank}위. {t['desc']}."
-    if pros: desc += f" 좋은 점: {pros}."
-    desc += " 학생이 직접 써보고 매긴 AI 도감."
+    if t.get('intro'):
+        # 소개글이 있으면 검색 설명문으로 써요. 길면 문장 단위로 잘라요.
+        desc = ''
+        for sent in re.split(r'(?<=요\.)\s+', t['intro']):
+            if len(desc) + len(sent) + 1 > 130: break
+            desc = (desc + ' ' + sent).strip()
+        if not desc: desc = t['intro'][:129] + '…'
+        desc += f" AI 도감 점수 {f1(v)}/5 · {cl} {rank}위."
+    else:
+        desc = f"{t['name']} 점수 {f1(v)}/5 · {cl} {rank}위. {t['desc']}."
+        if pros: desc += f" 좋은 점: {pros}."
+        desc += " 학생이 직접 써보고 매긴 AI 도감."
     if len(desc) > 158: desc = desc[:157] + '…'
     stats = ''.join(f'''<div class="stat"><span>{e(c['label'])}</span>
       <span class="seg" aria-hidden="true">{''.join(f'<i class="{"on" if i < round(t["s"].get(c["key"],0)*2) else ""}"></i>' for i in range(10))}</span>
