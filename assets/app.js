@@ -227,7 +227,7 @@ function initHome(){
     let rows;
     if (q){
       $("title").textContent = `"${query.trim()}" 검색 결과`;
-      rows = TOOLS.filter(t => [t.name, t.desc, catLabel(t.cat), t.who, ...(t.pros || [])].join(" ").toLowerCase().includes(q))
+      rows = TOOLS.filter(t => [t.name, t.desc, catLabel(t.cat), t.who, t.intro || "", ...(t.pros || [])].join(" ").toLowerCase().includes(q))
         .map(t => ({t, v: total(t)})).sort((a, b) => b.v - a.v).map(r => entry(r.t, r.v, null, true));
     } else if (current === "fav"){
       $("title").textContent = "찜한 AI";

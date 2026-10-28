@@ -15,6 +15,7 @@ _js += "\nprocess.stdout.write(JSON.stringify({CRITERIA, CATEGORIES, TOOLS}));"
 
 D = json.loads(subprocess.run(['node', '-e', _js], capture_output=True, text=True, check=True).stdout)
 TODAY = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).date().isoformat()   # 한국 시간 기준 날짜
+ABOUT_UPDATED = '2026-10-27'   # 소개 페이지 내용을 실제로 고친 날. 소개 글을 고치면 이 날짜도 직접 바꿔 주세요
 CRIT, CATS, TOOLS = D['CRITERIA'], D['CATEGORIES'], D['TOOLS']
 SITE = 'https://aidogam.kr'
 TC = {"chat":"#8DB4F5","image":"#F4A3C4","video":"#F5AE7E","audio":"#7FD6CB","music":"#BFA4F0",
@@ -39,6 +40,13 @@ GA = '''<!-- Google tag (gtag.js) -->
 <!-- Google AdSense (자동 광고는 애드센스 화면에서 꺼 둠) -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4796875273226797"
      crossorigin="anonymous"></script>'''
+
+def crumbs_ld(items):
+    """구글용 '현재 위치'(빵 부스러기) 숨은 정보. items = [(이름, 경로), ...]"""
+    data = {"@context": "https://schema.org", "@type": "BreadcrumbList",
+            "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": SITE + p}
+                                for i, (n, p) in enumerate(items)]}
+    return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False).replace('</', '<\\/') + '</script>'
 
 def head(title, desc, path):
     url = SITE + path
@@ -177,6 +185,7 @@ for t in TOOLS:
     others = ''.join(entry(x, i+1) for i, x in enumerate(r) if x is not t)
     page = head(f"{t['name']} 후기·점수 – {CAT_KW.get(t['cat'], 'AI 추천')} | AI 도감", desc, f"/ai/{t['id']}/") + f'''
 <body data-page="ai" data-id="{t['id']}">
+{crumbs_ld([("AI 도감", "/"), (t['name'], f"/ai/{t['id']}/")])}
 <div class="wrap">
   <div class="dtop">
     <a class="back" id="back" href="/">◀ 도감으로</a>
@@ -264,7 +273,7 @@ about = f"""
     <h2 id="contact">문의</h2>
     <p>링크가 깨졌거나, 추가했으면 하는 AI가 있거나, 제안하고 싶은 게 있으면 편하게 메일 주세요.</p>
     <p><a class="act go mail" href="mailto:{EMAIL}">{EMAIL}</a></p>
-    <p class="updated">마지막 업데이트: {TODAY}</p>
+    <p class="updated">마지막 업데이트: {ABOUT_UPDATED}</p>
 """
 privacy = f"""
     <h1>개인정보 처리방침</h1>
@@ -335,7 +344,7 @@ def guide_page(path, title, desc, inner):
 for g in GUIDES:
     path = f"/guide/{g['slug']}/"
     cards = ''.join(ai_card(tool_by_id[i]) for i in g['ais'] if i in tool_by_id)
-    inner = f"""<article class="card px doc">
+    inner = crumbs_ld([("AI 도감", "/"), ("AI 활용 가이드", "/guide/"), (g['title'], path)]) + f"""<article class="card px doc">
     <p class="crumb" style="color:var(--sub)">AI 활용 가이드</p>
     <h1>{e(g['title'])}</h1>
     <p class="updated">AI 도감 · {g['date']}</p>
@@ -348,7 +357,7 @@ for g in GUIDES:
 gl = ''.join(f'<li><a href="/guide/{g["slug"]}/"><b>{e(g["title"])}</b><span>{e(g["desc"])}</span><small>{g["date"]}</small></a></li>' for g in GUIDES)
 os.makedirs(OUT + '/guide/', exist_ok=True)
 open(OUT + '/guide/index.html', 'w', encoding='utf-8').write(guide_page('/guide/', 'AI 활용 가이드 | AI 도감', '숙제, 공부, 영상, 요리까지. 학생 눈높이로 정리한 AI 활용 가이드 모음이에요.',
-  f'<article class="card px doc"><h1>AI 활용 가이드</h1><p>숙제, 공부, 영상, 요리까지. AI를 어떻게 쓰면 좋은지 학생 눈높이로 정리했어요.</p><ul class="glist">{gl}</ul></article>').replace('<a class="back" href="/guide/">◀ 가이드 목록</a>','<a class="back" href="/">◀ 도감으로</a>').replace('<a class="back" href="/">도감으로 ▶</a>',''))
+  crumbs_ld([("AI 도감", "/"), ("AI 활용 가이드", "/guide/")]) + f'<article class="card px doc"><h1>AI 활용 가이드</h1><p>숙제, 공부, 영상, 요리까지. AI를 어떻게 쓰면 좋은지 학생 눈높이로 정리했어요.</p><ul class="glist">{gl}</ul></article>').replace('<a class="back" href="/guide/">◀ 가이드 목록</a>','<a class="back" href="/">◀ 도감으로</a>').replace('<a class="back" href="/">도감으로 ▶</a>',''))
 
 # ---------- 404 ----------
 open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 수 없어요 | AI 도감", "AI 도감에서 찾는 페이지가 없어요.", "/404.html").replace('<link rel="canonical" href="https://aidogam.kr/404.html">', '<meta name="robots" content="noindex">') + '''
