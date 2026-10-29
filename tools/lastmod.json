@@ -1,7 +1,7 @@
 {
  "/": {
   "date": "2026-10-29",
-  "hash": "caf3cb447ac354214f90209cdd3e26ec"
+  "hash": "c8811f28d5508b99b819f26f2911b320"
  },
  "/about/": {
   "date": "2026-10-29",
@@ -65,11 +65,11 @@
  },
  "/ai/descript/": {
   "date": "2026-10-29",
-  "hash": "a1c4ff18ab591b7dff93b3108d8ea159"
+  "hash": "1812711037225989c3bed0936c282d35"
  },
  "/ai/elevenlabs/": {
   "date": "2026-10-29",
-  "hash": "45d48954e03cc5d4e41b4018da339360"
+  "hash": "0119dcfe36766364a941c5a0c0e61a2c"
  },
  "/ai/firefly/": {
   "date": "2026-10-29",
@@ -205,7 +205,7 @@
  },
  "/ai/vrew/": {
   "date": "2026-10-29",
-  "hash": "7910e11107289c5936bb9f4054bbaaae"
+  "hash": "e3462375dc4231ab9fc0eafd0a4a2008"
  },
  "/ai/wrtn/": {
   "date": "2026-10-29",
@@ -213,7 +213,11 @@
  },
  "/guide/": {
   "date": "2026-10-29",
-  "hash": "55d7ac889bf13024974a853bbdc8750e"
+  "hash": "e1b35a78be21b441abd80767d3144720"
+ },
+ "/guide/ai-narration/": {
+  "date": "2026-10-29",
+  "hash": "beb8d9a3e22620a58a4ff44a3beb7252"
  },
  "/guide/cooking-ai/": {
   "date": "2026-10-29",
