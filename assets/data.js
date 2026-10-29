@@ -100,9 +100,9 @@ const TOOLS = [
     pros:["사람 같은 자연스러운 목소리","한국어 목소리도 지원"], cons:["이용약관상 만 18세 이상만 쓸 수 있어요","무료로 만들 수 있는 글자 수가 적음"],
     intro:"글을 넣으면 사람이 읽어 주는 것처럼 자연스러운 목소리로 바꿔 주는 음성 AI예요. 목소리 종류가 아주 많고 한국어도 지원해서 영상 내레이션이나 발표 녹음이 필요할 때 쓰기 좋아요. 무료로 만들 수 있는 글자 수는 적은 편이에요.",
     who:"영상 내레이션이 필요한 사람", review:"", updated:"2026-10" },
-  { id:"descript", no:39, cat:"audio", name:"Descript", desc:"글자 고치듯 오디오 편집", url:"https://www.descript.com",
+  { id:"descript", no:39, cat:"audio", name:"Descript", desc:"글자 고치듯 오디오 편집", url:"https://www.descript.com", aff:"https://get.descript.com/78mgbeiooh8t", affAd:true,
     s:{quality:4, free:3, korean:2.5, easy:4},
-    pros:["받아쓴 글자를 지우면 오디오도 같이 잘림"], cons:["한국어 받아쓰기 정확도가 아쉬움"],
+    pros:["받아쓴 글자를 지우면 오디오도 같이 잘림"], cons:["한국어 받아쓰기 정확도가 아쉬움","만 13세 이상, 18세 미만은 보호자 동의가 필요해요"],
     intro:"녹음이나 영상을 글로 받아쓴 다음, 그 글을 고치면 소리와 영상도 같이 편집되는 프로그램이에요. 문서에서 단어를 지우듯 '음', '어' 같은 말이나 실수한 부분을 지우면 그 부분이 잘려 나가요. 다만 영어에 맞춰져 있어서 한국어 받아쓰기는 아쉬운 편이에요.",
     who:"팟캐스트나 인터뷰를 편집하는 사람", review:"", updated:"2026-10" },
 

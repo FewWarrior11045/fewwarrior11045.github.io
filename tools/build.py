@@ -194,7 +194,7 @@ for t in TOOLS:
     if t.get('who'): talk += f'<h3>이런 사람에게</h3><p>{e(t["who"])}</p>'
     talk += f'<h3>직접 써본 후기</h3>{review}'
     others = ''.join(entry(x, i+1) for i, x in enumerate(r) if x is not t)
-    affnote = (f'\n    <p class="affnote">AI 도감은 {e(t["name"])}의 독립 제휴 파트너예요. 아래 버튼은 제휴 링크라, 이 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있어요. 점수와 순위는 수수료와 상관없이 매겨요.</p>' if t.get('aff') else '')
+    affnote = (f'\n    <p class="affnote">{"<b>광고</b> · " if t.get("affAd") else ""}AI 도감은 {e(t["name"])}의 독립 제휴 파트너예요. 아래 버튼은 제휴 링크라, 이 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있어요. 점수와 순위는 수수료와 상관없이 매겨요.</p>' if t.get('aff') else '')
     page = head(f"{t['name']} 후기·점수 – {CAT_KW.get(t['cat'], 'AI 추천')} | AI 도감", desc, f"/ai/{t['id']}/") + f'''
 <body data-page="ai" data-id="{t['id']}">
 {crumbs_ld([("AI 도감", "/"), (t['name'], f"/ai/{t['id']}/")])}
