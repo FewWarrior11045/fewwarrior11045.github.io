@@ -93,6 +93,7 @@ button{font:inherit; color:inherit; cursor:pointer}
 .empty{padding:28px 6px; text-align:center; color:var(--sub)}
 
 /* 상세 */
+.minilogo{display:inline-block; font-family:var(--title); font-size:1.5rem; line-height:1; color:var(--lcd); text-decoration:none; text-shadow:2px 2px 0 var(--case-dk); margin:2px 0 12px; -webkit-tap-highlight-color:transparent}
 .dtop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px}
 .back{border:0; background:transparent; color:var(--lcd); font-size:1rem; font-weight:700; padding:6px 0}
 .icons{display:flex; gap:10px}

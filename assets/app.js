@@ -269,7 +269,7 @@ function initHome(){
         }).join("")}</div></section>`;
     }).join("");
     $("dex").innerHTML = `
-      <div class="dtop"><button class="back" id="dexBack">◀ 목록으로</button></div>
+      <a class="minilogo" href="/" aria-label="AI 도감 홈">AI 도감</a><div class="dtop"><button class="back" id="dexBack">◀ 목록으로</button></div>
       <div class="dexhead px">
         <div class="keeper"><span class="bit" data-bit="${seen.size === TOOLS.length ? "wave" : "sleepy"}" data-size="64"></span><span><b>No.000 비트</b><small>${seen.size === TOOLS.length ? "도감 완성! 비트가 깨어났어요" : "AI 도감지기 · 다 모으면 깨어날지도?"}</small></span></div>
         <h1>내 도감</h1>
@@ -290,7 +290,7 @@ function initHome(){
   }
   function renderQuiz(){
     const el = $("quiz");
-    const top = `<div class="dtop"><button class="back" id="qBack">◀ 목록으로</button></div>`;
+    const top = `<a class="minilogo" href="/" aria-label="AI 도감 홈">AI 도감</a><div class="dtop"><button class="back" id="qBack">◀ 목록으로</button></div>`;
     if (qStep < QUIZ.length){
       const Q = QUIZ[qStep];
       el.innerHTML = `${top}<div class="qbox px">
@@ -353,6 +353,12 @@ function initHome(){
   }
   /* 개발자 창: 로고 "AI 도감"을 3초 안에 7번 누르면 열림 */
   let taps = [];
+  /* 퀴즈·내 도감 위 작은 로고: 페이지를 새로 불러오지 않고 홈 화면으로 */
+  document.addEventListener("click", ev => {
+    const a = ev.target.closest && ev.target.closest("#quiz .minilogo, #dex .minilogo");
+    if (!a) return;
+    ev.preventDefault(); history.pushState(null, "", "/"); route(); window.scrollTo(0, 0);
+  });
   /* 로고 누르면 처음 화면으로 (유튜브처럼): 검색어를 지우고 맨 위로 */
   document.querySelector(".logo a").addEventListener("click", ev => {
     ev.preventDefault();

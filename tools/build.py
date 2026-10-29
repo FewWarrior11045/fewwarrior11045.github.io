@@ -41,6 +41,8 @@ GA = '''<!-- Google tag (gtag.js) -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4796875273226797"
      crossorigin="anonymous"></script>'''
 
+MINILOGO = '<a class="minilogo" href="/" aria-label="AI 도감 홈">AI 도감</a>'   # 홈 말고 다른 페이지 맨 위 작은 로고
+
 def crumbs_ld(items):
     """구글용 '현재 위치'(빵 부스러기) 숨은 정보. items = [(이름, 경로), ...]"""
     data = {"@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -196,6 +198,7 @@ for t in TOOLS:
 <body data-page="ai" data-id="{t['id']}">
 {crumbs_ld([("AI 도감", "/"), (t['name'], f"/ai/{t['id']}/")])}
 <div class="wrap">
+  {MINILOGO}
   <div class="dtop">
     <a class="back" id="back" href="/">◀ 도감으로</a>
     <div class="icons">
@@ -248,6 +251,7 @@ def info_page(path, title, desc, body):
     return head(title, desc, path) + f"""
 <body data-page="info">
 <div class="wrap">
+  {MINILOGO}
   <div class="dtop"><a class="back" href="/">◀ 도감으로</a></div>
   <article class="card px doc">{body}</article>
   {FOOT}
@@ -341,6 +345,7 @@ def guide_page(path, title, desc, inner):
     return head(title, desc, path).replace('<meta property="og:type" content="website">','<meta property="og:type" content="article">') + f"""
 <body data-page="guide">
 <div class="wrap">
+  {MINILOGO}
   <div class="dtop"><a class="back" href="/guide/">◀ 가이드 목록</a><a class="back" href="/">도감으로 ▶</a></div>
   {inner}
   {FOOT}
