@@ -518,11 +518,11 @@ function reloadState(){
     if (!a || typeof gtag !== "function") return;
     const host = hostOf(a.href);
     if (!host || host === location.hostname.replace(/^www\./, "")) return;
-    const t = TOOLS.find(x => hostOf(x.url) === host);
+    const t = TOOLS.find(x => hostOf(x.url) === host || (x.aff && hostOf(x.aff) === host));
     if (!t) return;
     gtag("event", "outbound_ai_click", {
       ai_id: t.id, ai_name: t.name, ai_type: t.cat,
-      from_page: page || "", link_text: (a.textContent || "").trim().slice(0, 40),
+      from_page: page || "", link_text: (a.textContent || "").trim().slice(0, 40), is_aff: (t.aff && hostOf(t.aff) === host) ? "yes" : "no",
       transport_type: "beacon"
     });
   });

@@ -5,7 +5,7 @@
  },
  "/about/": {
   "date": "2026-10-29",
-  "hash": "67e9a1d71348b7d1e66b08391293b649"
+  "hash": "7469ffcf188f48555b46234bdfeb6ff6"
  },
  "/ai/adobe-podcast/": {
   "date": "2026-10-29",
@@ -69,7 +69,7 @@
  },
  "/ai/elevenlabs/": {
   "date": "2026-10-29",
-  "hash": "0c69edda53cbbca1dc7cf3e9840adba1"
+  "hash": "1a85b7c7c9a7d0f0f16c4ef08527d6e3"
  },
  "/ai/firefly/": {
   "date": "2026-10-29",
@@ -237,6 +237,6 @@
  },
  "/privacy/": {
   "date": "2026-10-29",
-  "hash": "af7256a7a253d73ee2976cd22557ee44"
+  "hash": "fec60d768c3924e74ff68b74202e8033"
  }
 }

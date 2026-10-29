@@ -15,7 +15,7 @@ _js += "\nprocess.stdout.write(JSON.stringify({CRITERIA, CATEGORIES, TOOLS}));"
 
 D = json.loads(subprocess.run(['node', '-e', _js], capture_output=True, text=True, check=True).stdout)
 TODAY = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).date().isoformat()   # 한국 시간 기준 날짜
-ABOUT_UPDATED = '2026-10-27'   # 소개 페이지 내용을 실제로 고친 날. 소개 글을 고치면 이 날짜도 직접 바꿔 주세요
+ABOUT_UPDATED = '2026-10-29'   # 소개 페이지 내용을 실제로 고친 날. 소개 글을 고치면 이 날짜도 직접 바꿔 주세요
 CRIT, CATS, TOOLS = D['CRITERIA'], D['CATEGORIES'], D['TOOLS']
 SITE = 'https://aidogam.kr'
 TC = {"chat":"#8DB4F5","image":"#F4A3C4","video":"#F5AE7E","audio":"#7FD6CB","music":"#BFA4F0",
@@ -194,6 +194,7 @@ for t in TOOLS:
     if t.get('who'): talk += f'<h3>이런 사람에게</h3><p>{e(t["who"])}</p>'
     talk += f'<h3>직접 써본 후기</h3>{review}'
     others = ''.join(entry(x, i+1) for i, x in enumerate(r) if x is not t)
+    affnote = ('\n    <p class="affnote">이 버튼은 제휴 링크예요. 이 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있어요. 점수와 순위는 수수료와 상관없이 매겨요.</p>' if t.get('aff') else '')
     page = head(f"{t['name']} 후기·점수 – {CAT_KW.get(t['cat'], 'AI 추천')} | AI 도감", desc, f"/ai/{t['id']}/") + f'''
 <body data-page="ai" data-id="{t['id']}">
 {crumbs_ld([("AI 도감", "/"), (t['name'], f"/ai/{t['id']}/")])}
@@ -221,8 +222,8 @@ for t in TOOLS:
     <div class="talk px">{talk}<span class="more" aria-hidden="true">▼</span></div>
     <div class="actions">
       <button class="act collect" id="collect" aria-pressed="false">써봤어요</button>
-      <a class="act go" href="{e(t['url'])}" target="_blank" rel="noopener">{e(t['name'] + ' 무료로 써 보기') if t.get('freeTry') else '공식 사이트 가기'}</a>
-    </div>
+      <a class="act go" href="{e(t.get('aff') or t['url'])}" target="_blank" rel="{'noopener sponsored' if t.get('aff') else 'noopener'}">{e(t['name'] + ' 무료로 써 보기') if t.get('freeTry') else '공식 사이트 가기'}</a>
+    </div>{affnote}
   </article>
   {related_guides(t)}
   <div class="board px others">
@@ -279,7 +280,7 @@ about = f"""
       <li>AI 서비스의 가격과 기능은 자주 바뀌어요. 결제하기 전에는 꼭 공식 사이트에서 확인해 주세요.</li>
       <li>점수는 운영자의 경험과 판단이 담긴 의견이라, 같은 AI라도 쓰는 목적에 따라 느낌이 다를 수 있어요.</li>
       <li>사이트 운영비를 마련하기 위해 구글 애드센스 광고가 표시될 수 있어요. 광고는 AI 점수와 순위에 아무 영향을 주지 않고, 점수는 광고와 상관없이 매겨요.</li>
-      <li>지금은 어떤 AI 회사에서도 돈이나 협찬을 받지 않아요. 제휴 링크가 생기면 이 페이지와 해당 페이지에 알릴게요.</li>
+      <li>일부 AI 페이지에는 <b>제휴 링크</b>가 있어요. 그 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있고, 제휴 링크가 있는 페이지에는 버튼 바로 아래에 따로 표시해 둬요. 수수료는 점수와 순위에 아무 영향을 주지 않아요. 지금 제휴 중인 곳: {", ".join(t["name"] for t in TOOLS if t.get("aff")) or "없음"}.</li>
     </ul>
     <h2>마스코트 비트</h2>
     <p>머리 위 별로 AI 점수를 콕콕 매기는 AI 도감지기, <b>비트</b>예요. 도감에서 써 본 AI를 다 모으면 비트가 깨어난대요.</p>
@@ -290,7 +291,7 @@ about = f"""
 """
 privacy = f"""
     <h1>개인정보 처리방침</h1>
-    <p class="updated">시행일: 2026년 10월 27일 (이전: 2026년 10월 10일)</p>
+    <p class="updated">시행일: 2026년 10월 29일 (이전: 2026년 10월 27일, 10월 10일)</p>
     <p>AI 도감(aidogam.kr, 이하 "사이트")은 방문자의 개인정보를 소중하게 생각해요. 사이트가 어떤 정보를 어떻게 다루는지 알려 드려요.</p>
     <h2>1. 직접 받는 개인정보</h2>
     <p>사이트는 회원가입이 없고, 이름이나 연락처 같은 개인정보를 입력받지 않아요.</p>
@@ -314,6 +315,7 @@ privacy = f"""
     <p>찜한 AI, 써봤어요 기록, 내 채점 기준, 마지막으로 본 탭은 <b>방문자 브라우저 안에만</b> 저장돼요. 운영자나 다른 곳으로 전송되지 않고, 브라우저의 사이트 데이터를 지우면 함께 사라져요.</p>
     <h2>5. 외부 서비스</h2>
     <p>글꼴을 보여 주기 위해 Google Fonts를 불러오며, 이때 방문자의 접속 정보(IP 주소 등)가 구글에 전달될 수 있어요. 사이트는 GitHub Pages에서 운영돼요.</p>
+    <p>일부 AI 페이지의 <b>제휴 링크</b>를 누르면, 해당 AI 회사와 제휴 관리 업체(예: PartnerStack)가 쿠키 등으로 "AI 도감을 통해 왔다"는 기록을 남길 수 있어요. 이 기록은 그 회사의 개인정보 처리방침에 따라 다뤄지고, AI 도감은 누가 가입했는지 알 수 없어요.</p>
     <h2>6. 수집을 원하지 않을 때</h2>
     <ul>
       <li>브라우저 설정에서 쿠키를 차단할 수 있어요.</li>
