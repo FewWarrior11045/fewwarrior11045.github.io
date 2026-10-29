@@ -1,7 +1,7 @@
 {
  "/": {
   "date": "2026-10-29",
-  "hash": "c3ffed6285c54842acac19da8a330002"
+  "hash": "caf3cb447ac354214f90209cdd3e26ec"
  },
  "/about/": {
   "date": "2026-10-29",
@@ -21,11 +21,11 @@
  },
  "/ai/canva/": {
   "date": "2026-10-29",
-  "hash": "7bcd4ee1efcc604f5ea708d25e0b8857"
+  "hash": "e4124cfac3f51dbd8b588114efaa79f8"
  },
  "/ai/capcut/": {
   "date": "2026-10-29",
-  "hash": "63931f6fbe4cabe7f55658f88c10a777"
+  "hash": "20278c351339ef72339aae4563676545"
  },
  "/ai/chatgpt/": {
   "date": "2026-10-29",
@@ -97,7 +97,7 @@
  },
  "/ai/ideogram/": {
   "date": "2026-10-29",
-  "hash": "4474eeb57343b6ec6fdb976142728a03"
+  "hash": "1bd8cf12fba8db9424aacf3b898df5bd"
  },
  "/ai/invideo/": {
   "date": "2026-10-29",
@@ -129,7 +129,7 @@
  },
  "/ai/miricanvas/": {
   "date": "2026-10-29",
-  "hash": "9fd7e2dc8d2d492c63fa22fd6b868322"
+  "hash": "b3762213005b3d2cb0d422f58f0bbed2"
  },
  "/ai/moises/": {
   "date": "2026-10-29",
@@ -193,7 +193,7 @@
  },
  "/ai/suno/": {
   "date": "2026-10-29",
-  "hash": "e71b361cfb5ba8706d1d2d53f6fc7d99"
+  "hash": "e35ddbfd54062bf9868da728c7daaa40"
  },
  "/ai/udio/": {
   "date": "2026-10-29",
@@ -205,7 +205,7 @@
  },
  "/ai/vrew/": {
   "date": "2026-10-29",
-  "hash": "d8acdda580f538320f335b9bbe2c06d7"
+  "hash": "7910e11107289c5936bb9f4054bbaaae"
  },
  "/ai/wrtn/": {
   "date": "2026-10-29",
@@ -213,7 +213,7 @@
  },
  "/guide/": {
   "date": "2026-10-29",
-  "hash": "dba78e41a4a23f63b6c15eef8866f4c0"
+  "hash": "55d7ac889bf13024974a853bbdc8750e"
  },
  "/guide/cooking-ai/": {
   "date": "2026-10-29",
@@ -222,6 +222,10 @@
  "/guide/free-video-ai/": {
   "date": "2026-10-29",
   "hash": "650c2b8c77d39d3b8a598c2f6e9e6164"
+ },
+ "/guide/school-event-ai/": {
+  "date": "2026-10-29",
+  "hash": "c3cd6a5ab81d4345db42f64916468f28"
  },
  "/guide/study-ai/": {
   "date": "2026-10-29",
