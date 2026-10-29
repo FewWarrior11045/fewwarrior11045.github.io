@@ -194,7 +194,7 @@ for t in TOOLS:
     if t.get('who'): talk += f'<h3>이런 사람에게</h3><p>{e(t["who"])}</p>'
     talk += f'<h3>직접 써본 후기</h3>{review}'
     others = ''.join(entry(x, i+1) for i, x in enumerate(r) if x is not t)
-    affnote = ('\n    <p class="affnote">이 버튼은 제휴 링크예요. 이 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있어요. 점수와 순위는 수수료와 상관없이 매겨요.</p>' if t.get('aff') else '')
+    affnote = (f'\n    <p class="affnote">AI 도감은 {e(t["name"])}의 독립 제휴 파트너예요. 아래 버튼은 제휴 링크라, 이 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있어요. 점수와 순위는 수수료와 상관없이 매겨요.</p>' if t.get('aff') else '')
     page = head(f"{t['name']} 후기·점수 – {CAT_KW.get(t['cat'], 'AI 추천')} | AI 도감", desc, f"/ai/{t['id']}/") + f'''
 <body data-page="ai" data-id="{t['id']}">
 {crumbs_ld([("AI 도감", "/"), (t['name'], f"/ai/{t['id']}/")])}
@@ -220,10 +220,10 @@ for t in TOOLS:
     </div>
     <div class="stats">{stats}</div>
     <div class="talk px">{talk}<span class="more" aria-hidden="true">▼</span></div>
-    <div class="actions">
+    {affnote}<div class="actions">
       <button class="act collect" id="collect" aria-pressed="false">써봤어요</button>
       <a class="act go" href="{e(t.get('aff') or t['url'])}" target="_blank" rel="{'noopener sponsored' if t.get('aff') else 'noopener'}">{e(t['name'] + ' 무료로 써 보기') if t.get('freeTry') else '공식 사이트 가기'}</a>
-    </div>{affnote}
+    </div>
   </article>
   {related_guides(t)}
   <div class="board px others">
@@ -280,7 +280,7 @@ about = f"""
       <li>AI 서비스의 가격과 기능은 자주 바뀌어요. 결제하기 전에는 꼭 공식 사이트에서 확인해 주세요.</li>
       <li>점수는 운영자의 경험과 판단이 담긴 의견이라, 같은 AI라도 쓰는 목적에 따라 느낌이 다를 수 있어요.</li>
       <li>사이트 운영비를 마련하기 위해 구글 애드센스 광고가 표시될 수 있어요. 광고는 AI 점수와 순위에 아무 영향을 주지 않고, 점수는 광고와 상관없이 매겨요.</li>
-      <li>일부 AI 페이지에는 <b>제휴 링크</b>가 있어요. 그 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있고, 제휴 링크가 있는 페이지에는 버튼 바로 아래에 따로 표시해 둬요. 수수료는 점수와 순위에 아무 영향을 주지 않아요. 지금 제휴 중인 곳: {", ".join(t["name"] for t in TOOLS if t.get("aff")) or "없음"}.</li>
+      <li>일부 AI 페이지에는 <b>제휴 링크</b>가 있어요. 그 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있고, 제휴 링크가 있는 페이지에는 버튼 바로 위에 따로 표시해 둬요. 수수료는 점수와 순위에 아무 영향을 주지 않아요. 지금 제휴 중인 곳: {", ".join(t["name"] for t in TOOLS if t.get("aff")) or "없음"}.</li>{"".join(f'<li class="affmark" lang="en">{e(t["affMark"])}<br><span lang="ko">{e(t.get("affMarkKo", ""))}</span></li>' for t in TOOLS if t.get("aff") and t.get("affMark"))}
     </ul>
     <h2>마스코트 비트</h2>
     <p>머리 위 별로 AI 점수를 콕콕 매기는 AI 도감지기, <b>비트</b>예요. 도감에서 써 본 AI를 다 모으면 비트가 깨어난대요.</p>

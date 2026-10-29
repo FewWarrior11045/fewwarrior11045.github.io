@@ -329,4 +329,5 @@ a.entry{cursor:pointer}
 
 /* 버튼 글자가 단어 중간에서 끊기지 않게 */
 .actions .act{word-break:keep-all}
-.affnote{margin:-6px 12px 14px; font-size:.75rem; line-height:1.5; color:var(--sub); word-break:keep-all}
+.affnote{margin:10px 12px 0; padding:8px 10px; font-size:.78rem; line-height:1.5; color:var(--ink, #1E2A1B); background:#FFF1C9; word-break:keep-all}
+.affmark{font-size:.8rem; line-height:1.5; color:var(--sub); word-break:keep-all}
