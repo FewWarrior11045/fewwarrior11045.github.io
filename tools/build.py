@@ -83,8 +83,8 @@ def head(title, desc, path):
 SCRIPTS = '<script src="/assets/data.js"></script>\n<script src="/assets/bit.js"></script>\n<script src="/assets/app.js"></script>'
 TOAST = '<div class="toast" id="toast" role="status" aria-live="polite"></div>'
 EMAIL = 'aidogam.kr@gmail.com'
-FOOT = f'''<p class="foot">점수는 직접 써 본 경험과 공개된 정보를 바탕으로 매기며, 계속 고쳐 나가요.</p>
-    <p class="footlinks"><a href="/guide/">가이드</a><span>·</span><a href="/about/">소개</a><span>·</span><a href="/privacy/">개인정보 처리방침</a><span>·</span><a href="mailto:{EMAIL}">문의</a></p>'''
+FOOT = f'''<footer class="sitefoot"><p class="foot">점수는 직접 써 본 경험과 공개된 정보를 바탕으로 매기며, 계속 고쳐 나가요.</p>
+    <nav class="footlinks" aria-label="사이트 안내"><a href="/guide/">가이드</a><span>·</span><a href="/about/">소개</a><span>·</span><a href="/privacy/">개인정보 처리방침</a><span>·</span><a href="mailto:{EMAIL}">문의</a></nav></footer>'''
 
 def entry(t, rank):
     return f'''<li><a class="entry" href="/ai/{t['id']}/">
@@ -114,7 +114,7 @@ def allnav():
 home_desc = f"과제·수행평가·공부에 쓸 AI 추천. 학생이 직접 써 보고 점수를 매긴 {len(TOOLS)}개 AI를 챗봇, 그림, 영상, 발표자료 등 타입별 순위로 비교하고, 질문 4개로 나에게 맞는 AI를 찾아보세요."
 home = head("AI 추천 · 비교 | 학생이 직접 써 본 AI 도감", home_desc, "/") + f'''
 <body data-page="home">
-<div class="wrap">
+<main class="wrap">
   <section id="home">
     <header class="top">
       <h1 class="logo"><a href="/" aria-label="AI 도감 홈"><small>NO.001~{len(TOOLS):03d}</small>AI 도감</a></h1>
@@ -144,7 +144,7 @@ home = head("AI 추천 · 비교 | 학생이 직접 써 본 AI 도감", home_des
   </section>
   <section id="dex" hidden></section>
   <section id="quiz" hidden></section>
-</div>
+</main>
 <div class="modal-bg" id="mbg"></div>
 <div class="modal px" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
   <h2 id="mTitle">내 채점 기준</h2>
@@ -199,7 +199,7 @@ for t in TOOLS:
 <body data-page="ai" data-id="{t['id']}">
 {crumbs_ld([("AI 도감", "/"), (t['name'], f"/ai/{t['id']}/")])}
 <div class="wrap">
-  {MINILOGO}
+  <header>{MINILOGO}
   <div class="dtop">
     <a class="back" id="back" href="/">◀ 도감으로</a>
     <div class="icons">
@@ -207,6 +207,8 @@ for t in TOOLS:
       <button class="icon-btn fav" id="fav" aria-pressed="false">찜하기</button>
     </div>
   </div>
+  </header>
+  <main>
   <p class="crumb"><a href="/">AI 도감</a> › {e(cl)} › {e(t['name'])}</p>
   <article class="card px">
     <div class="stage pop" style="--tc:{TC[t['cat']]}">
@@ -230,6 +232,7 @@ for t in TOOLS:
     <div class="board-head"><h2>{e(cl)} 타입 다른 AI</h2></div>
     <ul class="list" id="others">{others}</ul>
   </div>
+  </main>
   {FOOT}
 </div>
 {TOAST}
@@ -252,9 +255,9 @@ def info_page(path, title, desc, body):
     return head(title, desc, path) + f"""
 <body data-page="info">
 <div class="wrap">
-  {MINILOGO}
-  <div class="dtop"><a class="back" href="/">◀ 도감으로</a></div>
-  <article class="card px doc">{body}</article>
+  <header>{MINILOGO}
+  <div class="dtop"><a class="back" href="/">◀ 도감으로</a></div></header>
+  <main><article class="card px doc">{body}</article></main>
   {FOOT}
 </div>
 <script src="/assets/bit.js"></script>
@@ -347,9 +350,9 @@ def guide_page(path, title, desc, inner):
     return head(title, desc, path).replace('<meta property="og:type" content="website">','<meta property="og:type" content="article">') + f"""
 <body data-page="guide">
 <div class="wrap">
-  {MINILOGO}
-  <div class="dtop"><a class="back" href="/guide/">◀ 가이드 목록</a><a class="back" href="/">도감으로 ▶</a></div>
-  {inner}
+  <header>{MINILOGO}
+  <div class="dtop"><a class="back" href="/guide/">◀ 가이드 목록</a><a class="back" href="/">도감으로 ▶</a></div></header>
+  <main>{inner}</main>
   {FOOT}
 </div>
 {TOAST}
@@ -378,7 +381,7 @@ open(OUT + '/guide/index.html', 'w', encoding='utf-8').write(guide_page('/guide/
 # ---------- 404 ----------
 open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 수 없어요 | AI 도감", "AI 도감에서 찾는 페이지가 없어요.", "/404.html").replace('<link rel="canonical" href="https://aidogam.kr/404.html">', '<meta name="robots" content="noindex">') + '''
 <body data-page="404">
-<div class="wrap" style="text-align:center; padding-top:80px">
+<main class="wrap" style="text-align:center; padding-top:80px">
   <div class="qbox px lost">
     <span class="bit" data-bit="sleepy" data-size="150" data-still="2"></span>
     <p class="qstep" style="font-size:1.2rem; margin:0 0 10px">404</p>
@@ -386,7 +389,7 @@ open(f'{OUT}/404.html', 'w', encoding='utf-8').write(head("페이지를 찾을 �
     <p style="color:var(--sub); margin:-6px 0 16px">비트가 깜빡 졸았나 봐요. 도감으로 돌아가서 다시 찾아봐요!</p>
     <a class="act go" href="/" style="max-width:240px; margin:0 auto">도감으로 돌아가기</a>
   </div>
-</div>
+</main>
 <script src="/assets/bit.js"></script>
 <script>fillBits();</script>
 </body>

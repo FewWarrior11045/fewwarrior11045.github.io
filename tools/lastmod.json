@@ -1,246 +1,250 @@
 {
  "/": {
-  "date": "2026-10-29",
-  "hash": "c8811f28d5508b99b819f26f2911b320"
+  "date": "2026-10-31",
+  "hash": "7baff18107d83745687a99c97a6d3cc0"
  },
  "/about/": {
-  "date": "2026-10-30",
-  "hash": "47524a1c99b336aa23e41c61cf660777"
+  "date": "2026-10-31",
+  "hash": "dbb1f7c1d6609d5bed961162e6defb05"
  },
  "/ai/adobe-podcast/": {
-  "date": "2026-10-29",
-  "hash": "faa8967179d68ff6ab9e55b8ca71ec87"
+  "date": "2026-10-31",
+  "hash": "571e0b64c8f8f230afdbcc92b5140af7"
  },
  "/ai/aiva/": {
-  "date": "2026-10-29",
-  "hash": "934e9c9abdd04d848a02d390e0bd9618"
+  "date": "2026-10-31",
+  "hash": "ee7542c97993fff7d615af0ea4c421c3"
  },
  "/ai/bolt/": {
-  "date": "2026-10-29",
-  "hash": "5e8ae32f7c46a25599c921d9d806c20d"
+  "date": "2026-10-31",
+  "hash": "f276c503ce1fc5fceabc5aabcd10c787"
  },
  "/ai/canva/": {
-  "date": "2026-10-29",
-  "hash": "e4124cfac3f51dbd8b588114efaa79f8"
+  "date": "2026-10-31",
+  "hash": "7c70f1e425aa1bc2601666e60e950299"
  },
  "/ai/capcut/": {
-  "date": "2026-10-29",
-  "hash": "20278c351339ef72339aae4563676545"
+  "date": "2026-10-31",
+  "hash": "5332e7482f17753b0fafd70e34cc003e"
  },
  "/ai/chatgpt/": {
-  "date": "2026-10-29",
-  "hash": "998e3888f0c37d7fa0ccb0d5fbb4aef3"
+  "date": "2026-10-31",
+  "hash": "49ca342d74ca7bb2462dcee642079715"
  },
  "/ai/claude-code/": {
-  "date": "2026-10-29",
-  "hash": "8cd40a15543c0e3881a7ec752e1e8ae1"
+  "date": "2026-10-31",
+  "hash": "77a9524fadffa5b45e99f406925ece9b"
  },
  "/ai/claude/": {
-  "date": "2026-10-29",
-  "hash": "d63a581e34ec3cd09d2d412fdcf9b1b2"
+  "date": "2026-10-31",
+  "hash": "9343376ac3bd53101f9f23589bab3fc5"
  },
  "/ai/clovanote/": {
-  "date": "2026-10-29",
-  "hash": "200100ff6708824c40d73d92e0248b69"
+  "date": "2026-10-31",
+  "hash": "7bd5a601a149d1e014d2651dc37e16eb"
  },
  "/ai/copilot/": {
-  "date": "2026-10-29",
-  "hash": "3aea59eee2207ae2bace7a3d504894cf"
+  "date": "2026-10-31",
+  "hash": "d18db0a30848f4659a0cb82e268a96ef"
  },
  "/ai/cursor/": {
-  "date": "2026-10-29",
-  "hash": "5f1b0bd3ade7aa5b3f281135e9285069"
+  "date": "2026-10-31",
+  "hash": "26e7aeb275d3a372253e5d4262ebd2de"
  },
  "/ai/daglo/": {
-  "date": "2026-10-29",
-  "hash": "87e60d9e4b2bd8b833728d3c0776519a"
+  "date": "2026-10-31",
+  "hash": "1628fb293b8e6ae635fa43a60ac8f033"
  },
  "/ai/deepl/": {
-  "date": "2026-10-29",
-  "hash": "94427b887abe7e33459b975f8bbb5692"
+  "date": "2026-10-31",
+  "hash": "bce11a9d41f392a4e6668b38d0895189"
  },
  "/ai/deepseek/": {
-  "date": "2026-10-29",
-  "hash": "c9af1ce842c864b8c4a43d0252a68fd9"
+  "date": "2026-10-31",
+  "hash": "e009f900372f9872da83d09353e92f17"
  },
  "/ai/descript/": {
-  "date": "2026-10-30",
-  "hash": "9b028afa7ba988f0054e4552f153c174"
+  "date": "2026-10-31",
+  "hash": "70daf8e971244938b1c85b600f47fac0"
  },
  "/ai/elevenlabs/": {
-  "date": "2026-10-29",
-  "hash": "0119dcfe36766364a941c5a0c0e61a2c"
+  "date": "2026-10-31",
+  "hash": "fe2e176b6f5bd0bbb4f38795a8ce3e07"
  },
  "/ai/firefly/": {
-  "date": "2026-10-29",
-  "hash": "1e00597abc9c537087b872d5a0826cd7"
+  "date": "2026-10-31",
+  "hash": "6b3d5c64a279878da74147d9504d843e"
  },
  "/ai/gamma/": {
-  "date": "2026-10-29",
-  "hash": "9866a2f3873f054a18941feb063a3fff"
+  "date": "2026-10-31",
+  "hash": "dab0b2973b47719d52a2dc6d5568ec6c"
  },
  "/ai/gemini/": {
-  "date": "2026-10-29",
-  "hash": "a9d7de86d20cd949ed766e7d11008677"
+  "date": "2026-10-31",
+  "hash": "9eff52ed14d42ede6d5027c7898bb359"
  },
  "/ai/github-copilot/": {
-  "date": "2026-10-29",
-  "hash": "a5539d18282098577c9d5b0528ab9da0"
+  "date": "2026-10-31",
+  "hash": "7e41a3bec515184d637fca4a08573c22"
  },
  "/ai/google-translate/": {
-  "date": "2026-10-29",
-  "hash": "c2b78ddb6e2e9f5a1bceca36710577cd"
+  "date": "2026-10-31",
+  "hash": "e00c3d75ddc68eabc341082c97eaafd4"
  },
  "/ai/hailuo/": {
-  "date": "2026-10-29",
-  "hash": "d015a8891e20f0755537ea53f09857de"
+  "date": "2026-10-31",
+  "hash": "974663585e4e0af0cced7ac321bf3d82"
  },
  "/ai/ideogram/": {
-  "date": "2026-10-29",
-  "hash": "1bd8cf12fba8db9424aacf3b898df5bd"
+  "date": "2026-10-31",
+  "hash": "2488d7195710450262273f105293bab0"
  },
  "/ai/invideo/": {
-  "date": "2026-10-29",
-  "hash": "cbc07e2d629a630b13ae4719f597c76e"
+  "date": "2026-10-31",
+  "hash": "0b7c3a6492643e99248c535849985cd0"
  },
  "/ai/kling/": {
-  "date": "2026-10-29",
-  "hash": "d6c372f2e213e35a7c5887e7e8320d40"
+  "date": "2026-10-31",
+  "hash": "5cfde1462beb8c2f7cd6521de52adc60"
  },
  "/ai/krea/": {
-  "date": "2026-10-29",
-  "hash": "dab48a72c24c1c3f1ae21bcf0d0e35ba"
+  "date": "2026-10-31",
+  "hash": "236308029c8f0392b414f66a402a51d9"
  },
  "/ai/leonardo/": {
-  "date": "2026-10-29",
-  "hash": "c07bbc7ca4f793816f350d219749714c"
+  "date": "2026-10-31",
+  "hash": "06f64eded9789c986652d44e55535652"
  },
  "/ai/lovable/": {
-  "date": "2026-10-29",
-  "hash": "0ad691f9f6e0fcaf094794f4987ed3c5"
+  "date": "2026-10-31",
+  "hash": "89c58481b52bb27e968224405384c286"
  },
  "/ai/luma/": {
-  "date": "2026-10-29",
-  "hash": "f6390e4c78425dcd242d4d7395c52f97"
+  "date": "2026-10-31",
+  "hash": "e7e85a9dab13d5cd91c47e5f4cd9984d"
  },
  "/ai/midjourney/": {
-  "date": "2026-10-29",
-  "hash": "c114351812a65afd0221e913aaa80d5c"
+  "date": "2026-10-31",
+  "hash": "e08b6a78def5ffa79347819c893600a3"
  },
  "/ai/miricanvas/": {
-  "date": "2026-10-29",
-  "hash": "b3762213005b3d2cb0d422f58f0bbed2"
+  "date": "2026-10-31",
+  "hash": "48547f7ff2ed539471fe5a3bec77c6c0"
  },
  "/ai/moises/": {
-  "date": "2026-10-29",
-  "hash": "c7b14837995c311b2267d4728fa334ce"
+  "date": "2026-10-31",
+  "hash": "4ef0a17eef0caa7a147dead5189469e6"
  },
  "/ai/napkin/": {
-  "date": "2026-10-29",
-  "hash": "6ef5f243b373eccf831417df5e04402b"
+  "date": "2026-10-31",
+  "hash": "338977aae51b14e951d30b7522e6fe40"
  },
  "/ai/notebooklm/": {
-  "date": "2026-10-29",
-  "hash": "f9db7847ffe68a37286a836e94ed9f63"
+  "date": "2026-10-31",
+  "hash": "d5aac2f1254a83af774d5f867783951e"
  },
  "/ai/notion-ai/": {
-  "date": "2026-10-29",
-  "hash": "6c36346ddeb09af9333e50ab52b17ee8"
+  "date": "2026-10-31",
+  "hash": "069969b1d20eb87efe57c39e2f6cd33f"
  },
  "/ai/papago/": {
-  "date": "2026-10-29",
-  "hash": "b87a13d71f1d5361cfd2036fd794ac42"
+  "date": "2026-10-31",
+  "hash": "5cae7f4260a790867506bffeb3e3bfa1"
  },
  "/ai/perplexity/": {
-  "date": "2026-10-29",
-  "hash": "8c5115658badca0cce209dc328b1a300"
+  "date": "2026-10-31",
+  "hash": "ddf3f015318c745c0cf89d54e49a2c4c"
  },
  "/ai/pika/": {
-  "date": "2026-10-29",
-  "hash": "25a78b2e6a87f58636d7b6fb372d7f7b"
+  "date": "2026-10-31",
+  "hash": "723400a7de7ae41e61966bf0c58e5ce1"
  },
  "/ai/qanda/": {
-  "date": "2026-10-29",
-  "hash": "b9aa6fe1e930abe6f963b9fbc3cf4861"
+  "date": "2026-10-31",
+  "hash": "513ee79a368e917e128c912a2b05b75d"
  },
  "/ai/quizlet/": {
-  "date": "2026-10-29",
-  "hash": "10deaaa58c35a5b906adf9b29055df26"
+  "date": "2026-10-31",
+  "hash": "ceba9328f73ea14400c86bd007ab32b3"
  },
  "/ai/recraft/": {
-  "date": "2026-10-29",
-  "hash": "df853c3a2d22ca34f7a6b81393b475a0"
+  "date": "2026-10-31",
+  "hash": "ab6d440712953425943156c6314b0f94"
  },
  "/ai/replit/": {
-  "date": "2026-10-29",
-  "hash": "0082e3855094ca47c26833320fcf3447"
+  "date": "2026-10-31",
+  "hash": "ae35be2094826c94b5ab83ee9c2b47c3"
  },
  "/ai/runway/": {
-  "date": "2026-10-29",
-  "hash": "2e4a1b78333eae3222b408230e2a840a"
+  "date": "2026-10-31",
+  "hash": "098c70014ce6570ef2226f828f496480"
  },
  "/ai/soundraw/": {
-  "date": "2026-10-29",
-  "hash": "140dd0ff147ca62b3a793a8a85d11d6d"
+  "date": "2026-10-31",
+  "hash": "9222e6108eb6aff6105f73c35f98eaef"
  },
  "/ai/speak/": {
-  "date": "2026-10-29",
-  "hash": "de55896aa2f06096e0c7c622d2b83fba"
+  "date": "2026-10-31",
+  "hash": "5d2deaf4dc77e5f307c8782489dd87b0"
  },
  "/ai/stable-diffusion/": {
-  "date": "2026-10-29",
-  "hash": "b936dfd442ffe297ee5ef36139c981ba"
+  "date": "2026-10-31",
+  "hash": "ea3d672d9213a48e99fdd40f7c08ffef"
  },
  "/ai/suno/": {
-  "date": "2026-10-29",
-  "hash": "e35ddbfd54062bf9868da728c7daaa40"
+  "date": "2026-10-31",
+  "hash": "0a0866a9e2f9604a6ca8a56da76bd741"
  },
  "/ai/udio/": {
-  "date": "2026-10-29",
-  "hash": "396aa75baf3df98c61212f20786ba654"
+  "date": "2026-10-31",
+  "hash": "72e6f6f02ce7506d70d5c91c8af9ec33"
  },
  "/ai/veo/": {
-  "date": "2026-10-29",
-  "hash": "d75f7e7d57165cce2029ba9d463a891a"
+  "date": "2026-10-31",
+  "hash": "dad8006b08d63875e7a03cf843edccb0"
  },
  "/ai/vrew/": {
-  "date": "2026-10-29",
-  "hash": "e3462375dc4231ab9fc0eafd0a4a2008"
+  "date": "2026-10-31",
+  "hash": "a5cc3caa1e0c58eae6675053e7e79434"
  },
  "/ai/wrtn/": {
-  "date": "2026-10-29",
-  "hash": "8e35d0485b7d2ecf9d2f5d453ff5212a"
+  "date": "2026-10-31",
+  "hash": "88e3049ca557fffc2347f30c9fa646ce"
  },
  "/guide/": {
-  "date": "2026-10-29",
-  "hash": "e1b35a78be21b441abd80767d3144720"
+  "date": "2026-10-31",
+  "hash": "f898dcbdb66045619ef2aea798b51bca"
  },
  "/guide/ai-narration/": {
-  "date": "2026-10-30",
-  "hash": "0146f4dcdc950ed749af4b173c451f8e"
+  "date": "2026-10-31",
+  "hash": "cba799b428d146cde81121b2e7d5592a"
  },
  "/guide/cooking-ai/": {
-  "date": "2026-10-29",
-  "hash": "799e8f83f6db2a819a503aa0c1b9837b"
+  "date": "2026-10-31",
+  "hash": "be77df655f77f352eebb49260b058ef0"
  },
  "/guide/free-video-ai/": {
-  "date": "2026-10-29",
-  "hash": "650c2b8c77d39d3b8a598c2f6e9e6164"
+  "date": "2026-10-31",
+  "hash": "5fd21f6c2d369c8dede2c3d8668b354a"
+ },
+ "/guide/ppt-ai/": {
+  "date": "2026-10-31",
+  "hash": "11d816f8471e6defb7b54ffb5009751a"
  },
  "/guide/school-event-ai/": {
-  "date": "2026-10-29",
-  "hash": "c3cd6a5ab81d4345db42f64916468f28"
+  "date": "2026-10-31",
+  "hash": "64f9c23421caa6ab7f28b315ecddb973"
  },
  "/guide/study-ai/": {
-  "date": "2026-10-29",
-  "hash": "fe4e9bb504f5f6d7d757848ad0c1e536"
+  "date": "2026-10-31",
+  "hash": "8aca5dab368cf7848bf68a41a43b8367"
  },
  "/guide/suhaeng-ai/": {
-  "date": "2026-10-29",
-  "hash": "dedf8cfee5f1fb5924de08a113456294"
+  "date": "2026-10-31",
+  "hash": "30534374bd4cbe6a50f7d05e64eae5cf"
  },
  "/privacy/": {
-  "date": "2026-10-29",
-  "hash": "fec60d768c3924e74ff68b74202e8033"
+  "date": "2026-10-31",
+  "hash": "56d5992936286c0d7c2f4b0d5b266bfc"
  }
 }
