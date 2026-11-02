@@ -201,7 +201,8 @@ button{font:inherit; color:inherit; cursor:pointer}
 .modal-bg{position:fixed; inset:0; background:rgba(10,12,30,.6); display:none; z-index:20}
 .modal{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); width:min(460px, calc(100% - 40px)); z-index:21; display:none; padding:18px 16px 16px}
 .modal.open,.modal-bg.open{display:block}
-.ask{padding:14px 14px 12px}
+.ask{padding:14px 14px 12px; background:#FFC342}
+.ask .ask-row p{color:#1E2A1B}
 .ask-row{display:flex; align-items:center; gap:12px; margin-bottom:12px}
 .ask-row p{margin:0; line-height:1.5; word-break:keep-all}
 .ask-btns{display:flex; justify-content:flex-end; gap:10px}

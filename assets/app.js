@@ -507,16 +507,18 @@ function initDetail(id){
     let box = $("askSeen");
     if (!box){
       box = document.createElement("div");
-      box.id = "askSeen"; box.className = "modal px ask"; box.setAttribute("role", "dialog"); box.setAttribute("aria-labelledby", "askTitle");
-      document.body.appendChild(box);
+      box.id = "askSeen"; box.className = "modal px ask"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-labelledby", "askTitle");
+      const bg = document.createElement("div"); bg.id = "askBg"; bg.className = "modal-bg";
+      document.body.appendChild(bg); document.body.appendChild(box);
+      bg.onclick = () => { const no = $("askNo"); if (no) no.click(); };
     }
     box.innerHTML = `<div class="ask-row"><span class="bit" data-bit="happy" data-size="52"></span>
       <p id="askTitle"><b>${esc(t.name)}</b> 써 봤어요?<br>도감에 기록할까요?</p></div>
       <div class="ask-btns"><button class="tool-btn plain" id="askNo">아직이요</button><button class="tool-btn" id="askYes">기록하기</button></div>`;
     fillBits(box);
-    box.classList.add("open");
+    box.classList.add("open"); $("askBg").classList.add("open");
     const close = answer => {
-      box.classList.remove("open");
+      box.classList.remove("open"); $("askBg").classList.remove("open");
       if (typeof gtag === "function") gtag("event", "seen_prompt", { ai_id: t.id, ai_name: t.name, answer });
     };
     $("askYes").onclick = () => { close("yes"); markSeen(true); };
