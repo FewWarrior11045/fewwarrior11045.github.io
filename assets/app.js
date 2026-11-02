@@ -484,13 +484,46 @@ function initDetail(id){
   const col = $("collect");
   const setCol = on => { col.setAttribute("aria-pressed", on); col.textContent = on ? "써봤어요 ✓" : "써봤어요"; };
   setCol(seen.has(t.id));
-  col.onclick = () => {
-    const on = !seen.has(t.id);
+  const markSeen = on => {
     on ? seen.add(t.id) : seen.delete(t.id);
     store.set("seen", [...seen]); setCol(on);
     toast(on ? `도감에 기록했어요: ${t.name}` : "기록을 지웠어요");
     if (on) setTimeout(checkBadges, 1200);
   };
+  col.onclick = () => markSeen(!seen.has(t.id));
+
+  /* "써 보기/공식 사이트 가기"를 누르고 그 사이트에 갔다가 돌아오면
+     "써 봤어요? 도감에 기록할까요?" 하고 물어봐요. (이미 기록한 AI는 안 물어봄) */
+  let wentAt = 0, hiddenAt = 0;
+  const go = document.querySelector(".actions a.act.go");
+  if (go) go.addEventListener("click", () => { if (!seen.has(t.id)) { wentAt = Date.now(); hiddenAt = 0; } });
+  document.addEventListener("visibilitychange", () => {
+    if (!wentAt) return;
+    if (document.hidden) { hiddenAt = Date.now(); return; }
+    // 다른 탭에 3초 이상 있다가 돌아왔을 때만 (잠깐 깜빡인 건 무시)
+    if (hiddenAt && Date.now() - hiddenAt >= 3000 && !seen.has(t.id)) { wentAt = 0; askSeen(); }
+  });
+  function askSeen(){
+    let box = $("askSeen");
+    if (!box){
+      box = document.createElement("div");
+      box.id = "askSeen"; box.className = "modal px ask"; box.setAttribute("role", "dialog"); box.setAttribute("aria-labelledby", "askTitle");
+      document.body.appendChild(box);
+    }
+    box.innerHTML = `<div class="ask-row"><span class="bit" data-bit="happy" data-size="52"></span>
+      <p id="askTitle"><b>${esc(t.name)}</b> 써 봤어요?<br>도감에 기록할까요?</p></div>
+      <div class="ask-btns"><button class="tool-btn plain" id="askNo">아직이요</button><button class="tool-btn" id="askYes">기록하기</button></div>`;
+    fillBits(box);
+    box.classList.add("open");
+    const close = answer => {
+      box.classList.remove("open");
+      if (typeof gtag === "function") gtag("event", "seen_prompt", { ai_id: t.id, ai_name: t.name, answer });
+    };
+    $("askYes").onclick = () => { close("yes"); markSeen(true); };
+    $("askNo").onclick = () => close("no");
+    $("askYes").focus();
+  }
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && $("askSeen") && $("askSeen").classList.contains("open")) $("askNo").click(); });
 
   $("share").onclick = () => shareLink(location.origin + aiUrl(t), `${t.name} | AI 도감`, `${t.name}: ${t.desc} (AI 도감)`);
 }
