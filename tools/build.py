@@ -117,8 +117,8 @@ home = head("AI 추천 · 비교 | 학생이 직접 써 본 AI 도감", home_des
 <main class="wrap">
   <section id="home">
     <header class="top">
-      <h1 class="logo"><a href="/" aria-label="AI 도감 홈"><small>NO.001~{len(TOOLS):03d}</small>AI 도감</a></h1>
-      <button class="meter" id="openDex" aria-label="내 도감 열기"><span class="lbl">써본 AI <b id="cnt">0/{len(TOOLS)}</b><span class="go" aria-hidden="true">▶</span></span><span class="bar" id="bar" aria-hidden="true"></span></button>
+      <h1 class="logo"><a href="/"><small>NO.001~{len(TOOLS):03d}</small>AI 도감</a></h1>
+      <button class="meter" id="openDex"><span class="lbl">써본 AI <b id="cnt">0/{len(TOOLS)}</b><span class="go" aria-hidden="true">▶</span><span class="sr-only"> 내 도감 열기</span></span><span class="bar" id="bar" aria-hidden="true"></span></button>
     </header>
     <label class="search px"><span aria-hidden="true">▶</span>
       <input id="q" type="search" placeholder="AI 이름이나 하고 싶은 일 검색" autocomplete="off" aria-label="AI 검색">
@@ -188,11 +188,11 @@ for t in TOOLS:
     lst = lambda a: ('<ul>' + ''.join(f'<li>{e(x)}</li>' for x in a) + '</ul>') if a else ''
     review = f'<p>{e(t["review"]).replace(chr(10), "<br>")}</p>' if t.get('review') else '<p>아직 후기가 없어요. 직접 써보고 채울 예정이에요.</p>'
     talk = ''
-    if t.get('intro'): talk += f'<h3>이런 AI예요</h3><p>{e(t["intro"])}</p>'
-    if t.get('pros'): talk += f'<h3>좋은 점</h3>{lst(t["pros"])}'
-    if t.get('cons'): talk += f'<h3>아쉬운 점</h3>{lst(t["cons"])}'
-    if t.get('who'): talk += f'<h3>이런 사람에게</h3><p>{e(t["who"])}</p>'
-    talk += f'<h3>직접 써본 후기</h3>{review}'
+    if t.get('intro'): talk += f'<h2>이런 AI예요</h2><p>{e(t["intro"])}</p>'
+    if t.get('pros'): talk += f'<h2>좋은 점</h2>{lst(t["pros"])}'
+    if t.get('cons'): talk += f'<h2>아쉬운 점</h2>{lst(t["cons"])}'
+    if t.get('who'): talk += f'<h2>이런 사람에게</h2><p>{e(t["who"])}</p>'
+    talk += f'<h2>직접 써본 후기</h2>{review}'
     others = ''.join(entry(x, i+1) for i, x in enumerate(r) if x is not t)
     affnote = (f'\n    <p class="affnote">{"<b>광고</b> · " if t.get("affAd") else ""}AI 도감은 {e(t["name"])}의 독립 제휴 파트너예요. 아래 버튼은 제휴 링크라, 이 링크로 가입해 결제하면 AI 도감이 수수료를 받을 수 있어요. 점수와 순위는 수수료와 상관없이 매겨요.</p>' if t.get('aff') else '')
     page = head(f"{t['name']} 후기·점수 – {CAT_KW.get(t['cat'], 'AI 추천')} | AI 도감", desc, f"/ai/{t['id']}/") + f'''

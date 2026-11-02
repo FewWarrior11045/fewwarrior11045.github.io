@@ -183,7 +183,7 @@ button{font:inherit; color:inherit; cursor:pointer}
 .seg i.on{background:var(--ink)}
 .stat b{font-family:var(--num); font-size:.75rem; font-weight:400; text-align:right}
 .talk{margin:16px 12px 6px; padding:12px 14px; background:#FAFDF4; position:relative}
-.talk h3{margin:0 0 4px; font-family:var(--title); font-size:1.15rem; font-weight:400; color:var(--sel)}
+.talk h2,.talk h3{margin:0 0 4px; font-family:var(--title); font-size:1.15rem; font-weight:400; color:var(--sel)}
 .talk ul{margin:0 0 10px; padding:0; list-style:none}
 .talk li{padding-left:16px; position:relative}
 .talk li::before{content:"▸"; position:absolute; left:0}
@@ -337,3 +337,5 @@ a.entry{cursor:pointer}
 .actions .act{word-break:keep-all}
 .affnote{margin:10px 12px 0; padding:8px 10px; font-size:.78rem; line-height:1.5; color:var(--ink, #1E2A1B); background:#FFF1C9; word-break:keep-all}
 .affmark{font-size:.8rem; line-height:1.5; color:var(--sub); word-break:keep-all}
+
+.sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
